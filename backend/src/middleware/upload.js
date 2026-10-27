@@ -1,3 +1,4 @@
+import { usesGridFS } from "../utils/uploadStorage.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -15,6 +16,6 @@ const storage=multer.diskStorage({
 });
 
 export const upload=multer({
-  storage,
+  storage: usesGridFS() ? multer.memoryStorage() : storage,
   limits:{fileSize:25*1024*1024}
 });

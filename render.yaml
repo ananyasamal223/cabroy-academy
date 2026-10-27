@@ -14,6 +14,14 @@ services:
         value: production
       - key: NODE_VERSION
         value: 22.16.0
+      - key: UPLOAD_STORAGE
+        value: gridfs
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
       - key: CLIENT_URL
         value: https://codeexampler.com,https://www.codeexampler.com
       - key: MONGODB_URI

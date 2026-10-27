@@ -30,12 +30,12 @@ Set VITE_API_URL to https://YOUR-ACTUAL-SERVICE.onrender.com/api initially. Set 
 First verify frontend and backend deployment URLs. Add codeexampler.com in frontend hosting Custom Domains, then use the DNS records that host supplies. Add api.codeexampler.com in Render Custom Domains and follow its exact CNAME instructions. Start API verification with DNS-only mode. Remove conflicting root records only after the new frontend is ready. Do not change mail records. Finally set VITE_API_URL=https://api.codeexampler.com/api and rebuild.
 
 ## Required before everything works
-- Email: current app uses SMTP for account verification and password reset. Render Free blocks common SMTP ports 25/465/587. Integrate an HTTPS email provider and verify its sender domain before enabling public signup. Do not disable verification to work around this.
-- Uploads: current app writes /uploads to local disk. Render Free loses those files on restart. Integrate durable object storage, and migrate existing uploaded assets before relying on uploads publicly.
+- Email: HTTPS Resend support is implemented. Set server-only RESEND_API_KEY and EMAIL_FROM for a verified sender domain. Render Free blocks common SMTP ports, so leave hosted SMTP unset. Sender DNS verification and a real inbox delivery test remain required. Do not disable account verification.
+- Uploads: set UPLOAD_STORAGE=gridfs (configured in render.yaml) to store new uploads in MongoDB, surviving backend restarts. Existing local uploads still need migration with their original filenames. Atlas storage limits include uploaded files: keep course videos on external storage and monitor usage.
 - Payments: configure server-only RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET. Test with test keys first; real payments incur processor fees and require an activated account.
 - Google login: configure GOOGLE_CLIENT_ID on backend and matching VITE_GOOGLE_CLIENT_ID on frontend; register exact live origins in Google.
 - Admin: create the admin securely using backend npm run create-admin with private environment values. Do not publish example passwords.
-- Proxy: configure Express trust proxy appropriately for the final Render/Cloudflare topology before relying on IP rate limits.
+- Proxy: TRUST_PROXY_HOPS=1 is configured for Render direct/DNS-only API routing. Review this if you enable Cloudflare proxying or add another reverse proxy.
 - Test registration email, login/logout, password reset, course data, test purchase, enrollment, protected downloads, counselling, admin uploads and direct route refreshes on actual live URLs.
 
 Render Free sleeps after 15 minutes of inactivity and can take about a minute to wake. The current frontend request timeout is 15 seconds, so a sleeping backend may require retry. This setup is for testing; it is not an always-on production guarantee.

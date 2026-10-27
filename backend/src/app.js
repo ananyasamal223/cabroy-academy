@@ -1,3 +1,4 @@
+import { serveUpload } from "./utils/uploadStorage.js";
 import "express-async-errors"; // lets async controller errors reach errorHandler instead of hanging
 import express from "express";
 import cors from "cors";
@@ -24,10 +25,16 @@ import feedbackRoutes from "./routes/feedback.routes.js";
 import {notFound,errorHandler} from "./middleware/error.js";
 
 const app=express();
+// One trusted reverse-proxy hop when explicitly enabled by the host.
+if (process.env.TRUST_PROXY_HOPS) {
+ const hops=Number(process.env.TRUST_PROXY_HOPS);
+ if (!Number.isInteger(hops) || hops < 1 || hops > 5) throw new Error("TRUST_PROXY_HOPS must be between 1 and 5.");
+ app.set("trust proxy", hops);
+}
 
 app.use(helmet({crossOriginResourcePolicy:{policy:"cross-origin"}}));
 app.use(cors({
-  origin:(process.env.CLIENT_URL||"http://localhost:5173").split(","),
+  origin:(process.env.CLIENT_URL||"http://localhost:5173").split(",").map(origin => origin.trim()).filter(Boolean),
   credentials:true
 }));
 app.use(express.json({limit:"2mb"}));
@@ -35,6 +42,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(morgan(process.env.NODE_ENV==="production"?"combined":"dev"));
 app.use(rateLimit({windowMs:15*60*1000,max:300,standardHeaders:true,legacyHeaders:false}));
 
+app.get("/uploads/:filename", serveUpload);
 app.use("/uploads",express.static(path.resolve("uploads")));
 
 app.get("/api/health",(req,res)=>res.json({ok:true,service:"rathi-academy-backend"}));
