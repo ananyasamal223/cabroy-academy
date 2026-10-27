@@ -41,3 +41,6 @@ publish-files.txt
 *.pfx
 *.dump
 *.sqlite*
+
+# Vercel project linkage is machine/account specific
+.vercel/
