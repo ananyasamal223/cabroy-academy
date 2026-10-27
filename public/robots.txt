@@ -1,0 +1,22 @@
+﻿# Replace https://example.com with the production website origin before deployment.
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /my-courses
+Disallow: /projects
+Disallow: /community
+Disallow: /certificates
+Disallow: /profile
+Disallow: /settings
+Disallow: /course-journey/
+Disallow: /assignment/
+Disallow: /login
+Disallow: /signup
+Disallow: /cart
+Disallow: /checkout/
+Disallow: /plans/*/checkout
+Disallow: /payment-success
+Disallow: /payment-failed
+
+Sitemap: https://example.com/sitemap.xml

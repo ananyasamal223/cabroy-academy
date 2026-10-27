@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: Inter, Arial, sans-serif;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+button,
+a {
+  transition: 0.2s ease;
+}
+
+button {
+  cursor: pointer;
+}
+
+@keyframes tool-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-tool-scroll {
+  width: max-content;
+  animation: tool-scroll 14s linear infinite;
+}
+
+.animate-tool-scroll:hover {
+  animation-play-state: paused;
+}

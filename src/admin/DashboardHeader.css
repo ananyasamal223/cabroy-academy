@@ -1,0 +1,38 @@
+.ad-header-scene { position:relative; height:246px; background:url('/admin-header-art.png') center -65px / 100% 330px no-repeat; border-radius:16px; }
+.ad-header-scene .ad-page-heading { height:96px; margin:0; padding:0 0 18px; align-items:center; }
+.ad-header-scene .ad-page-heading h1 { margin-top:12px; font-size:36px; }
+.ad-refresh-footer { display:flex; justify-content:flex-end; padding-top:12px; }
+.ad-header-scene .ad-welcome-bar { height:150px; min-height:0; padding:24px 26px 24px 36px; background:none; overflow:visible; flex-wrap:nowrap; gap:22px; }
+.ad-header-scene .ad-welcome-bar::before,.ad-header-scene .ad-banner-art { display:none; }
+.ad-header-scene .ad-welcome-bar-copy { flex:1; }
+.ad-header-scene .ad-welcome-bar h2 { font-size:30px; }
+.ad-header-scene .ad-welcome-bar-actions { margin:8px 0 0; flex-shrink:0; gap:13px; }
+.ad-header-scene .ad-welcome-bar-actions a { min-height:57px; padding:15px 20px; font-size:13px; }
+.ad-header-scene .ad-welcome-bar-actions a:first-child { background:#14275bcc; box-shadow:inset 0 0 0 1px #ffffff20,0 4px 14px #163c6720; }
+.ad-header-scene .ad-welcome-bar-actions a:first-child:hover { background:#234694; }
+@media (min-width:1201px) and (max-width:1400px) {
+ .ad-header-scene .ad-welcome-bar { padding-left:28px; gap:18px; }
+ .ad-header-scene .ad-welcome-bar h2 { font-size:27px; }
+ .ad-header-scene .ad-welcome-bar p { font-size:12px; gap:12px; }
+ .ad-header-scene .ad-welcome-bar-actions a { padding:15px; font-size:12px; gap:10px; }
+}
+@media (max-width:1200px) {
+ .ad-header-scene { height:300px; background-size:100% 400px; background-position:center -100px; }
+ .ad-header-scene .ad-page-heading { height:96px; }
+ .ad-header-scene .ad-welcome-bar { height:204px; flex-wrap:wrap; padding:22px 26px; gap:12px 20px; }
+ .ad-header-scene .ad-welcome-bar-copy { flex-basis:calc(100% - 100px); }
+ .ad-header-scene .ad-welcome-bar-actions { margin:0 0 0 94px; }
+ .ad-header-scene .ad-welcome-bar-actions a { min-height:46px; padding:11px 15px; }
+ .ad-header-scene .ad-page-heading > .ad-secondary { top:310px; }
+}
+@media (max-width:600px) {
+ .ad-header-scene { height:310px; background-size:auto 435px; background-position:64% -125px; }
+ .ad-header-scene .ad-page-heading { height:90px; padding-bottom:16px; }
+ .ad-header-scene .ad-page-heading h1 { font-size:25px; }
+ .ad-header-scene .ad-welcome-bar { height:220px; padding:18px; gap:12px; }
+ .ad-header-scene .ad-welcome-bar-copy { flex-basis:calc(100% - 65px); }
+ .ad-header-scene .ad-welcome-bar h2 { font-size:21px; }
+ .ad-header-scene .ad-welcome-bar-actions { margin:0; width:100%; gap:8px; }
+ .ad-header-scene .ad-welcome-bar-actions a { font-size:10px; padding:10px 8px; gap:6px; }
+ .ad-header-scene .ad-page-heading > .ad-secondary { top:320px; }
+}

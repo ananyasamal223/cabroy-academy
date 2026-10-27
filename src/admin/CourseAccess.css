@@ -1,0 +1,82 @@
+.ce-access-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); grid-auto-rows:1fr; gap:12px; margin-top:18px; }
+.ce-access .ce-access-option { display:flex; align-items:center; gap:12px; position:relative; min-height:86px; margin:0; padding:16px; border:1px solid #e2e8f2; border-radius:10px; background:#fafbfe; cursor:pointer; transition:border-color .15s,background .15s,box-shadow .15s; }
+.ce-access .ce-access-option.selected { border-color:#b7cbf4; background:#f1f5ff; box-shadow:0 0 0 1px #dce6fb55; }
+.ce-access .ce-access-option:hover { border-color:#83aafa; }.ce-access .ce-access-option:focus-within { outline:2px solid #78a6fb; outline-offset:3px; }
+.ce-access .ce-access-option input { width:16px; height:16px; flex:0 0 16px; margin:0; accent-color:#1672ef; cursor:pointer; padding:0; }
+.ce-access-icon { display:grid; place-items:center; width:38px; height:38px; border-radius:11px; flex-shrink:0; }
+.ce-access-option.blue .ce-access-icon { background:#e0edff; color:#2870d7; }.ce-access-option.amber .ce-access-icon { background:#fff4d9; color:#dca635; }.ce-access-option.orange .ce-access-icon { background:#fff0d9; color:#df9a32; }.ce-access-option.purple .ce-access-icon { background:#eae7ff; color:#6153d8; }
+.ce-access-copy { display:block; min-width:0; }.ce-access-copy strong { display:block; font-size:12px; font-weight:650; color:#263d6a; line-height:1.4; }.ce-access-copy small { display:block; font-size:10px; line-height:1.5; color:#7a879f; margin-top:4px; }.ce-access-warning { color:#bd7430; font-size:12px; margin:12px 0 0; }
+@media(max-width:600px) { .ce-access-options { grid-template-columns:1fr; gap:10px; }.ce-access .ce-access-option { min-height:76px; padding:14px; } }
+
+/* Styling contained within Step 5. */
+.ce-page .ce-access {
+  background:linear-gradient(135deg,#fff 55%,#f5f8ff);
+  border-color:#dce5f4;
+  box-shadow:0 6px 24px rgba(35,62,105,.05);
+}
+.ce-access h2 > svg { color:#4874ce; }
+.ce-access .ce-access-options { gap:16px; margin-top:24px; }
+.ce-access .ce-access-option {
+  --access-accent:#3575df;
+  --access-tint:#eef5ff;
+  --access-line:#acc9f7;
+  flex-direction:row;
+  min-height:116px;
+  padding:22px 46px 22px 20px;
+  gap:16px;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 2px 6px rgba(34,57,92,.025);
+  transition:border-color .18s,background .18s,box-shadow .18s;
+}
+.ce-access .ce-access-option.amber { --access-accent:#a77918; --access-tint:#fff9eb; --access-line:#ecd399; }
+.ce-access .ce-access-option.orange { --access-accent:#c37622; --access-tint:#fff5ea; --access-line:#efc398; }
+.ce-access .ce-access-option.purple { --access-accent:#7560ce; --access-tint:#f6f2ff; --access-line:#cfc1f3; }
+.ce-access .ce-access-option:hover {
+  border-color:var(--access-line);
+  box-shadow:0 5px 16px rgba(34,57,92,.07);
+}
+.ce-access .ce-access-option.selected {
+  border-color:var(--access-line);
+  background:linear-gradient(120deg,#fff,var(--access-tint));
+  box-shadow:inset 4px 0 0 var(--access-accent),0 3px 12px rgba(34,57,92,.04);
+}
+.ce-access .ce-access-option input {
+  position:absolute;
+  right:19px;
+  top:20px;
+  width:18px;
+  height:18px;
+  accent-color:var(--access-accent);
+}
+.ce-access .ce-access-icon {
+  width:52px;
+  height:52px;
+  flex:0 0 52px;
+  border-radius:15px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.7);
+}
+.ce-access .ce-access-copy strong { font-size:15px; font-weight:700; color:#253956; }
+.ce-access .ce-access-copy small { font-size:12px; line-height:1.6; color:#64748b; margin-top:6px; }
+.ce-access .ce-access-warning { padding:12px 16px; background:#fff8e9; border:1px solid #f0ddb5; border-radius:10px; }
+@media(max-width:600px) {
+  .ce-access .ce-access-options { gap:12px; }
+  .ce-access .ce-access-option { min-height:104px; padding:18px 42px 18px 16px; gap:12px; }
+  .ce-access .ce-access-icon { width:44px; height:44px; flex-basis:44px; }
+  .ce-access .ce-access-copy strong { font-size:14px; }
+}
+
+/* Keep the checkbox at the right inside each card, above shared form rules. */
+.ce-page .ce-access .ce-access-option > input[type="checkbox"] {
+  position: absolute;
+  inset: 18px 18px auto auto;
+  width: 18px;
+  min-width: 18px;
+  max-width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  transform: none;
+  appearance: auto;
+  accent-color: var(--access-accent);
+}

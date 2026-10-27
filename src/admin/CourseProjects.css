@@ -1,0 +1,14 @@
+﻿.ce-projects { scroll-margin-top: 100px; }
+.ce-projects h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ce-project-empty { display: grid; justify-items: center; gap: 10px; padding: 28px 16px; margin: 18px 0; border: 1px dashed #d9e4f2; border-radius: 12px; background: #f8fbff; color: #64748b; text-align: center; }
+.ce-project-empty strong { color: #334155; }
+.ce-project-empty p { margin: 0; font-size: 12px; }
+.ce-project-list { display: grid; gap: 20px; margin-block: 20px; }
+.ce-project-item { min-width: 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fcfdff; }
+.ce-project-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+.ce-project-heading h3 { font-size: 14px; font-weight: 700; }
+.ce-projects .ce-project-requirements { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin: 20px 0; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; }
+.ce-project-requirements legend { padding-inline: 5px; font-size: 12px; font-weight: 600; }
+.ce-projects .ce-project-requirements label, .ce-projects label.ce-project-checkbox { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; }
+.ce-projects .ce-project-requirements input, .ce-projects .ce-project-checkbox input { width: 16px; height: 16px; flex: 0 0 16px; margin: 2px 0 0; padding: 0; }
+@media(max-width:600px) { .ce-project-item { padding: 14px; } .ce-projects .ce-project-requirements { grid-template-columns: minmax(0,1fr); } .ce-project-heading { flex-wrap: wrap; } }

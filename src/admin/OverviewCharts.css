@@ -1,0 +1,17 @@
+.ov-growth-chart { position:relative; padding-top:3px; }
+.ov-growth-svg { display:block; width:100%; height:auto; overflow:visible; }
+.ov-growth-svg text,.ov-reference-revenue text { font-family:Inter,"Segoe UI",sans-serif; font-size:10px; fill:#7b879e; }
+.ov-chart-grid { stroke:#edf1f7; stroke-width:1; }
+.ov-chart-axis { stroke:#e7ecf4; stroke-width:1; }
+.ov-reference-legend { display:flex; justify-content:center; align-items:center; gap:24px; padding:1px 0 4px; }
+.ov-reference-legend span { display:inline-flex; align-items:center; gap:8px; color:#8190a8; font-size:10px; white-space:nowrap; }
+.ov-reference-legend i { display:block; width:11px; height:11px; border-radius:2px; box-shadow:inset 0 0 0 1px #ffffff25; }
+.ov-revenue-chart { padding:2px 0 3px; }
+.ov-reference-revenue { display:block; width:100%; height:auto; overflow:visible; }
+.ov-reference-revenue .ov-callout-month { font-size:9px; fill:#53637d; }
+.ov-reference-revenue .ov-callout-amount { font-size:14px; font-weight:750; fill:#101a32; letter-spacing:-.4px; }
+.ov-chart-callout rect { filter:drop-shadow(0 3px 4px #1a355510); }
+.ov-growth-tooltip { position:absolute; top:8px; right:8px; display:grid; gap:4px; padding:9px 12px; background:#fff; border:1px solid #e6ebf4; border-radius:7px; box-shadow:0 5px 18px #21345515; font-size:10px; color:#6c7b94; pointer-events:none; }
+.ov-growth-tooltip strong { color:#283752; }
+.ov-growth-svg g:focus-visible,.ov-reference-revenue g:focus-visible { outline:1px solid #75a5f0; outline-offset:2px; }
+@media(max-width:650px) { .ov-reference-legend { gap:12px; flex-wrap:wrap; }.ov-reference-legend span { font-size:9px; gap:5px; } }

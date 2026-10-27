@@ -1,0 +1,16 @@
+.ov-date-filter { position:relative; flex-shrink:0; margin-top:5px; }
+.ov-dashboard .ov-date-trigger { height:36px; gap:11px; padding:0 12px; border:1px solid #e3e8f2; border-radius:7px; background:#fff; color:#243049; box-shadow:0 2px 5px #223f6e05; font-size:11px; font-weight:500; }
+.ov-date-trigger > svg:first-child { color:#253650; }
+.ov-date-trigger > svg:last-child { margin-left:4px; color:#61708b; transition:transform .15s; }
+.ov-date-trigger > svg.is-open { transform:rotate(180deg); }
+.ov-date-popover { position:absolute; top:calc(100% + 8px); right:0; z-index:40; width:310px; max-width:calc(100vw - 48px); padding:17px; background:#fff; border:1px solid #e5eaf3; border-radius:11px; box-shadow:0 14px 45px #1b345d20; }
+.ov-date-popover h3 { font-size:13px; font-weight:650; color:#23304a; margin:0 0 12px; }
+.ov-date-presets { display:flex; gap:5px; margin-bottom:16px; }
+.ov-dashboard .ov-date-presets button { flex:1; padding:6px; font-size:10px; }
+.ov-date-fields { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.ov-date-fields label { display:grid; gap:7px; color:#6b7891; font-size:10px; }
+.ov-date-fields input { width:100%; min-width:0; border:1px solid #dfe6f1; border-radius:6px; padding:9px 7px; color:#253650; font:inherit; font-size:11px; background:#fff; color-scheme:light; }
+.ov-date-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:17px; padding-top:13px; border-top:1px solid #eef1f6; }
+.ov-dashboard .ov-date-apply { background:#2563eb; border-color:#2563eb; color:#fff; }
+.ov-dashboard .ov-date-apply:hover { background:#1d4ed8; border-color:#1d4ed8; }
+@media(max-width:650px) { .ov-date-filter { margin-top:0; }.ov-date-popover { left:0; right:auto; } }

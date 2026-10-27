@@ -1,0 +1,686 @@
+.counter {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  margin-bottom: 24px;
+}
+
+.counter:hover {
+  border-color: var(--accent-border);
+}
+
+.counter:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* =========================================
+   HERO
+========================================= */
+
+.hero {
+  position: relative;
+}
+
+.hero .base,
+.hero .framework,
+.hero .vite {
+  inset-inline: 0;
+  margin: 0 auto;
+}
+
+.hero .base {
+  width: 170px;
+  position: relative;
+  z-index: 0;
+}
+
+.hero .framework,
+.hero .vite {
+  position: absolute;
+}
+
+.hero .framework {
+  z-index: 1;
+  top: 34px;
+  height: 28px;
+  transform:
+    perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg) scale(1.4);
+}
+
+.hero .vite {
+  z-index: 0;
+  top: 107px;
+  height: 26px;
+  width: auto;
+  transform:
+    perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg) scale(0.8);
+}
+
+/* =========================================
+   CENTER
+========================================= */
+
+#center {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  place-content: center;
+  place-items: center;
+  flex-grow: 1;
+}
+
+@media (max-width: 1024px) {
+  #center {
+    padding: 32px 20px 24px;
+    gap: 18px;
+  }
+}
+
+/* =========================================
+   NEXT STEPS
+========================================= */
+
+#next-steps {
+  display: flex;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+
+#next-steps>div {
+  flex: 1 1 0;
+  padding: 32px;
+}
+
+#next-steps .icon {
+  margin-bottom: 16px;
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 1024px) {
+  #next-steps {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #next-steps>div {
+    padding: 24px 20px;
+  }
+}
+
+/* =========================================
+   DOCS
+========================================= */
+
+#docs {
+  border-right: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  #docs {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* =========================================
+   NEXT STEPS LINKS
+========================================= */
+
+#next-steps ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 8px;
+  margin: 32px 0 0;
+}
+
+#next-steps ul .logo {
+  height: 18px;
+}
+
+#next-steps ul a {
+  color: var(--text-h);
+  font-size: 16px;
+  border-radius: 6px;
+  background: var(--social-bg);
+  display: flex;
+  padding: 6px 12px;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: box-shadow 0.3s;
+}
+
+#next-steps ul a:hover {
+  box-shadow: var(--shadow);
+}
+
+#next-steps ul a .button-icon {
+  height: 18px;
+  width: 18px;
+}
+
+@media (max-width: 1024px) {
+  #next-steps ul {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #next-steps ul li {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  #next-steps ul a {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+}
+
+/* =========================================
+   SPACER
+========================================= */
+
+#spacer {
+  height: 88px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  #spacer {
+    height: 48px;
+  }
+}
+
+/* =========================================
+   TICKS
+========================================= */
+
+.ticks {
+  position: relative;
+  width: 100%;
+}
+
+.ticks::before,
+.ticks::after {
+  content: "";
+  position: absolute;
+  top: -4.5px;
+  border: 5px solid transparent;
+}
+
+.ticks::before {
+  left: 0;
+  border-left-color: var(--border);
+}
+
+.ticks::after {
+  right: 0;
+  border-right-color: var(--border);
+}
+
+/* =========================================
+   RATHI ACADEMY FORM INPUTS
+========================================= */
+
+.inputBox {
+  width: 100%;
+  height: 42px;
+  box-sizing: border-box;
+
+  border: 1px solid #dfe5ee;
+  border-radius: 9px;
+
+  padding: 0 14px;
+
+  background: #ffffff;
+  color: #344054;
+
+  font-size: 11px;
+  font-family: inherit;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.inputBox::placeholder {
+  color: #98a2b3;
+}
+
+.inputBox:hover {
+  border-color: #cbd5e1;
+}
+
+.inputBox:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.inputBox:disabled {
+  cursor: not-allowed;
+  background: #f8fafc;
+  color: #98a2b3;
+}
+
+/* =========================================
+   SELECT INPUT
+========================================= */
+
+select.inputBox {
+  cursor: pointer;
+  padding-right: 36px;
+}
+
+/* =========================================
+   TEXTAREA INPUT
+========================================= */
+
+textarea.inputBox {
+  height: auto;
+  min-height: 90px;
+
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* =========================================
+   FORM LABEL
+========================================= */
+
+.formLabel {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  color: #344054;
+}
+
+/* =========================================
+   FORM GROUP
+========================================= */
+
+.formGroup {
+  width: 100%;
+  min-width: 0;
+}
+
+/* =========================================
+   FORM ROW
+========================================= */
+
+.formRow {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+/* =========================================
+   COURSE DESCRIPTION TEXTAREA
+========================================= */
+
+.courseDescription {
+  width: 100%;
+  min-height: 86px;
+
+  box-sizing: border-box;
+
+  resize: none;
+
+  border: 1px solid #dfe5ee;
+  border-radius: 9px;
+
+  padding: 12px 14px;
+
+  background: #ffffff;
+
+  color: #344054;
+
+  font-size: 11px;
+  font-family: inherit;
+
+  line-height: 1.6;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.courseDescription::placeholder {
+  color: #98a2b3;
+}
+
+.courseDescription:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* =========================================
+   COURSE FULL DESCRIPTION
+========================================= */
+
+.fullDescription {
+  width: 100%;
+  min-height: 150px;
+
+  box-sizing: border-box;
+
+  border: 0;
+
+  padding: 14px;
+
+  resize: none;
+
+  background: #ffffff;
+
+  color: #344054;
+
+  font-size: 11px;
+  font-family: inherit;
+
+  line-height: 1.6;
+
+  outline: none;
+}
+
+/* =========================================
+   EDITOR BOX
+========================================= */
+
+.editorBox {
+  width: 100%;
+
+  overflow: hidden;
+
+  border: 1px solid #dfe5ee;
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+.editorToolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 4px;
+
+  padding: 8px 12px;
+
+  border-bottom: 1px solid #edf0f5;
+
+  background: #fbfcfe;
+}
+
+/* =========================================
+   UPLOAD BOX
+========================================= */
+
+.uploadBox {
+  width: 100%;
+
+  min-height: 145px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  border: 1px dashed #d9e0ec;
+  border-radius: 12px;
+
+  background: #fbfcff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.uploadBox:hover {
+  border-color: #2563eb;
+  background: #f8faff;
+}
+
+/* =========================================
+   COURSE CARDS
+========================================= */
+
+.courseAdminCard {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e5eaf2;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  padding: 20px;
+
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035);
+}
+
+/* =========================================
+   PRIMARY BUTTON
+========================================= */
+
+.primaryButton {
+  height: 42px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border: none;
+  border-radius: 9px;
+
+  padding: 0 20px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 600;
+  font-family: inherit;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.primaryButton:hover {
+  background: #1d4ed8;
+
+  box-shadow: 0 5px 14px rgba(37, 99, 235, 0.22);
+}
+
+.primaryButton:active {
+  transform: translateY(1px);
+}
+
+/* =========================================
+   SECONDARY BUTTON
+========================================= */
+
+.secondaryButton {
+  height: 42px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border: 1px solid #dfe5ee;
+  border-radius: 9px;
+
+  padding: 0 18px;
+
+  background: #ffffff;
+
+  color: #536078;
+
+  font-size: 10px;
+  font-weight: 600;
+  font-family: inherit;
+
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  background: #f8fafc;
+}
+
+/* =========================================
+   DRAFT BUTTON
+========================================= */
+
+.draftButton {
+  height: 42px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 9px;
+
+  padding: 0 20px;
+
+  background: #eef4ff;
+  color: #2563eb;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.draftButton:hover {
+  background: #e3edff;
+}
+
+/* =========================================
+   TOGGLE
+========================================= */
+
+.toggle {
+  position: relative;
+
+  width: 42px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #d7dce5;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease;
+}
+
+.toggle.active {
+  background: #2563eb;
+}
+
+.toggle::after {
+  content: "";
+
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+
+  transition: left 0.2s ease;
+}
+
+.toggle.active::after {
+  left: 21px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1024px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .inputBox {
+    height: 44px;
+    font-size: 13px;
+  }
+
+  textarea.inputBox {
+    min-height: 100px;
+  }
+
+  .courseDescription {
+    font-size: 13px;
+    min-height: 100px;
+  }
+
+  .fullDescription {
+    font-size: 13px;
+    min-height: 170px;
+  }
+
+  .formLabel {
+    font-size: 12px;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .draftButton {
+    height: 44px;
+    font-size: 12px;
+  }
+}

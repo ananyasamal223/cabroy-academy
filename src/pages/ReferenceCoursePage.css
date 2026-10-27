@@ -1,0 +1,33 @@
+
+.reference-course-page.cdr-page { background:#fff; }
+.reference-course-page .cdr-shell { max-width:1600px; }
+.reference-course-page .cdr-header { padding:14px 6%;min-height:64px;border-bottom:0; }
+.reference-course-page .programme-nav { margin:0 4%;border:1px solid #e0e6ee;box-shadow:0 3px 7px #1934540b;border-radius:15px;top:12px;justify-content:flex-start;align-items:center;gap:23px;padding:13px 20px;overflow:visible; }
+.reference-course-page .programme-nav>a { font-size:12px; }
+.reference-course-page .programme-nav .reference-nav-brand { font-size:17px;font-weight:700;letter-spacing:1px;color:#07356c;margin-right:12px;border-right:1px solid #dbe3ef;padding-right:24px; }
+.reference-nav-brand>span { display:block;font-size:6px;letter-spacing:.9px;font-weight:500;margin-top:3px; }
+.reference-course-page .programme-nav>button { margin-left:auto;border:1px solid #147dff;background:#fff;color:#0878f7;border-radius:8px;padding:10px 16px;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap; }
+.reference-course-page .cdr-full-hero .cdr-immersive-hero { display:block;text-align:center;min-height:480px;padding:75px 12% 55px;background:linear-gradient(90deg,#e9f5ff90,#fff 25%,#fff 75%,#e9f5ff90); }
+.reference-course-page .cdr-immersive-hero .cdr-course-hero-copy { max-width:100%; }
+.reference-course-page .cdr-full-hero .cdr-immersive-hero h1 { font-size:clamp(37px,4.2vw,61px);line-height:1.17;color:#07356c;font-weight:700;letter-spacing:-2px;max-width:960px;margin:18px auto; }
+.reference-course-page .cdr-immersive-hero h1 strong { display:inline;font-family:Georgia,serif;font-weight:500;font-style:italic;color:#147dff;margin-left:.22em; }
+.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-copy>p { max-width:690px;margin:18px auto 27px;font-size:18px;line-height:1.75;color:#64758c; }
+.reference-course-page .cdr-course-hero-kicker { display:inline-flex;background:#fff;border:1px solid #dae6f4;border-radius:25px;padding:9px 15px;box-shadow:0 2px 8px #284c7507; }
+.reference-course-page .cdr-course-hero-category { display:none; }
+.reference-course-page .cdr-course-hero-skills,.reference-course-page .cdr-course-hero-actions,.reference-course-page .cdr-course-hero-meta { justify-content:center; }
+.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-actions { margin-top:25px;gap:13px; }
+.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-actions button,.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-actions a { padding:16px 25px;font-size:14px;border-radius:12px; }
+.reference-course-page .cdr-course-hero-meta { display:none; }
+.reference-course-page .cdr-immersive-backdrop { display:none; }
+.reference-course-page .cdr-immersive-play { position:relative;inset:auto;transform:none;display:inline-flex;flex-direction:row;margin:24px auto 0;padding:0;gap:8px; }
+.reference-course-page .cdr-immersive-play>span { width:27px;height:27px;box-shadow:none;background:#e5f0ff;color:#147dff;padding:0; }
+.reference-course-page .cdr-immersive-play svg { width:11px;height:11px; }
+.reference-course-page .cdr-immersive-play small { background:none;text-shadow:none;color:#4c75a6;padding:0;font-size:12px; }
+.reference-course-page .programme-facts { padding:25px 6%;border-block:1px solid #e5ebf3; }
+.reference-course-page .programme-facts strong { color:#07356c;font-size:20px; }
+.reference-course-page .cdr-roadmap-layout { padding-top:45px; }
+.reference-course-page .programme-faq { border-top:1px solid #e5ebf3; }
+.reference-course-page .cdr-roadmap-layout .cdr-section-heading h2 { font-size:28px; }
+@media(max-width:1100px){.reference-course-page .programme-nav{gap:16px;padding:12px 15px}.reference-course-page .programme-nav .reference-nav-brand{padding-right:15px;margin-right:0}.reference-course-page .programme-nav>a{font-size:11px}}
+@media(max-width:850px){.reference-course-page .programme-nav{overflow:auto;scrollbar-width:none;gap:22px;border-radius:12px;margin-inline:15px}.reference-course-page .programme-nav .reference-nav-brand{display:none}.reference-course-page .programme-nav>button{padding:8px 12px}.reference-course-page .cdr-full-hero .cdr-immersive-hero{padding:50px 25px 40px;min-height:0}.reference-course-page .cdr-full-hero .cdr-immersive-hero h1{font-size:40px;letter-spacing:-1.3px}.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-copy>p{font-size:16px}.reference-course-page .programme-facts{padding:22px}.reference-course-page .programme-facts strong{font-size:17px}}
+@media(max-width:480px){.reference-course-page .cdr-header{padding:12px 20px}.reference-course-page .cdr-full-hero .cdr-immersive-hero h1{font-size:35px}.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-actions button,.reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-actions a{padding:13px 16px;font-size:12px}.reference-course-page .cdr-course-hero-skills{gap:6px}.reference-course-page .programme-facts{gap:20px}.reference-course-page .programme-facts strong{font-size:16px}}

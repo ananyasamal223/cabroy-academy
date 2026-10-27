@@ -1,0 +1,18 @@
+import {Router} from "express";
+import {verifySignupOtp,resendSignupOtp,signup,login,me,logout,sendForgotOtp,verifyForgotOtp,resetPassword,googleAuth} from "../controllers/auth.controller.js";
+import {protect} from "../middleware/auth.js";
+import rateLimit from "express-rate-limit";
+const router=Router();
+const authLimit=rateLimit({windowMs:15*60*1000,max:30,standardHeaders:true,legacyHeaders:false,message:{message:"Too many attempts. Please try again in 15 minutes."}});
+const resetLimit=rateLimit({windowMs:15*60*1000,max:30,standardHeaders:true,legacyHeaders:false,message:{message:"Too many password-reset attempts. Please try again later."}});
+router.post("/signup",authLimit,signup);
+router.post("/signup/verify-otp",authLimit,verifySignupOtp);
+router.post("/signup/resend-otp",authLimit,resendSignupOtp);
+router.post("/login",authLimit,login);
+router.post("/google",authLimit,googleAuth);
+router.get("/me",protect,me);
+router.post("/logout",protect,logout);
+router.post("/forgot-password/send-otp",resetLimit,sendForgotOtp);
+router.post("/forgot-password/verify-otp",resetLimit,verifyForgotOtp);
+router.post("/forgot-password/reset",resetLimit,resetPassword);
+export default router;

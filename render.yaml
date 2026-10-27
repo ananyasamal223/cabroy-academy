@@ -1,0 +1,24 @@
+# Connect this repository using Render > New > Blueprint.
+# Email and durable uploads must be configured before a complete public launch.
+services:
+  - type: web
+    name: cabroy-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: CLIENT_URL
+        value: https://codeexampler.com,https://www.codeexampler.com
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d

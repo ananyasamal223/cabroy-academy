@@ -1,0 +1,48 @@
+
+.about-cabroy { color: #182e57; background: #fff; font-family: Inter, "Segoe UI", sans-serif; }
+.about-cabroy * { box-sizing: border-box; }
+.about-cabroy a { text-decoration: none; }
+.about-shell, .about-header { width: min(1240px, calc(100% - 64px)); margin-inline: auto; }
+.about-header { display: flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 88px; border-bottom: 1px solid #e7edf6; }
+.about-brand { display: flex; align-items: center; gap: 10px; color: #173b73; font-size: 23px; font-weight: 800; }
+.about-brand img { width: 46px; height: 50px; object-fit: contain; }
+.about-brand small { display: block; font-size: 8px; letter-spacing: 1px; margin-top: 3px; }
+.about-header nav, .about-footer nav { display: flex; align-items: center; gap: 28px; }
+.about-header nav > a, .about-footer a { color: #536581; font-size: 14px; font-weight: 600; }
+.about-header nav > a[aria-current] { color: #176fe5; }
+.about-cabroy .about-button { display: inline-flex; align-items: center; justify-content: center; gap: 14px; padding: 14px 20px; border-radius: 10px; background: #1474ed; color: white; font-size: 14px; font-weight: 700; }
+.about-button svg { width: 20px; height: 20px; stroke-width: 2.5; }
+.about-cabroy .about-button:hover { background: #085bc6; }
+.about-cabroy a:focus-visible { outline: 3px solid #5865f2; outline-offset: 5px; }
+.about-hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 70px; align-items: center; padding-block: 76px; }
+.about-eyebrow { font-size: 11px; letter-spacing: 1.6px; font-weight: 800; color: #176fe5; }
+.about-hero h1 { margin: 18px 0 22px; font-size: clamp(38px, 4.6vw, 60px); font-weight: 750; line-height: 1.1; letter-spacing: -2px; }
+.about-hero h1 span { color: #5865df; }
+.about-cabroy p { font-size: 16px; line-height: 1.8; color: #657590; }
+.about-hero > div > p { margin-bottom: 26px; max-width: 530px; }
+.about-hero-art { padding: 32px; border: 1px solid #dfe5fb; border-radius: 28px; background: radial-gradient(ellipse at top right, #dedcff, transparent 70%), #eef5ff; transform: rotate(2deg); box-shadow: 0 20px 55px #233d7610; }
+.about-art-label { font-size: 10px; letter-spacing: 1.5px; color: #6475a2; font-weight: 700; }
+.about-art-center { display: flex; align-items: center; gap: 24px; padding: 36px 0; }
+.about-art-center > svg { width: 74px; height: 74px; color: #5865df; stroke-width: 1.4; }
+.about-art-center strong { font-size: 34px; line-height: 1.2; letter-spacing: -1px; }
+.about-art-path { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px; background: #ffffffbc; border-radius: 12px; font-size: 14px; font-weight: 700; }
+.about-art-path svg { width: 18px; color: #8594b5; }
+.about-hero-art > p { font-size: 12px; margin: 18px 0 0; }
+.about-story { display: grid; grid-template-columns: .85fr 1.15fr; gap: 70px; padding-block: 48px; border-top: 1px solid #e7edf6; }
+.about-cabroy h2 { margin: 14px 0 18px; font-size: clamp(27px, 3vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -1px; }
+.about-story p { margin: 0 0 16px; }
+.about-values { padding-block: 32px 60px; }
+.about-values-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 28px; }
+.about-values article { padding: 28px; border: 1px solid #e1e8f5; border-radius: 18px; background: #fbfcff; }
+.about-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: #e8f1ff; color: #1474ed; flex-shrink: 0; }
+.about-values h3 { margin: 20px 0 10px; font-size: 19px; font-weight: 700; }
+.about-values p { font-size: 14px; margin: 0; }
+.about-mission { display: flex; gap: 26px; padding: 36px; border-radius: 22px; background: #f1f3ff; }
+.about-mission h2 { max-width: 790px; }
+.about-mission p { max-width: 850px; margin-bottom: 0; }
+.about-cta { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 60px; }
+.about-cta h2 { margin-top: 0; }
+.about-cta p { margin: 0; }
+.about-footer { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 24px; border-top: 1px solid #e7edf6; color: #657590; font-size: 12px; }
+@media(max-width: 900px) { .about-hero { gap: 32px; padding-block: 48px; } .about-hero-art { padding: 24px; transform: none; } .about-art-center { gap: 16px; } .about-art-center strong { font-size: 28px; } .about-story { gap: 32px; } .about-values-grid { gap: 14px; } .about-values article { padding: 20px; } }
+@media(max-width: 700px) { .about-shell, .about-header { width: calc(100% - 36px); } .about-header { flex-wrap: wrap; padding-block: 16px; gap: 18px; } .about-header nav { width: 100%; justify-content: space-between; gap: 12px; flex-wrap: wrap; } .about-header .about-button { padding: 10px 12px; } .about-hero, .about-story { grid-template-columns: 1fr; gap: 28px; } .about-hero h1 { letter-spacing: -1.3px; } .about-values-grid { grid-template-columns: 1fr; } .about-story { padding-block: 32px; } .about-mission { padding: 26px; flex-direction: column; gap: 12px; } .about-cta, .about-footer { align-items: flex-start; flex-direction: column; } .about-cta { padding-block: 40px; } }

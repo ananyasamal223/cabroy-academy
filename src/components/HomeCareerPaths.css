@@ -1,0 +1,91 @@
+.career-paths { padding-top: 65px; padding-bottom: 70px; }
+.career-paths-heading { text-align: center; max-width: 700px; margin: auto; }.career-paths-kicker { font-size: 10px; letter-spacing: 1.4px; color: #52657f; background: #f6f8fb; padding: 6px 10px; border-radius: 20px; }.career-paths-heading h2 { font-size: clamp(32px, 4vw, 49px); line-height: 1.15; color: #172c46; letter-spacing: -1.8px; font-weight: 600; margin: 22px 0 17px; }.career-paths-heading h2 span { background: linear-gradient(100deg, #189ee8, #8d59de); background-clip: text; color: transparent; }.career-paths-heading p { color: #526780; font-size: 15px; line-height: 1.8; max-width: 530px; margin: auto; }
+.career-paths-tabs { display: flex; justify-content: center; gap: 10px; margin: 25px 0 30px; flex-wrap: wrap; }.career-paths-tabs button { font: inherit; font-size: 12px; border: 1px solid #e5e9f2; border-radius: 30px; background: #fff; color: #526780; padding: 9px 18px; cursor: pointer; }.career-paths-tabs button[aria-selected="true"] { border-color: #a8b6ef; color: #334d80; background: #f6f7ff; box-shadow: 0 3px 12px #675cb50a; }.career-paths-tabs button:focus-visible, .career-paths-link:focus-visible { outline: 3px solid #97c3ff; outline-offset: 4px; }
+.career-paths-stage { position: relative; padding: 16px 30px 35px; isolation: isolate; }.career-paths-stage::before { content: ''; position: absolute; z-index: -1; inset: 50px 0 0; background: linear-gradient(90deg, #c9f2ff90, #ddd2ff85), repeating-linear-gradient(0deg, transparent 0 29px, #c3cde330 29px 30px); filter: blur(25px); border-radius: 30%; }.career-paths-stage::after { content: ''; position: absolute; z-index: -1; inset: 45px -10px -12px; background-image: linear-gradient(#b3c8ef35 1px, transparent 1px), linear-gradient(90deg, #b3c8ef35 1px, transparent 1px); background-size: 30px 30px; mask-image: radial-gradient(ellipse, #000, transparent 72%); }
+.career-paths-panel { display: grid; grid-template-columns: 1fr 1fr; align-items: center; min-height: 390px; overflow: hidden; border: 1px solid #eef0f8; border-radius: 23px; background: linear-gradient(115deg, #ffffff 20%, #f7fbff 62%, #fcf8ff); box-shadow: 0 15px 40px #5e73a00a; }
+.career-paths-copy { padding: 38px 10px 38px 43px; }.career-paths-symbol { display: block; color: #6592ec; margin-bottom: 14px; }.career-paths-count { font-size: 10px; letter-spacing: .5px; color: #647d9e; }.career-paths-copy h3 { font-size: clamp(25px, 2.7vw, 35px); line-height: 1.15; letter-spacing: -1px; font-weight: 500; color: #233a57; margin: 12px 0 18px; max-width: 350px; }.career-paths-copy p { color: #526780; font-size: 13px; line-height: 1.8; max-width: 360px; }.career-paths-link { display: inline-flex; align-items: center; gap: 16px; color: #365987; border: 1px solid #9ec5e7; border-radius: 25px; padding: 10px 16px; text-decoration: none; font-size: 12px; margin-top: 14px; }.career-paths-link:hover { background: #edf5ff; }
+.career-paths-network { position: relative; min-width: 0; height: 380px; animation: career-network-in .5s ease both; }.career-paths-network > svg { width: 100%; height: 100%; position: absolute; inset: 0; }.career-paths-node { display: flex; align-items: center; gap: 8px; position: absolute; white-space: nowrap; border: 1px solid #dcdff0; border-radius: 30px; background: #ffffffed; padding: 9px 13px; font-size: 12px; color: #3c5274; box-shadow: 0 4px 12px #6682b00a; }.career-paths-node svg { color: #598bdd; }.career-paths-node-1 { top: 12%; right: 10%; }.career-paths-node-2 { top: 32%; left: 4%; }.career-paths-node-3 { top: 48%; right: 6%; }.career-paths-node-4 { top: 69%; left: 4%; }.career-paths-node-5 { top: 84%; right: 8%; }
+@keyframes career-network-in { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: none; } }
+@media(max-width: 760px) { .career-paths-stage { padding: 10px 0 25px; }.career-paths-panel { grid-template-columns: 1fr; }.career-paths-copy { padding: 30px 25px 10px; }.career-paths-copy h3, .career-paths-copy p { max-width: 100%; }.career-paths-network { height: 330px; margin: 10px 0; }.career-paths-node { font-size: 11px; padding: 8px 12px; }.career-paths-heading p { font-size: 14px; }.career-paths-heading h2 { letter-spacing: -1px; } }
+@media(prefers-reduced-motion: reduce) { .career-paths-network { animation: none; } }
+
+/* Keep every course label aligned to its own connector branch. */
+.career-paths-network { margin-right: 22px; }
+.career-paths-node { box-sizing: border-box; width: 43%; min-height: 44px; justify-content: center; padding: 10px 12px; font-size: 12px; background: #fff; border-color: #d7e1f4; box-shadow: 0 5px 16px #6785b30b; transform: translateY(-50%); }
+.career-paths-node svg { flex-shrink: 0; }
+.career-paths-node-1 { left: 53%; right: auto; top: 12.1%; }
+.career-paths-node-2 { left: 29%; right: auto; top: 33.7%; }
+.career-paths-node-3 { left: 53%; right: auto; top: 50%; }
+.career-paths-node-4 { left: 29%; right: auto; top: 66.3%; }
+.career-paths-node-5 { left: 53%; right: auto; top: 87.9%; }
+@media(max-width: 760px) { .career-paths-network { margin: 12px 18px 22px; }.career-paths-node { font-size: 11px; min-height: 40px; padding: 8px; gap: 6px; } }
+@media(max-width: 400px) { .career-paths-node { font-size: 10px; gap: 5px; width: 49%; }.career-paths-node-1, .career-paths-node-3, .career-paths-node-5 { left: 49%; }.career-paths-node svg { width: 16px; height: 16px; } }
+
+/* Reference-style branded logo pills. */
+.career-paths-logos { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.career-paths-logos img { display: block; width: 22px; height: 22px; object-fit: contain; }
+.career-paths-outcome-icon { display: inline-flex; align-items: center; justify-content: center; color: #598bdd; background: #edf4ff; border-radius: 6px; padding: 4px; flex-shrink: 0; }
+.career-paths-node { width: 47%; gap: 8px; }
+.career-paths-node-1, .career-paths-node-3, .career-paths-node-5 { left: 50%; }
+@media(max-width: 480px) {
+ .career-paths-node { font-size: 10px; gap: 5px; width: 51%; }
+ .career-paths-node-1, .career-paths-node-3, .career-paths-node-5 { left: 48%; }
+ .career-paths-logos { gap: 3px; }
+ .career-paths-logos img { width: 17px; height: 17px; }
+}
+
+/* Fine, staggered integration network matching the supplied composition. */
+.career-paths-panel { min-height: 420px; overflow: visible; background: linear-gradient(115deg, #fff 15%, #f7fcff 58%, #fbf8ff); }
+.career-paths-reference { height: 400px; margin: -30px 0 10px; mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 87%, transparent 100%); }
+.career-ref-pill { position: absolute; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 1px solid #dfdfed; border-radius: 30px; background: linear-gradient(#fff, #fdfcff); box-shadow: 0 2px 4px #51699707, inset 0 0 0 2px #ffffff; color: #293b52; font-size: 12px; font-weight: 500; white-space: nowrap; transform: translateY(-50%); }
+.career-ref-pill img { width: 21px; height: 21px; object-fit: contain; }
+.career-ref-pill-1 { top: 2%; left: 56%; }.career-ref-pill-2 { top: 21%; left: 7%; }.career-ref-pill-3 { top: 33%; left: 60%; }.career-ref-pill-4 { top: 51%; left: 10%; }.career-ref-pill-5 { top: 67%; left: 57%; }.career-ref-pill-6 { top: 83%; left: 12%; }.career-ref-pill-7 { top: 98%; left: 62%; }
+.career-paths-stage::before { filter: blur(22px); background: linear-gradient(90deg, #bceeffb0, #d9c1ffa0); inset: 90px 5px -10px; }
+.career-paths-stage::after { inset: 55px -40px -45px; background-size: 32px 32px; background-image: linear-gradient(#9eb8ed35 1px, transparent 1px), linear-gradient(90deg, #9eb8ed35 1px, transparent 1px); }
+.career-paths-symbol { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 9px; background: linear-gradient(135deg, #b5efff, #99a3ff 65%, #bf9fff); color: #fff; box-shadow: 0 5px 14px #8d91dd24; }
+@media(max-width: 760px) { .career-paths-panel { overflow: hidden; }.career-paths-reference { margin: 25px 0 28px; height: 350px; }.career-ref-pill { font-size: 11px; padding: 6px 10px; }.career-ref-pill img { width: 19px; height: 19px; }.career-ref-pill-1 { top: 5%; }.career-ref-pill-7 { top: 95%; } }
+@media(max-width: 400px) { .career-ref-pill { font-size: 10px; padding: 6px 8px; gap: 5px; }.career-ref-pill img { width: 17px; height: 17px; }.career-ref-pill-2 { left: 6%; }.career-ref-pill-5 { left: 54%; } }
+
+/* Fine purple outline accents for the learning-path tabs. */
+.career-paths-tabs button { position: relative; isolation: isolate; border-color: #edeaf6; background: #fff; }
+.career-paths-tabs button::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: conic-gradient(from 20deg, transparent 0deg 130deg, #b49be9 175deg, #8058cf 235deg, transparent 290deg 360deg); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; pointer-events: none; opacity: .55; }
+.career-paths-tabs button[aria-selected="true"] { background: #fff; border-color: #e7dff5; }
+.career-paths-tabs button[aria-selected="true"]::after { opacity: 1; }
+.career-paths-tabs button:hover::after { opacity: 1; }
+
+/* Keep the top Google Ads badge clear of the diagram's fade and edges. */
+.career-paths-reference { margin-top: 0; }
+.career-ref-pill-1 { top: 7%; left: 52%; }
+@media(max-width: 760px) {
+ .career-paths-reference { margin-top: 25px; }
+ .career-ref-pill-1 { top: 7%; left: 50%; }
+}
+
+/* Purple tab accents travel around the border and softly fade. */
+@property --career-tab-angle { syntax: '<angle>'; initial-value: 20deg; inherits: false; }
+.career-paths-tabs button::after { background: conic-gradient(from var(--career-tab-angle), transparent 0deg 130deg, #b49be9 175deg, #8058cf 235deg, transparent 290deg 360deg); animation: career-tab-orbit 4s linear infinite, career-tab-fade 4s ease-in-out infinite; }
+.career-paths-tabs button:nth-child(2)::after { animation-delay: -2s; }
+.career-paths-tabs button[aria-selected="true"]::after { animation-duration: 3.5s, 3.5s; }
+@keyframes career-tab-orbit { from { --career-tab-angle: 20deg; } to { --career-tab-angle: 380deg; } }
+@keyframes career-tab-fade { 0%, 100% { opacity: .12; } 45%, 60% { opacity: 1; } }
+@media(prefers-reduced-motion: reduce) { .career-paths-tabs button::after { animation: none; opacity: .65; } }
+
+/* Isometric learning hub with tool inputs and project outcomes. */
+.bundle-hub-scene { position: relative; height: 440px; min-width: 0; overflow: hidden; perspective: 1000px; background: radial-gradient(ellipse at 48% 55%, #d9eaff70, transparent 62%); }
+.bundle-hub-plane { position: absolute; width: 600px; height: 400px; left: 50%; top: 45%; transform: translate(-50%, -50%) rotateX(32deg) rotateZ(-20deg) scale(.86); transform-style: preserve-3d; }
+.bundle-hub-wires { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bundle-hub-tool { position: absolute; display: grid; place-items: center; width: 44px; height: 44px; background: #fff; border: 1px solid #d6e4f6; border-radius: 10px; box-shadow: 0 5px 0 #dce7f7, 0 9px 14px #345c8b0d; transform: translate(-50%, -50%) translateZ(9px); }
+.bundle-hub-tool img { width: 27px; height: 27px; object-fit: contain; }.bundle-hub-tool-1 { left: 40px; top: 60px; }.bundle-hub-tool-2 { left: 40px; top: 180px; }.bundle-hub-tool-3 { left: 40px; top: 300px; }.bundle-hub-tool-4 { left: 180px; top: 350px; }.bundle-hub-tool-5 { left: 175px; top: 30px; }
+.bundle-hub-core { position: absolute; left: 220px; top: 130px; width: 130px; height: 130px; transform-style: preserve-3d; }
+.bundle-hub-core-top { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; background: #a9caff; border: 7px solid #fff; box-shadow: 0 12px 0 #163e84, 0 16px 0 #0e2856, 0 24px 30px #2865bf25; transform: translateZ(22px); }
+.bundle-hub-core-top > i { position: absolute; inset: 12px; border: 7px solid #3e7fe5; border-radius: 50%; }.bundle-hub-core-top > i:nth-child(2) { inset: 30px; border-width: 5px; border-color: #e9f4ff; }.bundle-hub-core-top > span { display: flex; color: #fff; background: #397ee4; border-radius: 50%; padding: 12px; }.bundle-hub-core > b { position: absolute; top: 158px; left: -28px; width: 190px; text-align: center; color: #3d5c83; font-size: 12px; font-weight: 600; letter-spacing: .1px; }
+.bundle-hub-result { position: absolute; width: 150px; height: 110px; padding: 14px; box-sizing: border-box; background: linear-gradient(130deg, #fff, #edf6ff); border: 1px solid #d9e5f4; border-radius: 13px; box-shadow: 0 6px 0 #d6e3f5, 0 12px 20px #22528e0d; transform: translateZ(15px); }
+.bundle-hub-result-project { left: 365px; top: 65px; }.bundle-hub-result-portfolio { left: 460px; top: -70px; }.bundle-hub-result > svg { color: #4b8de5; width: 19px; height: 19px; }.bundle-hub-result > span { display: block; font-size: 6px; letter-spacing: 1px; color: #6f8eb6; margin-top: 5px; }.bundle-hub-result > b { display: block; font-size: 11px; color: #2b4f7e; font-weight: 600; margin-top: 5px; }
+.bundle-hub-mini-bars { display: flex; gap: 4px; align-items: flex-end; height: 18px; margin-top: 5px; }.bundle-hub-mini-bars i { width: 13px; height: 6px; background: #87b5f4; border-radius: 2px; }.bundle-hub-mini-bars i:nth-child(2) { height: 10px; }.bundle-hub-mini-bars i:nth-child(3) { height: 14px; }.bundle-hub-mini-bars i:nth-child(4) { height: 18px; background: #387ee5; }.bundle-hub-mini-lines { display: grid; gap: 4px; margin-top: 8px; }.bundle-hub-mini-lines i { height: 3px; width: 85%; background: #b8d4f7; border-radius: 2px; }.bundle-hub-mini-lines i:nth-child(2) { width: 65%; }.bundle-hub-mini-lines i:nth-child(3) { width: 45%; }
+.bundle-hub-caption { position: absolute; bottom: 30px; left: 0; right: 0; text-align: center; color: #7189a9; font-size: 8px; letter-spacing: 1.2px; }
+.bundle-hub-energy { stroke-dasharray: 7 93; animation: bundle-hub-pulse 5s linear infinite; }
+@keyframes bundle-hub-pulse { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@media(max-width: 1100px) and (min-width: 761px) { .bundle-hub-plane { transform: translate(-50%, -50%) rotateX(32deg) rotateZ(-20deg) scale(.68); } }
+@media(max-width: 760px) { .bundle-hub-scene { height: 390px; }.bundle-hub-plane { transform: translate(-50%, -50%) rotateX(32deg) rotateZ(-20deg) scale(.77); }.bundle-hub-caption { bottom: 22px; } }
+@media(max-width: 480px) { .bundle-hub-scene { height: 330px; }.bundle-hub-plane { transform: translate(-50%, -50%) rotateX(30deg) rotateZ(-20deg) scale(.56); }.bundle-hub-caption { font-size: 7px; bottom: 17px; } }
+@media(prefers-reduced-motion: reduce) { .bundle-hub-energy { animation: none; } }

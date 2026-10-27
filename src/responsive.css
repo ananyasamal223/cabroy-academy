@@ -1,0 +1,53 @@
+﻿/* Shared constraints complement each page's own responsive layout. */
+#root { min-width: 0; }
+:where(.grid) > * { min-width: 0; }
+:where(main, section, article, form, fieldset) { min-width: 0; }
+:where(h1, h2, h3, p, dd, label, a) { overflow-wrap: anywhere; }
+:where(img, video, canvas, iframe) { max-width: 100%; }
+:where(input, select, textarea) { max-width: 100%; }
+:where(button, a, input, select, textarea):focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+:where([class*="table-scroll"], .overflow-x-auto) { max-width: 100%; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+.student-sidebar { max-height: 100dvh; }
+.admin-sidebar { max-height: 100dvh; }
+/* Dialog content scrolls independently on short screens and in landscape. */
+.fixed.inset-0 > [class*="max-w-"] { max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain; }
+#admin-notification-panel { max-height: calc(100dvh - 110px); overflow-y: auto; }
+@media (max-width: 1023px) {
+ .admin-sidebar.admin-sidebar-open { max-height: calc(100dvh - 82px); overflow-y: auto; }
+ .student-shell > div > main { width: 100%; }
+}
+@media (max-width: 767px) {
+ /* 16px fields avoid automatic page zoom when a phone keyboard opens. */
+ :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]), textarea, select) { font-size: 16px; }
+ .student-shell main > .min-h-screen > main { padding-inline: 16px; }
+ .student-shell main > .min-h-screen > main > .grid > section { min-width: 0; }
+ .student-shell .overflow-x-auto, .admin-shell .overflow-x-auto { width: 100%; }
+ .ov-dialog dl > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+ .im-chart { flex-wrap: wrap; }
+ .im-chart ul { min-width: min(210px, 100%); }
+ .im-controls, .ov-controls, .ur-controls { gap: 10px; }
+ .im-controls label, .im-controls input, .im-controls select { min-width: 0; max-width: 100%; }
+ .im-pager, .ov-footer { flex-wrap: wrap; }
+ .im-section-heading, .ov-section-heading { flex-wrap: wrap; gap: 12px; }
+}
+@media (max-width: 479px) {
+ .student-shell header > div { gap: 8px; }
+ .student-shell header .ml-auto { gap: 6px; }
+ .student-shell main .px-6 { padding-inline: 16px; }
+ .student-shell main .p-6 { padding: 16px; }
+ .admin-shell .im-stats, .admin-shell .im-status-cards { grid-template-columns: minmax(0, 1fr); }
+ .cab-header .cab-auth { flex-wrap: wrap; }
+ .cab-header .cab-menu-open { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .cab-hero-stats { flex-wrap: wrap; gap: 16px; }
+ .cab-hero-stats > div { min-width: 0; }
+ .plans-benefits, .plans-reassurance > .plans-shell { grid-template-columns: minmax(0, 1fr); }
+ .plans-footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .plans-purchase-card { padding: 20px; }
+ .rc-steps { flex-wrap: wrap; }
+ .rc-item-links, .rc-item-tags, .rc-summary-footer { flex-wrap: wrap; }
+ .about-header nav { flex-wrap: wrap; justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+ html { scroll-behavior: auto; }
+ .animate-tool-scroll { animation: none; }
+}

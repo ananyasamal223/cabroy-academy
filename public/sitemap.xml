@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Replace https://example.com with the production website origin before deployment. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://example.com/</loc></url>
+  <url><loc>https://example.com/about</loc></url>
+  <url><loc>https://example.com/plans</loc></url>
+  <url><loc>https://example.com/landing</loc></url>
+  <url><loc>https://example.com/courses</loc></url>
+</urlset>
