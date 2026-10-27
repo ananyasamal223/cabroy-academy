@@ -1,9 +1,9 @@
 # Free deployment: CABROY
 
-Status: local preparation only. Nothing has been uploaded or published.
+Status: source code is published at https://github.com/ananyasamal223/cabroy-academy. Hosting has not been deployed.
 
 ## 1. GitHub
-Create a PRIVATE repository named cabroy-academy. Upload the project folder containing this file, package.json, src, public and backend. Do not upload its parent Downloads folder.
+The repository is PUBLIC, as requested. Its root contains frontend, backend, render.yaml and this file. Keep local .env files private and out of commits.
 
 Before uploading, exclude .env files, node_modules, dist, uploads, database exports, logs, browser profiles and credentials. The .gitignore now excludes the known local secrets and test profiles. Check the selected files before the first commit; ignore rules do not remove already tracked files. Keep .env.example templates.
 
@@ -22,7 +22,7 @@ Connect GitHub and use New > Blueprint with render.yaml, or create a Web Service
 Set CLIENT_URL to include the actual frontend deployment URL as well as https://codeexampler.com and https://www.codeexampler.com. Never use wildcard CORS for authenticated requests.
 
 ## 4. Frontend
-Cloudflare Pages is the default frontend choice; Vercel is an alternative. Connect the same GitHub repository. Root: folder containing this file. Build: npm run build. Output: dist. Install: npm ci. Use Node 22.16 or a compatible newer version.
+Cloudflare Pages is the default frontend choice; Vercel is an alternative. Connect the same GitHub repository. Root: frontend. Build: npm run build. Output: dist. Install: npm ci. Use Node 22.16 or a compatible newer version.
 
 Set VITE_API_URL to https://YOUR-ACTUAL-SERVICE.onrender.com/api initially. Set VITE_GOOGLE_CLIENT_ID only if Google login is configured. Rebuild after changing frontend environment variables. VITE variables are public: never put secrets in them. Configure SPA fallback to index.html so /courses and /landing load directly.
 

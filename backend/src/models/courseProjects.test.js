@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import process from "node:process";
 import mongoose from "mongoose";
 import Course from "./Course.js";
-import { prepareCourseProjects } from "../../../src/admin/courseProjectFields.js";
+import { prepareCourseProjects } from "../../../frontend/src/admin/courseProjectFields.js";
 const project = { title: " SEO Campaign ", problemStatement: " Build a campaign. ", deliverables: [" Research ", "", "Report"], resourceLinks: ["https://example.test/template"], submissionRequirements: { projectLink: true, description: true, githubLink: false }, availability: "after_purchase", deadlineType: "relative", deadlineDays: "14", timerHours: null, reviewCriteria: " Check the report. ", requiredForCertificate: true };
 test("course projects are optional and normalize for saving", () => {
  assert.deepEqual(prepareCourseProjects([]), []);

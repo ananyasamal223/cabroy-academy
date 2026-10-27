@@ -6,8 +6,8 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import app from "../app.js";
 import { signToken } from "../utils/token.js";
-import { normalizeLiveCourse } from "../../../src/utils/liveCourses.js";
-import { getProgramPrice } from "../../../src/utils/courseBundle.js";
+import { normalizeLiveCourse } from "../../../frontend/src/utils/liveCourses.js";
+import { getProgramPrice } from "../../../frontend/src/utils/courseBundle.js";
 
 test("live course mapping preserves backend identity, curriculum, image and price", () => {
  const raw = { _id: "507f1f77bcf86cd799439011", slug: "new-course", title: "New Course", price: 1234, originalPrice: 2000, category: "Data Analytics", thumbnail: "/uploads/new.png", skills: ["SQL"], curriculum: [{ title: "Introduction", submodules: ["SQL basics"] }], projects: [{ title: "Analysis" }], description: "Full description", shortDescription: "Summary" };

@@ -1,16 +1,44 @@
-# React + Vite
+# CABROY Academy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React frontend and Express API in separate directories.
 
-Currently, two official plugins are available:
+```text
+frontend/       React + Vite app, assets and browser checks
+backend/        Express API, database models and backend tests
+render.yaml     Render backend configuration
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Local development
 
-## React Compiler
+Install dependencies from the repository root:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```powershell
+npm run install:all
+```
 
-## Expanding the ESLint configuration
+Create frontend/.env from frontend/.env.example and backend/.env from backend/.env.example. Keep real secrets private. Start in separate terminals:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```powershell
+npm run dev
+npm run dev:backend
+```
+
+Frontend build: npm run build. Output: frontend/dist. Frontend commands can also run directly inside frontend/.
+
+## Hosting
+
+| Setting | Frontend | Backend |
+| --- | --- | --- |
+| Root directory | frontend | backend |
+| Install | npm ci | npm ci |
+| Build | npm run build | npm ci |
+| Start | Static hosting | npm start |
+| Output | dist | Not applicable |
+
+For Cloudflare Pages or Vercel, select frontend as the project root. On Vercel choose Vite. The backend Render root stays backend.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for environment variables, domain setup and remaining email/storage deployment requirements.
+
+## Browser checks
+
+Run browser scripts from frontend after building; for example node scripts/check-responsive.mjs.
