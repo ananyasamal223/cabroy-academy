@@ -114,3 +114,57 @@
 @media(prefers-reduced-motion:reduce){.chess-counselling-section .cab-counselling-inline .cab-btn{transition:none;}}
 .learning-route-station{transition:transform .45s ease;transform-origin:left center;}.learning-route-step{border-radius:12px;transition:background .4s,box-shadow .4s;}.learning-route-node{transition:transform .45s,box-shadow .45s,background .45s;}.learning-route-station.is-route-active{transform:scale(1.06);z-index:2;}.learning-route-station.is-route-active .learning-route-node{transform:scale(1.12);background:linear-gradient(145deg,#55aaff,#075dff);box-shadow:0 0 0 8px #075dff0b,0 10px 28px #075dff35;}.learning-route-station.is-route-active .learning-route-step{background:#f3f8fff2;box-shadow:0 0 0 10px #f3f8fff2,0 10px 30px #075dff0d;}.learning-route-station.is-route-active h3{color:#075dff;}.learning-route-moving-dot{filter:drop-shadow(0 0 5px #075dff70);}
 @media(prefers-reduced-motion:reduce){.learning-route-station,.learning-route-step,.learning-route-node{transition:none;}.learning-route-station.is-route-active{transform:none;}}
+
+/* Responsive refinements: retain the desktop composition without overlapping tablet columns. */
+@media (min-width: 761px) and (max-width: 1150px) {
+ .chess-hero-inner { grid-template-columns: minmax(0, 1fr) minmax(300px, 1fr); gap: 28px; }
+ .chess-hero-copy { grid-column: 1 / -1; grid-row: 1; max-width: 760px; padding: 0; }
+ .chess-hero-copy > p { max-width: 640px; }
+ .chess-hero-visual { grid-column: 1; grid-row: 2; align-self: stretch; height: 100%; min-height: 360px; margin: 0; transform: none; }
+ .chess-hero-visual > img { object-fit: contain; object-position: center; }
+ .chess-hero-inner > .chess-counselling-section { grid-column: 2; grid-row: 2; margin: 0; }
+}
+@media (max-width: 760px) {
+ .chess-hero-copy h1 span { white-space: normal; }
+ .chess-hero-actions a, .chess-hero-actions button { min-height: 46px; }
+ .chess-counselling-section .cab-counselling-form label { font-size: 13px; }
+ .chess-counselling-section .cab-counselling-form input:not([type="checkbox"]),
+ .chess-counselling-section .cab-counselling-form select,
+ .chess-counselling-section .cab-counselling-form textarea { font-size: 16px; min-height: 46px; }
+ .chess-counselling-section .cab-counselling-form .cab-form-consent { font-size: 12px; padding: 11px; }
+ .chess-counselling-section .cab-counselling-inline .cab-btn { min-height: 48px; font-size: 14px; }
+ .chess-course-number, .chess-eyebrow { font-size: 10px; }
+ .chess-course p { font-size: 12px; }
+ .learning-route-step p { line-height: 1.75; }
+ .course-trail-link { min-height: 44px; font-size: 14px; }
+ .course-trail-tools-window { padding-block: 10px; }
+}
+@media (max-width: 600px) {
+ .chess-counselling-section .cab-counselling-form { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+ .chess-hero-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+ .chess-hero-actions a, .chess-hero-actions button { width: 100%; }
+ .chess-hero-visual { height: clamp(240px, 75vw, 340px); }
+ .chess-hero-visual figcaption { font-size: 9px; letter-spacing: 1px; }
+}
+@media (max-width: 380px) {
+ .chess-hero-inner { padding-inline: 18px; }
+ .chess-hero-copy h1 { font-size: 39px; letter-spacing: -1.7px; }
+ .chess-hero-copy > p { font-size: 15px; }
+ .chess-counselling-section .cab-counselling-inline { padding: 23px 17px; }
+ .chess-counselling-section .cab-counselling-inline h2 { font-size: 25px; }
+}
+
+.chess-counselling-section .cab-counselling-inline .cab-counselling-content { padding: 0; }
+@media (min-width: 761px) and (max-width: 950px) {
+ .chess-hero-inner { grid-template-columns: minmax(0, 1fr); }
+ .chess-hero-copy { grid-column: 1; grid-row: 1; }
+ .chess-hero-visual { grid-column: 1; grid-row: 2; height: 340px; min-height: 0; max-width: 640px; width: 100%; justify-self: center; }
+ .chess-hero-inner > .chess-counselling-section { grid-column: 1; grid-row: 3; }
+ .chess-counselling-section .cab-counselling-form { gap: 16px; }
+ .chess-counselling-section .cab-counselling-form label { font-size: 13px; }
+ .chess-counselling-section .cab-counselling-form :is(input:not([type="checkbox"]),select,textarea) { font-size: 16px; min-height: 46px; }
+}
+@media (min-width: 951px) and (max-width: 1150px) {
+ .chess-hero-visual { height: 520px; align-self: start; }
+ .chess-hero-visual > img { object-fit: cover; object-position: 57% center; }
+}

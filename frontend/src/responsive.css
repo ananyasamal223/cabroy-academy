@@ -51,3 +51,52 @@
  html { scroll-behavior: auto; }
  .animate-tool-scroll { animation: none; }
 }
+
+/* Touch and short-screen usability, in addition to each page's grid breakpoints. */
+@media (max-width: 767px) {
+ :is(.cab-home,.cp-page,.cdr-page,.chess-landing,.student-shell,.admin-shell) button { min-height: 44px; }
+ :is(.cab-home,.cp-page,.cdr-page,.chess-landing) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),select,textarea) { font-size: 16px; }
+ :is(.cab-mobile-toggle,.cp-cart,.pc-cart,.cab-counselling-close) { min-width: 44px; }
+ :is(.cab-menu,.cp-nav nav,.student-sidebar,.admin-sidebar) a { min-height: 44px; display: flex; align-items: center; }
+ :is(.cab-counselling,.rp-module-dialog,.cc-dialog) { max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+ .cab-counselling .cab-counselling-form { grid-template-columns: minmax(0, 1fr); }
+ .cab-counselling .cab-counselling-form :is(input:not([type="checkbox"]),select,textarea) { font-size: 16px; min-height: 44px; }
+ .cab-counselling .cab-counselling-form label { font-size: 13px; }
+ .cab-counselling .cab-form-consent { line-height: 1.6; }
+ .pc-description, .cp-hero-description, .cp-skill-card p { font-size: 14px; line-height: 1.7; }
+ .pc-tags span, .pc-category, .cp-add-more small { font-size: 12px; }
+ .pc-customize, .pc-view, .pc-outline { min-height: 44px; font-size: 13px; }
+ .rp-book-footer > b, .rp-project > button { font-size: 12px; }
+ .reference-course-page .programme-nav { scroll-padding-inline: 12px; }
+ .reference-course-page .programme-nav > a { display: inline-flex; align-items: center; min-height: 44px; flex-shrink: 0; }
+ .reference-course-page .programme-nav > button { flex-shrink: 0; min-height: 44px; }
+ .reference-course-page .cdr-full-hero .cdr-immersive-hero .cdr-course-hero-actions :is(button,a) { min-height: 46px; font-size: 14px; }
+ .reference-course-page .rp-page-sections .rp-section-heading p { font-size: 14px; }
+}
+@media (max-width: 480px) {
+ .reference-course-page .rp-book-grid, .reference-course-page .rp-project-grid { grid-template-columns: minmax(0, 1fr); }
+ .reference-course-page .rp-book { min-height: 270px; }
+ .reference-course-page .rp-book p { font-size: 13px; }
+ .reference-course-page .rp-project > p { font-size: 14px; }
+ .cp-summary-features > div { flex-wrap: wrap; }
+ .cp-summary-features small { flex-basis: 100%; margin-left: 29px; }
+ .pc-heading { flex-wrap: wrap; gap: 12px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+ :is(.cab-counselling,.rp-module-dialog,.cc-dialog) { max-height: calc(100dvh - 16px); margin-block: 8px; }
+ .student-sidebar,.admin-sidebar { max-height: 100dvh; }
+}
+@media (prefers-reduced-motion: reduce) {
+ :is(.cab-home,.chess-landing,.reference-course-page) *,
+ :is(.cab-home,.chess-landing,.reference-course-page) *::before,
+ :is(.cab-home,.chess-landing,.reference-course-page) *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+@media (max-width: 480px) {
+ .reference-course-page .cdr-immersive-hero h1 strong { display: inline-block; max-width: 100%; overflow-wrap: normal; }
+ .reference-course-page .cdr-full-hero .cdr-immersive-hero h1 { font-size: clamp(30px, 8vw, 35px); line-height: 1.2; }
+}
+@media (max-width: 480px) {
+ .reference-course-page .cdr-header { flex-wrap: wrap; gap: 12px; }
+ .reference-course-page .cdr-header .cdr-search { order: 3; flex: 1 0 100%; width: 100%; max-width: none; margin: 0; padding: 8px 12px; }
+ .reference-course-page .cdr-header .cdr-cart { margin-left: auto; min-width: 44px; min-height: 44px; display: grid; place-items: center; }
+}

@@ -11,7 +11,7 @@ const vite={kill:()=>staticServer.close()};
 const profile=path.join(out,'browser-profile-'+Date.now());
 fs.mkdirSync(profile,{recursive:true});
 const browserLog=fs.openSync(path.join(out,'browser-startup.log'),'w');
-const chrome=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--disable-gpu','--no-first-run','--no-default-browser-check','--no-proxy-server','--disable-extensions','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:['ignore',browserLog,browserLog]});
+const chrome=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--disable-gpu','--disable-background-networking','--disable-renderer-backgrounding','--disable-backgrounding-occluded-windows','--no-first-run','--no-default-browser-check','--no-proxy-server','--disable-extensions','--remote-debugging-port=0','--user-data-dir='+profile,'about:blank'],{windowsHide:true,stdio:['ignore',browserLog,browserLog]});
 let socket,role='student',nextId=0,bootId;
 let browserPort;
 const pending=new Map(),errors=[];
@@ -20,9 +20,10 @@ const user=()=>({_id:'507f1f77bcf86cd799439013',id:'507f1f77bcf86cd799439013',na
 const fixture=url=>{
  const p=new URL(url).pathname.replace(/^\/api/,'');
  if(p==='/auth/me')return{user:user()};
+ if(p==='/admin/subscriptions')return{subscriptions:[],mentors:[],logs:[],settings:{expiringDays:30,defaultSessions:5}};
  if(p==='/users/me/settings')return{account:user(),preferences:{emailNotifications:true,courseUpdates:true,assignmentReminders:true,mentorSessionReminders:true,communityUpdates:false}};
  if(p==='/admin/notifications')return{notifications:[{id:'507f1f77bcf86cd799439015',type:'mentor',title:'Mentor session requested',message:'A student requested a mentor session for their course.',link:'/admin/instructors/507f1f77bcf86cd799439012?tab=sessions',createdAt:new Date().toISOString(),read:false}],unreadCount:1};
- if(p==='/courses')return{courses:[course],total:1};
+ if(p==='/courses')return{courses:[course,{...course,_id:'507f1f77bcf86cd799439021',title:'Data Analytics Mastery',category:'Data Analytics'},{...course,_id:'507f1f77bcf86cd799439031',title:'AI Automation Mastery',category:'AI & Automation'}],total:3};
  if(p==='/courses/'+course._id)return{course};
  if(p==='/enrollments/me')return{enrollments:[{_id:'507f1f77bcf86cd799439014',course,progress:40,status:'active',mentor:course.instructor}]};
  if(p.includes('/instructors/')&&!p.endsWith('status'))return{instructor:{...course.instructor,status:'active'},profile:{...course.instructor,status:'active'},summary:{},students:[],sessions:[],projects:[],courses:[course]};
@@ -44,16 +45,42 @@ try{
  const routes=process.env.RESPONSIVE_ROUTES?.split(',')||defaultRoutes;
  const results=[];
  const widths=process.env.RESPONSIVE_WIDTHS?.split(',').map(Number)||[320,390,768,1024,1440];
- for(const width of widths){await send('Emulation.setDeviceMetricsOverride',{width,height:width<600?760:900,deviceScaleFactor:1,mobile:false});
+ for(const width of widths){await send('Emulation.setDeviceMetricsOverride',{width,height:Number(process.env.RESPONSIVE_HEIGHT)||(width<600?760:900),deviceScaleFactor:1,mobile:false});
   for(const route of routes){role=route.startsWith('/admin')?'admin':'student';errors.length=0;if(bootId)await send('Page.removeScriptToEvaluateOnNewDocument',{identifier:bootId});const guest=['/login','/signup'].includes(route);const boot=await send('Page.addScriptToEvaluateOnNewDocument',{source:guest?"localStorage.removeItem('rathi-token');localStorage.removeItem('rathi-user');":"localStorage.setItem('rathi-token','responsive-test');localStorage.setItem('rathi-user',"+JSON.stringify(JSON.stringify(user()))+");"});bootId=boot.identifier;const navigation=await send('Page.navigate',{url:'http://127.0.0.1:5178'+route});if(navigation.errorText)throw Error(navigation.errorText);for(let attempt=0;attempt<60;attempt++){const ready=await send('Runtime.evaluate',{returnByValue:true,expression:"!!document.querySelector('#root')?.textContent.trim()"});if(ready.result.value)break;await sleep(150);}await sleep(500);
-   const measured=await send('Runtime.evaluate',{returnByValue:true,expression:`(()=>{const width=innerWidth;const root=document.querySelector('#root');const bad=[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);if(!r.width||!r.height||s.position==='absolute'||s.position==='fixed'||s.visibility==='hidden')return false;let p=e.parentElement;while(p&&p!==document.body){if(['auto','scroll','hidden','clip'].includes(getComputedStyle(p).overflowX))return false;p=p.parentElement;}return r.right>width+2||r.left<-2;}).slice(0,8).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,65)}));return{url:location.pathname,bodyWidth:document.documentElement.scrollWidth,viewport:width,rendered:!!root?.textContent.trim(),overflow:bad};})()`});
-   const result={route,width,...measured.result.value,errors:[...errors]};results.push(result);fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(results,null,2));console.log('Checked '+width+' '+route);if(result.overflow?.length||result.errors.length||!result.rendered)console.log(JSON.stringify(result));
-   if(width===390&&['/','/dashboard','/settings','/admin','/admin/instructors','/login','/signup'].includes(route)){const screenshot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(out,route.replaceAll('/','_')||'home')+'.png',Buffer.from(screenshot.data,'base64'));}
+   const measured=await send('Runtime.evaluate',{returnByValue:true,expression:`(()=>{const width=document.documentElement.clientWidth;const root=document.querySelector('#root');const bad=[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e);if(!r.width||!r.height||s.position==='absolute'||s.position==='fixed'||s.visibility==='hidden')return false;let p=e.parentElement;while(p&&p!==document.body){if(['auto','scroll','hidden','clip'].includes(getComputedStyle(p).overflowX))return false;p=p.parentElement;}return r.right>width+2||r.left<-2;}).slice(0,8).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,65)}));return{url:location.pathname,bodyWidth:document.documentElement.scrollWidth,viewport:width,requestedWidth:innerWidth,rendered:!!root?.textContent.trim(),overflow:bad};})()`});
+   const result={route,width,...measured.result.value,errors:[...errors]};results.push(result);fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(results,null,2));console.log('Checked '+width+' '+route);if(result.bodyWidth > result.viewport+1 || result.overflow?.length||result.errors.length||!result.rendered)console.log(JSON.stringify(result));
+   if(result.bodyWidth > result.viewport+1){const details=await send('Runtime.evaluate',{returnByValue:true,expression:"[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.width>document.documentElement.clientWidth+1 && getComputedStyle(e).position!=='fixed'}).slice(0,18).map(e=>({tag:e.tagName,class:e.className,width:e.getBoundingClientRect().width,min:getComputedStyle(e).minWidth,overflow:getComputedStyle(e).overflowX}))"});console.log('WIDE ELEMENTS '+JSON.stringify(details.result.value));}
+   if([320,390,768,1440].includes(width)&&['/','/landing','/courses','/courses/'+course._id,'/cart','/dashboard','/settings','/admin','/admin/instructors','/login','/signup'].includes(route)){const screenshot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(out,(route.replaceAll('/','_')||'home')+'-'+width)+'.png',Buffer.from(screenshot.data,'base64'));}
+
+   if(width<800) {
+    const interactions=route==='/' ? [
+      ['mobile-menu',"document.querySelector('.cab-mobile-toggle')?.click()",'.cab-menu-open',"document.querySelector('.cab-mobile-toggle')?.click()"],
+      ['counselling',"document.querySelector('.cab-mobile-toggle')?.click();document.querySelector('.cab-menu button')?.click()",'.cab-counselling[open]',"document.querySelector('.cab-counselling-close')?.click()"]
+     ] : route==='/courses' ? [['customizer',"document.querySelector('.pc-customize')?.click()",'.cc-dialog[open]',"document.querySelector('.cc-close')?.click()"]]
+     : route==='/dashboard' ? [['student-menu',"document.querySelector('[aria-label=\"Open student navigation\"]')?.click()",'.student-sidebar',"document.querySelector('[aria-label=\"Close student navigation\"]')?.click()"]]
+     : route==='/admin' ? [['admin-menu',"document.querySelector('.admin-menu-toggle')?.click()",'.admin-sidebar',"document.querySelector('.admin-menu-toggle')?.click()"]] : [];
+    for(const [name,open,selector,close] of interactions){
+     await send('Runtime.evaluate',{expression:open});await sleep(200);
+     const measurement=await send('Runtime.evaluate',{returnByValue:true,expression:"(()=>{const e=document.querySelector("+JSON.stringify(selector)+");if(!e)return {rendered:false,overflow:[{text:'Expected control did not open'}]};const r=e.getBoundingClientRect();return {rendered:!!(r.width&&r.height),overflow:r.left < -2 || r.right > innerWidth+2 || r.top < -2 || r.bottom > innerHeight+2 ? [{text:'Control outside viewport',left:r.left,right:r.right,top:r.top,bottom:r.bottom}]:[]};})()"});
+     const item={route:route+' ['+name+']',width,...measurement.result.value,errors:[...errors]};results.push(item);if(!item.rendered||item.overflow.length)console.log(JSON.stringify(item));
+     if(width===390){const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(out,name+'-'+width+'.png'),Buffer.from(shot.data,'base64'));}
+     await send('Runtime.evaluate',{expression:close});await sleep(100);
+    }
+   }
+   if(width===390 && route==='/') {
+    const sections=['.cab-hero-visual','.cab-connected','.cab-tools','.cab-community','.cab-career-paths'];
+    for(let i=0;i<sections.length;i++){
+     const found=await send('Runtime.evaluate',{returnByValue:true,expression:"(()=>{const el=document.querySelector("+JSON.stringify(sections[i])+");if(!el)return false;el.scrollIntoView({block:'start',behavior:'instant'});return true;})()"});
+     if(found.result.value){await sleep(200);const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(out,'home-section-'+i+'.png'),Buffer.from(shot.data,'base64'));}
+    }
+   }
+
   }
   console.log('Checked width '+width);
  }
  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify(results,null,2));console.log('Checked '+results.length+' route/viewport combinations; fixtures used, no real account changes.');
- console.log('RESULTS '+JSON.stringify({total:results.length,rendered:results.filter(r=>r.rendered).length,errors:results.filter(r=>r.errors.length).length,overflow:results.filter(r=>r.overflow.length).length}));
+ console.log('RESULTS '+JSON.stringify({total:results.length,rendered:results.filter(r=>r.rendered).length,errors:results.filter(r=>r.errors.length).length,overflow:results.filter(r=>r.overflow.length || r.bodyWidth > r.viewport+1).length}));
+ if(results.some(r=>!r.rendered||r.errors.length||r.overflow.length||r.bodyWidth>r.viewport+1))process.exitCode=1;
  await send('Browser.close');
 }finally{socket?.close();vite.kill();chrome.kill();}
 
