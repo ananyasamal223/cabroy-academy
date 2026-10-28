@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
   }
 
   async function loginWithGoogle(accessToken, remember = true, acceptTerms = false) {
-    const { data } = await api.post("/auth/google", { accessToken, acceptTerms });
+    const { data } = await api.post("/auth/google", { accessToken, acceptTerms }, { timeout: 90000 });
     login(data.token, data.user, remember);
     return data.user;
   }

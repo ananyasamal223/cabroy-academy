@@ -1,3 +1,4 @@
+import { googleClientId } from "../../../shared/googleOAuth.mjs";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import User from "../models/User.js";
@@ -101,7 +102,7 @@ export async function logout(req, res) { res.json({ message: "Logged out success
 export async function googleAuth(req, res) {
   const { accessToken } = req.body;
   if (typeof accessToken !== "string" || !accessToken || accessToken.length > 4096) return res.status(400).json({ message: "Missing or invalid Google access token." });
-  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientId = googleClientId(process.env.GOOGLE_CLIENT_ID);
   if (!clientId) return res.status(503).json({ message: "Google sign-in is not configured on the server." });
   let profile;
   try {

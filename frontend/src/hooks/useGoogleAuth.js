@@ -1,7 +1,8 @@
+import { googleClientId } from "../../../shared/googleOAuth.mjs";
 import { useCallback } from "react";
 export function useGoogleAuth() {
   const requestGoogleToken = useCallback(() => new Promise((resolve, reject) => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const clientId = googleClientId(import.meta.env.VITE_GOOGLE_CLIENT_ID);
     if (!clientId) { reject(new Error("Google sign-in is not configured yet.")); return; }
     if (!window.google?.accounts?.oauth2) { reject(new Error("Google sign-in failed to load. Please try again.")); return; }
     const timer = setTimeout(() => reject(new Error("Google sign-in timed out. Please try again.")), 90000);
