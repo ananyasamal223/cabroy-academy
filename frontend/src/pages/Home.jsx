@@ -181,13 +181,6 @@ const courseDuration = (course) =>
   (course?.durationWeeks ? `${course.durationWeeks} Weeks` : "") ||
   (course?.weeks ? `${course.weeks} Weeks` : "");
 
-const instructorName = (course) =>
-  course?.instructor?.name ||
-  course?.instructorName ||
-  course?.mentor?.name ||
-  course?.createdBy?.name ||
-  "";
-
 const courseHref = (course) => {
   if (course?.detailsUrl) return course.detailsUrl;
   if (course?.publicUrl) return course.publicUrl;
