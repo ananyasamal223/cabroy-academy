@@ -37,3 +37,14 @@ For landscape set RESPONSIVE_WIDTHS=667 and RESPONSIVE_HEIGHT=375. Remove RESPON
 These checks use headless Chrome viewport emulation and intercepted fixture data. They do not submit forms, change real accounts or verify payments/live backend behavior. They do not replace testing physical iOS/Android browsers, their keyboards, every device or every possible data state.
 
 The Cloudflare site needs deployment of this commit to receive the changes.
+
+## Follow-up from physical-phone screenshots
+
+- Bundled the open-source Inter variable font and its OFL license, rather than relying only on a phone's installed font.
+- Reduced mobile hero/grid contrast, portrait height and section spacing; kept text readable without excessive weight.
+- Removed an older `!important` footer rule that defeated the intended two-column phone layout.
+- Adjusted portrait badges so the rotating course selector does not cover the lower badge, including narrow 320px screens.
+- Added actual section screenshots and layout assertions for loaded fonts, side-by-side footer columns and badge/selector separation. API responses remain fixtures; physical Android/iOS rendering is not claimed.
+- The production Worker served `/assets/index-9YphZLC-.css` before these changes, without the new bundled font. Publishing the latest frontend build is required for the live site.
+
+Follow-up validation: production build passed; 33 route, control and layout checks passed at 320, 390, 430, 768, 1024 and 1440px with no detected overflow or JavaScript errors. Font loading, two-column footer alignment and hero-badge separation passed at all three phone widths. Reviewed the 390px hero, career workspace and footer screenshots.

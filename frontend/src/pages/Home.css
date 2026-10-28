@@ -3239,8 +3239,7 @@ body {
   .cab-course-grid-2,
   .cab-journey-grid,
   .cab-pricing-grid,
-  .cab-review-grid,
-  .cab-footer-grid {
+  .cab-review-grid {
     grid-template-columns: 1fr !important;
   }
 

@@ -1,4 +1,4 @@
-﻿/* Shared constraints complement each page's own responsive layout. */
+/* Shared constraints complement each page's own responsive layout. */
 #root { min-width: 0; }
 :where(.grid) > * { min-width: 0; }
 :where(main, section, article, form, fieldset) { min-width: 0; }
@@ -99,4 +99,73 @@
  .reference-course-page .cdr-header { flex-wrap: wrap; gap: 12px; }
  .reference-course-page .cdr-header .cdr-search { order: 3; flex: 1 0 100%; width: 100%; max-width: none; margin: 0; padding: 8px 12px; }
  .reference-course-page .cdr-header .cdr-cart { margin-left: auto; min-width: 44px; min-height: 44px; display: grid; place-items: center; }
+}
+
+/* Phone layout: consistent spacing and readable, compact content. */
+@media (max-width: 767px) {
+ .cab-home { font-family: Inter, Arial, sans-serif; }
+ .cab-home .cab-shell { width: calc(100% - 32px); }
+ .cab-home .cab-section { padding-block: 40px; }
+ .cab-home .cab-hero-studio { padding-top: 28px; padding-bottom: 28px; }
+ .cab-home .cab-hero-studio::before { background-size: 36px 36px; background-image: linear-gradient(to right, #cbd7e580 1px, transparent 1px), linear-gradient(to bottom, #cbd7e580 1px, transparent 1px); }
+ .cab-home .cab-hero-studio .cab-hero-grid { min-height: 0; gap: 20px; padding-bottom: 0; }
+ .cab-home .cab-hero-copy h1 { font-size: clamp(32px, 8.5vw, 44px); line-height: 1.15; letter-spacing: -1.3px; margin: 16px 0; }
+ .cab-home .cab-hero-copy > p { font-size: 15px; line-height: 1.7; margin-bottom: 0; }
+ .cab-home .cab-eyebrow { font-size: 10px; line-height: 1.6; letter-spacing: 1.2px; }
+ .cab-home .cab-actions { gap: 10px; margin-top: 22px; }
+ .cab-home .cab-actions .cab-btn { min-height: 48px; font-size: 14px; }
+ .cab-home .cab-hero-stats { margin-top: 24px; gap: 12px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); }
+ .cab-home .cab-hero-stats > div { padding: 0 8px; }
+ .cab-home .cab-hero-stats strong { font-size: 23px; }
+ .cab-home .cab-hero-stats small { font-size: 11px; line-height: 1.5; }
+ .cab-home .cab-feature-strip { margin-top: 20px; }
+ .cab-home .cab-feature-strip > div { padding: 14px 10px; min-height: 74px; gap: 9px; }
+ .cab-home .cab-feature-strip b { font-size: 12px; }
+ .cab-home .cab-feature-strip small { font-size: 11px; line-height: 1.5; }
+ .cab-home .cab-connected { padding-block: 32px; }
+ .cab-home .cab-connected-panel { padding: 0; }
+ .cab-home .cab-connected-heading h2 { font-size: clamp(27px,7.2vw,34px); line-height: 1.2; letter-spacing: -.8px; margin: 12px 0 16px; }
+ .cab-home .cab-connected-heading p { font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+ .cab-home .cab-connected-flow { gap: 20px; min-height: 0; margin: 24px 0; }
+ .cab-home .cab-connected-nodes { gap: 10px; }
+ .cab-home .cab-connected-node b { font-size: 12px; line-height: 1.4; }
+ .cab-home .cab-connected-dashboard { max-width: none; padding: 16px; animation: none; }
+ .cab-home .cab-connected-dashboard-body { padding-block: 20px; }
+ .cab-home .cab-connected-dashboard-body h3 { font-size: 19px; }
+ .cab-home .cab-connected-prompt { margin-inline: 0; padding: 12px 10px; }
+ .cab-home .cab-connected-prompt span { font-size: 12px; }
+ .cab-home .cab-connected-project small { font-size: 11px; }
+ .cab-home .cab-section-head h2 { font-size: 28px; line-height: 1.2; letter-spacing: -.7px; }
+ .cab-home .cab-section-head p { font-size: 14px; line-height: 1.7; }
+ .cab-home .cab-course-photo { height: auto; aspect-ratio: 16 / 8; }
+ .cab-home .cab-course-info { min-height: 0; padding: 18px; }
+ .cab-home .cab-course-info h3 { font-size: 19px; line-height: 1.35; margin-bottom: 9px; }
+ .cab-home .cab-course-info > p { min-height: 0; font-size: 14px; line-height: 1.65; }
+ .cab-home .cab-course-meta { font-size: 12px; gap: 10px; margin-top: 14px; }
+ .cab-home .cab-course-bottom { margin-top: 18px; flex-wrap: wrap; gap: 12px; }
+ .cab-home .cab-card-button { min-height: 44px; font-size: 13px; padding-inline: 16px; }
+ .cab-home .cab-footer { padding: 30px 0 20px; }
+ .cab-home .cab-footer-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px 20px; }
+ .cab-home .cab-footer-grid > div:first-child,
+ .cab-home .cab-footer-grid > div:last-child { grid-column: 1 / -1; }
+ .cab-home .cab-footer-logo { width: 48px; height: 48px; }
+ .cab-home .cab-footer-brand b { font-size: 23px; }
+ .cab-home .cab-footer h4 { margin-bottom: 8px; font-size: 15px; }
+ .cab-home .cab-footer p { font-size: 13px; line-height: 1.6; margin-bottom: 0; }
+ .cab-home .cab-footer a,.cab-home .cab-footer .cab-footer-link { font-size: 13px; min-height: 40px; margin: 0; display: flex; align-items: center; }
+ .cab-home .cab-footer .cab-email { margin-top: 14px; }
+ .cab-home .cab-footer-bottom { margin-top: 22px; padding-top: 16px; gap: 8px; font-size: 11px; line-height: 1.6; flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+ .cab-home .cab-portrait-hero { height: 470px; }
+ .cab-home .cab-portrait-person { height: 355px; bottom: 115px; }
+ .cab-home .cab-portrait-shape { inset: 48px 18px 115px; }
+ .cab-home .cab-portrait-badge-mentor { top: 80px; }
+ .cab-home .cab-portrait-badge-ai { top: 190px; }
+ .cab-home .cab-portrait-badge-project { bottom: 158px; }
+ .cab-home .cab-portrait-course { padding: 10px 10px 4px; }
+}
+@media (max-width: 360px) {
+ .cab-home .cab-portrait-badge-ai { top: 160px; }
+ .cab-home .cab-portrait-badge-project { bottom: 195px; }
 }
