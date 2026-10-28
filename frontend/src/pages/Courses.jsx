@@ -1,3 +1,4 @@
+import { getPublishedCourses } from "../api/courseCatalog.js";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, SlidersHorizontal, CalendarDays, Layers3, Trophy, Megaphone, BarChart3, Bot, Check, Search, ArrowRight, ChevronRight, Plus, Rocket, ShieldCheck, BookOpen, Tag, Star } from "lucide-react";
@@ -34,9 +35,10 @@ export default function Courses() {
   const [selectedIds, setSelectedIds] = useState([]);
   useEffect(() => {
     const controller = new AbortController();
-    api.get("/courses?published=true", { signal: controller.signal }).then(({ data }) => {
+    setLoading(true);
+    getPublishedCourses(api, { signal: controller.signal }).then(courses => {
       if (controller.signal.aborted) return;
-      const catalog = (data.courses || []).filter(course => course.isPublished === true).map(course => {
+      const catalog = courses.map(course => {
         const normalized = normalizeLiveCourse(course, api.defaults.baseURL);
         return { ...normalized, icon: normalized.categoryGroup === "Marketing" ? Megaphone : normalized.categoryGroup === "Analytics" ? BarChart3 : normalized.categoryGroup === "AI & Automation" ? Bot : BookOpen };
       });
@@ -52,11 +54,12 @@ export default function Courses() {
     return () => controller.abort();
   }, [reload]);
   useEffect(() => {
+    if (loading) return;
     const refresh = () => { if (!document.hidden) setReload(value => value + 1); };
     window.addEventListener("focus", refresh);
     const interval = setInterval(refresh, 60000);
     return () => { window.removeEventListener("focus", refresh); clearInterval(interval); };
-  }, []);
+  }, [loading]);
   const selectedCourses = getProgramCourses(individualCourses, selectedIds);
   const originalPrice = selectedCourses.reduce((sum, course) => sum + course.price, 0);
   const price = getProgramPrice(selectedCourses);

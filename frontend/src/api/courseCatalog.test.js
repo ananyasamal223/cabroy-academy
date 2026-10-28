@@ -1,0 +1,6 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { getPublishedCourses } from "./courseCatalog.js";
+test("catalog allows a sleeping backend to wake and retries transient errors once",async()=>{let calls=0;const client={get:async(path,config)=>{calls++;assert.equal(path,"/courses?published=true");assert.equal(config.timeout,90000);if(calls===1)throw Object.assign(new Error("Starting"),{response:{status:503}});return {data:{courses:[{_id:"one",isPublished:true},{_id:"draft",isPublished:false}]}};}};assert.deepEqual(await getPublishedCourses(client),[{_id:"one",isPublished:true}]);assert.equal(calls,2);});
+test("catalog does not retry authorization failures or cancellation",async()=>{for(const error of [Object.assign(new Error("Unauthorized"),{response:{status:401}}),Object.assign(new Error("Canceled"),{code:"ERR_CANCELED"})]){let calls=0;await assert.rejects(getPublishedCourses({get:async()=>{calls++;throw error;}}));assert.equal(calls,1);}});
+test("invalid and failed responses do not become an empty catalog",async()=>{await assert.rejects(getPublishedCourses({get:async()=>({data:"Starting service"})}),/invalid response/);let calls=0;await assert.rejects(getPublishedCourses({get:async()=>{calls++;throw Object.assign(new Error("Timeout"),{code:"ECONNABORTED"});}}));assert.equal(calls,2);});

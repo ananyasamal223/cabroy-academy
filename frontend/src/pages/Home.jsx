@@ -1,3 +1,4 @@
+import { getPublishedCourses } from "../api/courseCatalog.js";
 import { courseVisual } from "../utils/courseVisuals";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import api from "../api/client";
@@ -458,28 +459,24 @@ export default function Home() {
   const [courses, setCourses] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
+  const [courseLoadError, setCourseLoadError] = useState("");
+  const [catalogReload, setCatalogReload] = useState(0);
   const [billing, setBilling] = useState("monthly");
   const heroRef = useRef(null);
 
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
+    setLoadingCourses(true);
+    setCourseLoadError("");
 
     const loadHome = async () => {
       try {
-        const coursePayloads = await fetchAllWorking([
-          "/courses?published=true",
-          "/courses?status=published",
-          "/courses",
-        ]);
-
-        const liveCourses = uniqueBy(
-          coursePayloads.flatMap(asArray).filter(Boolean),
-          (course) => String(courseId(course) || courseName(course))
-        );
-
+        const liveCourses = await getPublishedCourses(api, { signal: controller.signal });
         if (!active) return;
         setCourses(liveCourses);
+        setLoadingCourses(false);
 
         const reviewBatches = [];
 
@@ -521,6 +518,7 @@ export default function Home() {
         if (!active) return;
         setReviews(liveReviews);
       } catch (error) {
+        if (active && !controller.signal.aborted) setCourseLoadError("Courses could not load. The course service may be starting up. Please try again.");
         console.error("CABROY Home data:", error);
       } finally {
         if (active) setLoadingCourses(false);
@@ -530,8 +528,9 @@ export default function Home() {
     loadHome();
     return () => {
       active = false;
+      controller.abort();
     };
-  }, []);
+  }, [catalogReload]);
 
   useEffect(() => {
     const nodes = Array.from(
@@ -843,7 +842,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="cab-empty-state">
-              Published courses will appear here automatically from your real course catalog.
+              {courseLoadError ? <><p role="alert">{courseLoadError}</p><button type="button" className="cab-link-btn" onClick={() => setCatalogReload(value => value + 1)}>Retry loading courses</button></> : "Published courses will appear here automatically from your real course catalog."}
             </div>
           )}
         </div>

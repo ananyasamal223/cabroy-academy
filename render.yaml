@@ -23,7 +23,7 @@ services:
       - key: EMAIL_FROM
         sync: false
       - key: CLIENT_URL
-        value: https://codeexampler.com,https://www.codeexampler.com
+        value: https://codeexampler.com,https://www.codeexampler.com,https://cabroy-academy.ananyasamal812.workers.dev
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
