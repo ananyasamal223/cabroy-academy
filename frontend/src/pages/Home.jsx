@@ -3,6 +3,8 @@ import { courseVisual } from "../utils/courseVisuals";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import api from "../api/client";
 import { FaDiscord } from "react-icons/fa";
+
+import "./HomeHeroOrbit.css";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import CounsellingModal from "../components/CounsellingModal";
@@ -201,38 +203,6 @@ const initials = (name = "Learner") =>
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("") || "L";
-
-function HeroCourseSequence() {
-  const paths = [
-    ["target", "Digital Marketing", "Turn ideas into impactful campaigns"],
-    ["folder", "Data Analytics", "Turn data into meaningful insights"],
-    ["spark", "AI Automation", "Build smarter tools and workflows"],
-  ];
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-  useEffect(() => {
-    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let timer;
-    const update = () => {
-      clearInterval(timer);
-      if (!paused && !preference.matches) timer = setInterval(() => {
-        if (!document.hidden) setActive((value) => (value + 1) % paths.length);
-      }, 3500);
-    };
-    update();
-    preference.addEventListener("change", update);
-    return () => { clearInterval(timer); preference.removeEventListener("change", update); };
-  }, [paused, paths.length]);
-  return (
-    <div className="hero-course-sequence" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}>
-      <span className="hero-studio-paths-label">EXPLORE YOUR PATH</span>
-      <div className="hero-course-stage">
-        {paths.map(([icon, title, description], index) => index === active && <Link key={title} to="/courses" className={`hero-studio-course hero-course-slide${index === active ? " is-current" : ""}`} aria-hidden={index !== active} tabIndex={index === active ? 0 : -1}><span className="hero-studio-course-icon"><Icon type={icon} /></span><div><b>{title}</b><span>{description}</span></div><ArrowRight size={18} aria-hidden="true" /></Link>)}
-      </div>
-      <div className="hero-course-pagination" aria-label="Choose a course path">{paths.map(([, title], index) => <button key={title} type="button" aria-label={`Show ${title}`} aria-pressed={active === index} onClick={() => setActive(index)}><span /></button>)}<small>{String(active + 1).padStart(2, "0")} / 03</small></div>
-    </div>
-  );
-}
 
 function Icon({ type }) {
   const p = {
@@ -616,25 +586,6 @@ export default function Home() {
 
   const visibleCourses = useMemo(() => courses.slice(0, 4), [courses]);
 
-  const totalLearners = useMemo(
-    () => courses.reduce((sum, item) => sum + learnerCount(item), 0),
-    [courses]
-  );
-
-  const ratings = useMemo(
-    () => courses.map(courseRating).filter((value) => value > 0),
-    [courses]
-  );
-
-  const avgRating = ratings.length
-    ? ratings.reduce((a, b) => a + b, 0) / ratings.length
-    : 0;
-
-  const mentors = useMemo(() => {
-    const names = new Set(courses.map(instructorName).filter(Boolean));
-    return names.size;
-  }, [courses]);
-
   const avatars = useMemo(() => {
     const realAvatars = reviews
       .map((review) => {
@@ -663,21 +614,6 @@ export default function Home() {
   const planPrice = (monthlyPrice) =>
     billing === "yearly" ? monthlyPrice * 12 : monthlyPrice;
   const billingSuffix = billing === "yearly" ? "/ year" : "/ month";
-
-  const heroStats = [
-    {
-      value: totalLearners ? `${compact(totalLearners)}+` : `${courses.length}`,
-      label: totalLearners ? "Learners" : "Published Courses",
-    },
-    {
-      value: avgRating ? `${avgRating.toFixed(1)}/5` : `${reviews.length}`,
-      label: avgRating ? "Average Rating" : "Verified Reviews",
-    },
-    {
-      value: `${mentors}`,
-      label: "Industry Mentors",
-    },
-  ];
 
   return (
     <main className="cab-home">
@@ -715,42 +651,35 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="cab-hero cab-hero-studio" ref={heroRef}>
+      <section className="cab-hero cab-hero-studio cab-hero-orbit" ref={heroRef}>
         <div className="cab-shell cab-hero-grid">
-          <Reveal className="cab-hero-copy">
-            <div className="cab-eyebrow">PRACTICAL SKILLS. BRIGHTER TOMORROWS.</div>
-            <h1>
-              Build your future<br />
-              in the <span>digital world.</span>
-            </h1>
-            <p>Explore marketing, data analytics and AI automation through practical courses, real projects and expert mentorship.</p>
-
+          <div className="cab-hero-copy orbit-copy">
+            <h1>Find your direction.<br /><span>Build your future.</span></h1>
+            <p>Explore Digital Marketing, Data Analytics and AI Automation.</p>
             <div className="cab-actions">
-              <Link className="cab-btn" to="/courses">Explore Courses <ArrowRight aria-hidden="true" strokeWidth={2.5} /></Link>
-              <button type="button" className="cab-btn cab-btn-outline" onClick={() => setBrochureOpen(true)}>
-                <Download aria-hidden="true" /> Download Brochure
-              </button>
+              <Link className="cab-btn" to="/courses">Explore Courses <ArrowRight aria-hidden="true" size={19} /></Link>
+              <button type="button" className="cab-btn cab-btn-outline" onClick={() => setCounsellingOpen(true)}>Talk to an Advisor</button>
             </div>
-
-            <div className="cab-hero-stats">
-              {heroStats.map((item) => (
-                <div key={item.label}>
-                  <strong>{item.value}</strong>
-                  <small>{item.label}</small>
-                </div>
-              ))}
+            <div className="orbit-benefits" aria-label="Learning benefits">
+              <span><Icon type="award" />Practical projects</span>
+              <span><Icon type="users" />Expert mentors</span>
+              <span><Icon type="book" />Flexible learning</span>
             </div>
-          </Reveal>
-
-          <Reveal className="cab-portrait-hero" delay={100}>
-            <div className="cab-portrait-grid" aria-hidden="true" />
-            <div className="cab-portrait-shape" aria-hidden="true"><span>YOUR NEXT<br />CHAPTER.</span></div>
-            <img className="cab-portrait-person" src="/cabroy-learner-hero.png" alt="Learner holding a laptop, ready for her next chapter" fetchPriority="high" />
-            <div className="cab-portrait-badge cab-portrait-badge-mentor"><span className="cab-portrait-emoji" role="img" aria-label="Briefcase">&#128188;</span><div>Learn with<b>industry mentors</b></div></div>
-            <div className="cab-portrait-badge cab-portrait-badge-project"><span className="cab-portrait-emoji" role="img" aria-label="Folder">&#128193;</span><div>Build work<b>you can show.</b></div></div>
-            <div className="cab-portrait-badge cab-portrait-badge-ai"><span className="cab-portrait-emoji" role="img" aria-label="Robot">&#129302;</span><div>Work smarter with<b>AI &amp; automation</b></div></div>
-            <div className="cab-portrait-course"><HeroCourseSequence /></div>
-          </Reveal>
+          </div>
+          <div className="orbit-art">
+            <div className="orbit-glow" aria-hidden="true" />
+            <svg className="orbit-lines" viewBox="0 0 600 580" fill="none" aria-hidden="true">
+              <ellipse cx="300" cy="240" rx="275" ry="113" transform="rotate(-15 300 240)" />
+              <ellipse cx="300" cy="332" rx="275" ry="113" transform="rotate(17 300 332)" />
+              <circle cx="470" cy="94" r="5" /><circle cx="41" cy="266" r="4" /><circle cx="516" cy="408" r="4" />
+            </svg>
+            <img className="orbit-person" src="/cabroy-orbit-learner.png" alt="Learner holding a tablet and looking ahead" fetchPriority="high" width="1122" height="1402" />
+            <span className="orbit-tool orbit-tool-analytics"><img src="/course-icons/google-analytics.svg" alt="Google Analytics" width="40" height="40" /></span>
+            <span className="orbit-tool orbit-tool-meta"><img src="/course-icons/meta-ads.svg" alt="Meta" width="40" height="40" /></span>
+            <span className="orbit-tool orbit-tool-python"><img src="/course-icons/python.svg" alt="Python" width="40" height="40" /></span>
+            <span className="orbit-tool orbit-tool-chatgpt"><img src="/course-icons/chatgpt.svg" alt="ChatGPT" width="40" height="40" /></span>
+            <Link className="orbit-growth-card" to="/courses"><div><b>Learn. Apply. <span>Grow.</span></b><p>Build practical skills that make an impact.</p></div><span className="orbit-growth-arrow"><ArrowRight size={20} aria-hidden="true" /></span></Link>
+          </div>
         </div>
 
         <div className="cab-shell cab-feature-strip">

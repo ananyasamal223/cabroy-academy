@@ -68,14 +68,14 @@ try{
     }
    }
    if(width<768 && route==='/') {
-    const layout=await send('Runtime.evaluate',{returnByValue:true,expression:`(async()=>{await document.fonts.ready;const footer=document.querySelector('.cab-footer-grid');const a=footer.children[1].getBoundingClientRect(),b=footer.children[2].getBoundingClientRect();const badge=document.querySelector('.cab-portrait-badge-project').getBoundingClientRect(),selector=document.querySelector('.cab-portrait-course').getBoundingClientRect();return{fontLoaded:document.fonts.check('16px Inter'),footerSideBySide:Math.abs(a.top-b.top)<2&&b.left>a.left,badgeClear:badge.bottom<=selector.top+1};})()` ,awaitPromise:true});
+    const layout=await send('Runtime.evaluate',{returnByValue:true,expression:`(async()=>{await document.fonts.ready;const footer=document.querySelector('.cab-footer-grid');const a=footer.children[1].getBoundingClientRect(),b=footer.children[2].getBoundingClientRect();const tools=[...document.querySelectorAll('.orbit-tool')];return{fontLoaded:document.fonts.check('16px Inter'),footerSideBySide:Math.abs(a.top-b.top)<2&&b.left>a.left,heroToolsCorrect:tools.length===4&&!document.querySelector('.orbit-art')?.textContent.includes('n8n')};})()` ,awaitPromise:true});
     const checks=layout.result.value;
     const failures=Object.entries(checks||{}).filter(([,ok])=>!ok).map(([name])=>name);
     results.push({route:'/ [mobile layout]',width,rendered:!!checks,overflow:[],errors:failures});
     console.log('Mobile layout '+width+' '+JSON.stringify(checks));
    }
    if(width===390 && route==='/') {
-    const sections=['.cab-portrait-hero','.cab-connected','.cab-tools','.cab-community','.cab-footer','.cab-courses'];
+    const sections=['.orbit-art','.cab-connected','.cab-tools','.cab-community','.cab-footer','.cab-courses'];
     for(let i=0;i<sections.length;i++){
      const found=await send('Runtime.evaluate',{returnByValue:true,expression:"(()=>{const el=document.querySelector("+JSON.stringify(sections[i])+");if(!el)return false;el.scrollIntoView({block:'start',behavior:'instant'});return true;})()"});
      if(found.result.value){await sleep(200);const shot=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(out,'home-section-'+i+'.png'),Buffer.from(shot.data,'base64'));}
