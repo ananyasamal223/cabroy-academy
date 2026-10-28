@@ -169,3 +169,25 @@
  .cab-home .cab-portrait-badge-ai { top: 160px; }
  .cab-home .cab-portrait-badge-project { bottom: 195px; }
 }
+
+/* Blue benefits band and a closer transition into the career system. */
+.cab-home .cab-hero-studio .cab-feature-strip {
+  background: linear-gradient(115deg, #123f9b, #0967d9);
+  border-color: #245ec0;
+  box-shadow: 0 10px 24px #174e9b18;
+  transform: none;
+}
+.cab-home .cab-feature-strip .cab-feature {
+  border-color: #ffffff26;
+  background: transparent;
+}
+.cab-home .cab-feature-strip .cab-feature:hover { background: #ffffff0d; }
+.cab-home .cab-feature-strip .cab-feature > span { color: #fff; background: #ffffff1f; flex-shrink: 0; }
+.cab-home .cab-feature-strip .cab-feature b { color: #fff; }
+.cab-home .cab-feature-strip .cab-feature small { color: #e0ecff; }
+.cab-home .cab-hero-studio { padding-bottom: 0; }
+.cab-home .cab-connected { padding-top: 32px; }
+.cab-home .cab-connected-panel { padding-top: 0; }
+@media (max-width: 767px) {
+ .cab-home .cab-connected { padding-top: 28px; }
+}
