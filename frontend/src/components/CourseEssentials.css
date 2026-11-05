@@ -38,3 +38,37 @@
 .essentials-detail-grid { display:flex;flex-wrap:wrap; }
 .essentials-detail-grid > * { flex:1 1 calc(50% - 8px);min-width:0;max-width:100%; }
 @media(max-width:600px) { .essentials-detail-grid > * { flex-basis:100%; } }
+/* Guided Detail Stack: numbered disclosures with a companion course guide. */
+.guided-details-layout { display:flex;align-items:flex-start;gap:20px;margin-top:20px; }
+.guided-details-rows { flex:1;min-width:0;display:flex;flex-direction:column;gap:8px; }
+.guided-detail-row { border:1px solid #dbe5f3;border-radius:10px;background:#fff;overflow:hidden; }
+.guided-detail-row > summary { display:flex;align-items:center;gap:10px;padding:12px;min-height:48px;cursor:pointer;list-style:none; }
+.guided-detail-row > summary::-webkit-details-marker { display:none; }
+.guided-row-number { display:grid;place-items:center;flex:0 0 29px;height:26px;background:#e9f2ff;border-radius:6px;color:#1359b6;font-size:11px;font-weight:650; }
+.guided-detail-row > summary > b { flex:0 0 155px;font-size:13px;line-height:1.5;font-weight:650;color:#163454; }
+.guided-row-description { flex:1;min-width:0;padding-left:14px;border-left:1px solid #dce6f3;color:#60748e;font-size:11px;line-height:1.6; }
+.guided-detail-row > summary > svg { flex-shrink:0;color:#527096;margin-left:auto; }
+.guided-detail-row[open] > summary { background:#f5f9ff; }.guided-detail-row[open] > summary > svg { transform:rotate(180deg); }
+.guided-row-body { padding:0 14px 14px;background:linear-gradient(120deg,#fff,#f1f7ff); }
+.atlas-page .guided-row-body > :is(.cdr-card,.cdr-outcomes,.cdr-academy-certificate) { border:0;box-shadow:none;border-radius:0;padding:8px 0 0;background:transparent;margin:0; }
+.atlas-page .guided-row-body h2 { display:none; }
+.atlas-page .guided-row-body ul { margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:0; }
+.atlas-page .guided-row-body li { display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.7;padding:10px 0;border-bottom:1px solid #e0e9f4;color:#425e7e; }
+.atlas-page .guided-row-body li:last-child { border-bottom:0; }
+.guided-row-body li > svg { flex-shrink:0;color:#0868f8;margin-top:2px; }
+.atlas-page .guided-row-body .cdr-outcomes p { display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.7;margin:0;padding:10px 0;border-bottom:1px solid #e0e9f4;color:#425e7e; }
+.guided-row-body .cdr-outcomes p > span { display:grid;place-items:center;flex:0 0 21px;height:21px;border-radius:50%;color:#fff;background:#0868f8; }
+.guided-course-guide { flex:0 0 220px;min-width:0;border-radius:12px;padding:24px 20px;color:#fff;background:linear-gradient(155deg,#18385f,#071c42);box-shadow:0 10px 25px #163d6b18; }
+.guided-guide-eyebrow { font-size:9px;letter-spacing:1.5px;color:#a9ccff;font-weight:600; }
+.atlas-page .guided-course-guide h3 { margin:15px 0 12px;color:#fff;font-size:23px;font-weight:600;line-height:1.3;letter-spacing:-.5px; }
+.guided-course-guide > p { color:#c7d8ef;font-size:12px;line-height:1.7;margin:0; }
+.guided-mini-folder { position:relative;width:138px;height:160px;margin:26px auto; }
+.guided-mini-folder > div { position:absolute;top:0;left:24px;right:4px;bottom:20px;border:1px solid #d4e5ff;background:linear-gradient(#fff,#e4eeff);border-radius:7px;transform:rotate(10deg);padding:20px 12px; }
+.guided-mini-folder i { display:block;height:5px;margin-bottom:10px;background:#a2c7ff;border-radius:3px; }
+.guided-mini-folder > span { position:absolute;bottom:0;left:0;right:10px;height:100px;display:grid;place-items:center;border:1px solid #75b8ff;border-radius:8px 14px 14px 14px;background:linear-gradient(135deg,#99d0ff,#2181f6);box-shadow:0 10px 25px #0002;transform:rotate(-6deg); }
+.guided-guide-note { display:flex;gap:10px;padding-top:18px;border-top:1px solid #ffffff33; }
+.guided-guide-note > svg { flex-shrink:0;color:#b5d5ff;margin-top:2px; }.guided-guide-note p { margin:0;color:#d6e5fa;font-size:12px;line-height:1.6; }
+@media(max-width:1000px) { .guided-details-layout { flex-direction:column; }.guided-details-rows { width:100%; }.guided-course-guide { flex-basis:auto;width:100%;display:block; } }
+@media(max-width:600px) { .guided-detail-row > summary { flex-wrap:wrap;gap:8px;padding:11px; }.guided-detail-row > summary > b { flex:1;font-size:12px; }.guided-row-description { order:4;flex:1 0 100%;padding-left:37px;border:0;font-size:11px; }.guided-row-body { padding:0 11px 12px; }.atlas-page .guided-row-body li,.atlas-page .guided-row-body .cdr-outcomes p { font-size:12px; } }
+
+@media(max-width:1000px) { .guided-mini-folder { display:none; }.guided-course-guide { padding:20px; }.guided-course-guide h3 br { display:none; }.guided-guide-note { margin-top:16px; } }

@@ -13,3 +13,7 @@ Replaced the narrow resources disclosure with a full-width numbered Learn / Appl
 Production build passes. Reviewed desktop/mobile resource screenshots. Responsive checks at 320, 390, 768 and 1440px reported no page overflow or JavaScript errors; expanded-details checks and the protected-download interaction were also exercised with fixture data. One repeated browser-runner check timed out and was rerun; no real purchase or external download was performed.
 
 The expanded two-column legacy-card grid stalled the browser renderer at tablet width during repeated checks. Changed that expanded area to wrapping flex cards, isolating it from the old sidebar grid styles. Subsequent 768px and 1440px checks passed: all eight detail groups visible, no overflow, and the protected-download interaction still working. Phone expansion was verified at 320px and 390px.
+
+## Expanded details: Guided Detail Stack (Design 3)
+
+The complete-details content now uses eight numbered native disclosures and a navy course-guide panel. Resources and Outcomes open initially; the remaining sections can be opened individually. The original data and protected download behavior remain intact. Production build passed. Browser checks at 320, 390, 768 and 1440px confirmed no detected overflow or JavaScript errors, eight detail sections, successful nested audience expansion, and the enrolled download flow using fixtures. Reviewed the desktop expanded-section screenshot.
