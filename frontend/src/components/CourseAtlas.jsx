@@ -1,0 +1,23 @@
+import { ArrowRight, BookOpen, Layers, Monitor, Play } from "lucide-react";
+import "./CourseAtlas.css";
+export function atlasTrack(course) {
+ const text = String(course.category || course.title).toLowerCase();
+ if (/automation|artificial|\bai\b/.test(text)) return { area: "automation", stages: ["Discover", "Connect", "Automate", "Test", "Build"], artifacts: ["Workflow brief", "Connected tools", "Your workflow", "Test results", "Automation project"] };
+ if (/analytics|analysis|data science/.test(text)) return { area: "data analytics", stages: ["Explore", "Prepare", "Analyse", "Visualise", "Present"], artifacts: ["Business question", "Clean dataset", "Your analysis", "Insight dashboard", "Analytics portfolio"] };
+ return { area: "marketing", stages: ["Research", "Strategy", "Launch", "Measure", "Portfolio"], artifacts: ["Audience insights", "Campaign strategy", "Launch campaign", "Performance insights", "Marketing portfolio"] };
+}
+function Artifact({ index, title }) {
+ return <div className={`atlas-artifact atlas-artifact-${index}`} aria-hidden="true"><span className="atlas-artifact-title">{title}</span>{index === 0 ? <><div className="atlas-paper-lines"><i/><i/><i/></div><span className="atlas-mini-note">Your starting point</span></> : index === 1 ? <div className="atlas-planner">{["Plan","Create","Apply"].map(t=><span key={t}>{t}<i/><i/></span>)}</div> : index === 2 ? <><div className="atlas-launch-window"><i/><i/><i/></div><div className="atlas-paper-lines"><i/><i/></div></> : index === 3 ? <div className="atlas-chart">{[30,55,43,75,92].map((h,i)=><i key={i} style={{height:`${h}%`}}/>)}</div> : <div className="atlas-folio"><BookOpen size={30}/><span>Work you can show</span></div>}</div>;
+}
+export default function CourseAtlas({ course, image, actionLabel, onAction, disabled, onPreview, error }) {
+ const track = atlasTrack(course);
+ return <>
+ <section className="atlas-hero" id="programme-overview" aria-labelledby="atlas-title"><div className="atlas-map" aria-hidden="true"/><span className="atlas-eyebrow">{course.title}</span><h1 id="atlas-title">Your next chapter<br/><span>in {track.area}.</span></h1><p>{course.description || `Build practical skills through ${course.title}.`}</p><div className="atlas-hero-actions"><span><Monitor size={18}/>Self-paced</span><span><Layers size={18}/>Practical learning</span><span><BookOpen size={18}/>Course resources</span><button className="atlas-primary" disabled={disabled} onClick={onAction}>{actionLabel}<ArrowRight size={17}/></button></div>{error && <p role="alert" className="atlas-error">{error}</p>}
+ <div className="atlas-preview">{course.previewVideoUrl ? <video controls preload="none" poster={image} aria-label={`${course.title} preview`}><source src={course.previewVideoUrl}/></video> : <><img src={image} alt={`${course.title} course preview`} fetchPriority="high"/><button type="button" onClick={onPreview}><span><Play size={26} fill="currentColor"/></span><b>Explore this course</b></button></>}<span className="atlas-preview-note">Learning, put into practice.</span></div></section>
+ <section className="atlas-journey" id="programme-journey" aria-labelledby="atlas-journey-title"><header><h2 id="atlas-journey-title">The course journey:<br/>from insight to impact.</h2><p>Build understanding, put new skills into practice, and bring your learning together in work you can share.</p></header><div className="atlas-stages"><svg className="atlas-route" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 50 C100 0 150 100 250 50 S400 0 500 50 S650 100 750 50 S900 0 1000 50"/></svg>{track.stages.map((stage,i)=><a key={stage} href="#cdr-curriculum" className="atlas-stage"><Artifact index={i} title={track.artifacts[i]}/><i className="atlas-route-node"/><b>{stage}</b><small>{["Find your starting point.","Build a practical foundation.","Put your ideas to work.","Review and refine your work.","Bring your skills together."][i]}</small></a>)}</div></section>
+ </>;
+}
+export function AtlasOutcome({ course, image }) {
+ const project = course.projects?.find(p=>p.title);
+ return <section className="atlas-outcome"><div className="atlas-outcome-visual"><img src={image} alt="" loading="lazy"/><span><BookOpen size={22}/>{project?.title || "Your next portfolio piece"}</span></div><div><span className="atlas-eyebrow">LEARNING INTO PRACTICE</span><h2>Your portfolio outcome.</h2><p>{project?.description || "Bring your learning together through the course activities. Build work that shows your thinking, your skills and the progress you have made."}</p><a href="#cdr-curriculum">Explore your learning path <ArrowRight size={17}/></a></div></section>;
+}
