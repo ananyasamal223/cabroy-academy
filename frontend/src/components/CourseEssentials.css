@@ -34,3 +34,7 @@
 @media(max-width:600px) { .course-essentials { padding:20px 16px; }.essentials-heading { align-items:flex-start;flex-direction:column;gap:8px;padding-bottom:18px; }.essentials-heading small { text-align:left;margin-left:15px; }.essentials-grid { grid-template-columns:minmax(0,1fr);padding:24px 0;gap:28px; }.atlas-page .essentials-intro h2 { font-size:28px; }.essentials-intro > p { font-size:14px; }.essentials-steps p { font-size:13px; }.essentials-detail-grid { grid-template-columns:minmax(0,1fr); }.essentials-visual { max-width:360px;width:100%;margin:auto; }.essentials-folder { height:225px; } }
 .sheet-resources { top:42px; }
 .sheet-projects { top:76px; }
+/* Keep expanded resource cards independent of the legacy sidebar grids. */
+.essentials-detail-grid { display:flex;flex-wrap:wrap; }
+.essentials-detail-grid > * { flex:1 1 calc(50% - 8px);min-width:0;max-width:100%; }
+@media(max-width:600px) { .essentials-detail-grid > * { flex-basis:100%; } }
