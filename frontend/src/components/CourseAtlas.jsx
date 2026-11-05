@@ -1,3 +1,4 @@
+import { portfolioVisual } from "../utils/portfolioVisuals";
 import { ArrowRight, BookOpen, Layers, Monitor, Play } from "lucide-react";
 import "./CourseAtlas.css";
 export function atlasTrack(course) {
@@ -19,5 +20,6 @@ export default function CourseAtlas({ course, image, actionLabel, onAction, disa
 }
 export function AtlasOutcome({ course, image }) {
  const project = course.projects?.find(p=>p.title);
- return <section className="atlas-outcome"><div className="atlas-outcome-visual"><img src={image} alt="" loading="lazy"/><span><BookOpen size={22}/>{project?.title || "Your next portfolio piece"}</span></div><div><span className="atlas-eyebrow">LEARNING INTO PRACTICE</span><h2>Your portfolio outcome.</h2><p>{project?.description || "Bring your learning together through the course activities. Build work that shows your thinking, your skills and the progress you have made."}</p><a href="#cdr-curriculum">Explore your learning path <ArrowRight size={17}/></a></div></section>;
+ const visual = portfolioVisual(course);
+ return <section className="atlas-outcome"><div className="atlas-outcome-visual"><img src={visual?.src || image} alt={visual?.alt || `${course.title} portfolio preview`} loading="lazy" width="1672" height="941"/><span><BookOpen size={22}/>{project?.title || "Your next portfolio piece"}</span></div><div><span className="atlas-eyebrow">LEARNING INTO PRACTICE</span><h2>Your portfolio outcome.</h2><p className="atlas-outcome-caption">Illustrative project preview</p><p>{project?.description || "Bring your learning together through the course activities. Build work that shows your thinking, your skills and the progress you have made."}</p><a href="#cdr-curriculum">Explore your learning path <ArrowRight size={17}/></a></div></section>;
 }

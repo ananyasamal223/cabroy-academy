@@ -1,0 +1,7 @@
+Generated project thumbnails using the built-in image generation tool.
+Marketing prompt: Premium pale-blue/white studio view of a completed marketing campaign portfolio on a laptop, with campaign creatives, a brief and performance charts. Navy/cobalt styling, no people, fake ROI or guarantees.
+Analytics prompt: Completed analytics portfolio on a monitor with dashboard charts, a dataset laptop and an insight report. Clean navy/cobalt studio styling, illustrative data, no people or real performance claims.
+Automation prompt: Completed AI workflow portfolio on a laptop, connected input/AI/decision/output nodes and a project report. Clean blue-white studio styling, no people, real-brand claims or invented results.
+All images are illustrative project previews, not actual learner work.
+
+Saved assets: frontend/public/portfolio-marketing.png, frontend/public/portfolio-analytics.png, frontend/public/portfolio-automation.png.

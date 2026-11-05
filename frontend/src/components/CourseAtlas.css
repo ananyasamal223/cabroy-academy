@@ -61,3 +61,4 @@
 @media(max-width:380px) { .atlas-page .atlas-hero h1 { font-size:34px; }.atlas-hero-actions { gap:12px; }.atlas-hero-actions > span { font-size:11px;gap:4px; }.atlas-preview-note { display:none; }.atlas-nav { gap:14px; } }
 @media(prefers-reduced-motion:reduce) { .atlas-artifact { transition:none; } }
 .atlas-map { overflow:hidden; }
+.atlas-page .atlas-outcome .atlas-outcome-caption { font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#718199;margin:0 0 10px; }
