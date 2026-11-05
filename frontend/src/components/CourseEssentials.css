@@ -1,0 +1,36 @@
+.course-essentials { position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(140deg,#fff 55%,#f0f7ff);border:1px solid #dce6f3;border-radius:18px;padding:26px 28px;margin:12px 0 36px;box-shadow:0 10px 30px #203f6808; }
+.course-essentials::before { content:'';position:absolute;width:75%;height:80px;background:#dcecff55;border-radius:50%;bottom:-45px;left:-15%;z-index:-1; }
+.essentials-heading { display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:24px;border-bottom:1px solid #e2eaf4; }
+.essentials-heading > span { display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;color:#152f54; }
+.essentials-heading i { width:5px;height:15px;border-radius:3px;background:#0868f8; }
+.essentials-heading small { color:#65758c;font-size:11px;text-align:right; }
+.essentials-grid { display:grid;grid-template-columns:.9fr 1.1fr 1fr;align-items:center;gap:32px;padding:30px 0; }
+.atlas-page .essentials-intro h2 { color:#122a4b;font-size:30px;line-height:1.15;letter-spacing:-.9px;margin:14px 0 18px;font-weight:650; }
+.essentials-intro > p { color:#5b6f89;line-height:1.8;font-size:14px;margin:0; }
+.essentials-steps { list-style:none;padding:0;margin:0;display:grid;gap:22px; }
+.essentials-steps li { position:relative;display:flex;gap:15px;align-items:flex-start; }
+.essentials-steps li:not(:last-child)::after { content:'';position:absolute;left:17px;top:35px;bottom:-24px;width:1px;background:#a8cbff; }
+.essentials-steps li > span { position:relative;z-index:1;display:grid;place-items:center;flex:0 0 35px;height:35px;border-radius:50%;background:#0868f8;color:#fff;font-size:12px;font-weight:600;box-shadow:0 4px 10px #0868f820; }
+.atlas-page .essentials-steps h3 { font-size:16px;line-height:1.3;font-weight:650;color:#163252;margin:2px 0 6px; }
+.essentials-steps p { margin:0;font-size:12px;line-height:1.7;color:#5c6f88; }
+.essentials-visual { min-width:0; }
+.essentials-folder { position:relative;height:230px;margin:0 8px 18px;perspective:900px; }
+.essentials-folder::before { content:'';position:absolute;inset:70px 0 8px;background:#70aaff;border:1px solid #b7d3ff;border-radius:14px;transform:rotate(-5deg);box-shadow:0 12px 28px #2672e51a; }
+.essentials-sheet { position:absolute;top:8px;width:57%;height:170px;background:linear-gradient(140deg,#fff,#eef4ff);border:1px solid #dce6f5;border-radius:7px;padding:12px 9px;box-shadow:0 5px 12px #1f4d8410; }
+.sheet-lessons { left:5%;transform:rotate(-8deg); }.sheet-resources { left:26%;top:26px;transform:rotate(-3deg); }.sheet-projects { left:44%;top:48px;transform:rotate(6deg); }
+.essentials-sheet b { display:block;background:#0868f8;border-radius:4px;color:#fff;font-size:11px;line-height:1.3;padding:6px;text-align:center;margin-bottom:14px; }
+.essentials-sheet i { display:block;height:5px;border-radius:3px;margin:7px 0;background:#d2deef; }.essentials-sheet i:last-child { width:70%; }
+.essentials-folder-front { position:absolute;bottom:0;left:0;right:0;height:105px;border-radius:8px 15px 16px 16px;border:1px solid #4a98ff;background:linear-gradient(145deg,#51a6ff,#0868f8 70%,#1058ca);box-shadow:inset 0 2px 2px #ffffff70,0 14px 24px #0767ef24;display:flex;align-items:center;justify-content:center;gap:12px;color:#fff;transform:rotate(-3deg); }
+.essentials-folder-front strong { font-size:22px;letter-spacing:1px; }
+.essentials-access { position:relative;display:flex;gap:10px;padding:14px;background:#fff;border:1px solid #dce8f8;border-radius:10px;box-shadow:0 6px 18px #24477809; }
+.essentials-access > svg { flex-shrink:0;color:#0868f8; }.essentials-access b { display:block;font-size:12px;line-height:1.5;color:#213d61; }.essentials-access p { margin:5px 0 0;font-size:11px;line-height:1.6;color:#667b96; }
+.essentials-complete { border-top:1px solid #e1eaf4; }
+.essentials-complete > summary { display:flex;align-items:center;gap:10px;padding-top:18px;cursor:pointer;font-size:13px;color:#164f9a;font-weight:600;list-style:none; }
+.essentials-complete > summary::-webkit-details-marker { display:none; }.essentials-complete > summary svg:last-child { margin-left:auto; }.essentials-complete[open] > summary svg:last-child { transform:rotate(180deg); }
+.essentials-detail-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px;align-items:start; }
+.atlas-page .essentials-detail-grid > :is(.cdr-card,.cdr-outcomes,.cdr-academy-certificate) { margin:0;padding:20px;box-shadow:none;border:1px solid #e2eaf4;border-radius:12px;background:#fff; }
+.atlas-page .essentials-detail-grid h2 { font-size:18px;line-height:1.4;margin:0 0 14px; }.essentials-detail-grid ul { margin:0;padding:0;list-style:none; }.essentials-detail-grid li { display:flex;gap:10px;font-size:13px;line-height:1.7;color:#526882; }.essentials-detail-grid li + li { margin-top:10px; }.essentials-detail-grid li > svg { flex-shrink:0;color:#0868f8; }
+@media(max-width:1000px) { .essentials-grid { grid-template-columns:1fr 1.2fr;gap:28px; }.essentials-intro { grid-column:1 / -1; }.atlas-page .essentials-intro h2 br { display:none; }.essentials-folder { max-width:300px;margin-inline:auto; } }
+@media(max-width:600px) { .course-essentials { padding:20px 16px; }.essentials-heading { align-items:flex-start;flex-direction:column;gap:8px;padding-bottom:18px; }.essentials-heading small { text-align:left;margin-left:15px; }.essentials-grid { grid-template-columns:minmax(0,1fr);padding:24px 0;gap:28px; }.atlas-page .essentials-intro h2 { font-size:28px; }.essentials-intro > p { font-size:14px; }.essentials-steps p { font-size:13px; }.essentials-detail-grid { grid-template-columns:minmax(0,1fr); }.essentials-visual { max-width:360px;width:100%;margin:auto; }.essentials-folder { height:225px; } }
+.sheet-resources { top:42px; }
+.sheet-projects { top:76px; }

@@ -5,3 +5,9 @@ Implemented the selected Design 2 on the individual course page. The shared layo
 Validation: production Vite build passed. Browser fixtures passed at 320, 390, 768, 1024 and 1440px with no detected horizontal overflow or JavaScript exceptions. Opened the course overview and curriculum controls and confirmed enrolled Start Learning opens the protected download dialog. Guest checks at 390 and 1440px confirmed Buy Now navigates to the cart. These use test API fixtures and do not represent a real purchase or external resource download.
 
 Screenshots reviewed for the desktop journey and mobile curriculum. On phones the visual journey scrolls inside its own horizontal strip; page content remains within the viewport. The existing unrelated bundle-size warning remains.
+
+## Resources: Connected Essentials (Design 3)
+
+Replaced the narrow resources disclosure with a full-width numbered Learn / Apply / Prepare / Your fit section and a CSS-built layered folder visual. Summary text uses the course's lesson count, outcomes, requirements and audience. All eight original detail groups remain inside an accessible native details disclosure. Protected downloads remain behind the existing enrollment checks.
+
+Production build passes. Reviewed desktop/mobile resource screenshots. Responsive checks at 320, 390, 768 and 1440px reported no page overflow or JavaScript errors; expanded-details checks and the protected-download interaction were also exercised with fixture data. One repeated browser-runner check timed out and was rerun; no real purchase or external download was performed.

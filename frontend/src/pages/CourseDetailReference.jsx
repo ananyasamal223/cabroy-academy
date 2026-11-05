@@ -1,3 +1,4 @@
+import CourseEssentials from "../components/CourseEssentials";
 import { courseVisual } from "../utils/courseVisuals";
 import { useEffect, useState } from "react";
 import api from "../api/client";
@@ -78,7 +79,10 @@ export default function CourseDetailReference({ course }) {
    {course.fullDescription && <Card title="About this course"><p className="cdr-about-description">{course.fullDescription.trim()}</p></Card>}
   </div><aside className="cdr-sidebar" id="programme-details">
    <section className="atlas-access"><span className="atlas-eyebrow">YOUR COURSE ACCESS</span><h2>{course.title}</h2><strong className="atlas-price">{money(course.price)}</strong>{discount > 0 && <del>{money(course.originalPrice)}</del>}<ul><Row icon={Monitor}>Self-paced learning</Row><Row icon={FileText}>Course learning resources</Row><Row icon={Award}>Course completion pathway</Row></ul><button className="atlas-primary" disabled={!accessReady} onClick={courseAction}>{!accessReady ? "Checking access..." : token && access.error ? "Retry access check" : owned ? "Start Learning" : "Buy Now"}</button></section>
-   <details className="atlas-extra"><summary>Resources &amp; course details <ChevronDown size={17}/></summary>
+
+  </aside></main>
+  <CourseEssentials course={course} lessons={lessons} outcomes={outcomes} requirements={requirements}>
+
    <section className="cdr-card cdr-studio-resources"><h2>Learning resources</h2><ul><Row icon={Video}>{lessons} guided lessons &amp; activities</Row><Row icon={FileText}>Course learning resources</Row><Row icon={InfinityIcon}>Learn at your own pace</Row><Row icon={Monitor}>Access through your student dashboard</Row><Row icon={Award}>Course certification pathway</Row><Row icon={Gift}>Practical projects &amp; assignments</Row></ul></section>
    <section className="cdr-outcomes"><h2>Learning outcomes</h2>{!outcomes.length && <p>Learning outcomes will be added soon.</p>}<div>{outcomes.map(item => <p key={item}><span><Check size={13}/></span>{item}</p>)}</div></section>
 
@@ -96,8 +100,8 @@ export default function CourseDetailReference({ course }) {
    <Card title="Requirements"><ul className="cdr-requirements">{requirements.map(item => <Row key={item} icon={CheckCircle2}>{item}</Row>)}</ul></Card>
    <Card title="Tags"><div className="cdr-tags">{[course.category, ...skills].filter(Boolean).map((tag, i) => <span key={`${tag}-${i}`}>{tag}</span>)}</div></Card>
    <Card title="Target Audience"><ul className="cdr-audience">{(course.targetAudience || ["Students looking to build practical skills", "Professionals who want to upskill", "Freelancers building their portfolio", `Anyone interested in ${String(course.category || course.title).toLowerCase()}`]).map(item => <li key={item}>{item}</li>)}</ul></Card>
-   </details>
-  </aside></main>
+
+  </CourseEssentials>
   <AtlasOutcome course={course} image={image}/>
 
   <section className="programme-faq" id="programme-faq"><div><span className="programme-eyebrow">A LITTLE MORE CLARITY</span><h2>Your questions,<br /><span>answered.</span></h2><p>Know what to expect before you take your next step.</p></div><div className="programme-faq-list">{[["Who is this course for?", `This course is suited to ${String(course.level || "all levels").toLowerCase()} learners. Review the requirements and target audience above to decide whether it fits your goals.`], ["What will I learn?", `Explore ${curriculum.length} modules and ${lessons} lessons and activities. Expand a module above to see its topics.`], ["How do I access my course downloads?", "After purchase, sign in and choose Start Learning on this page. Your protected download option will open the course resource link."], ["How does certification work?", "A course certificate is available after meeting the completion requirements. Refer to your course materials or contact your instructor for the applicable requirements."]].map(([question, answer]) => <details key={question}><summary>{question}<ChevronDown size={18} aria-hidden="true"/></summary><p>{answer}</p></details>)}</div></section>
