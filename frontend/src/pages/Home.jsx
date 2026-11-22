@@ -627,8 +627,6 @@ export default function Home() {
             <a href="/courses">Courses</a>
             <a href="/community">Community</a>
             <a href="/pricing">Pricing</a>
-            <a href="/about">About</a>
-            <button type="button" onClick={() => { setMenuOpen(false); setCounsellingOpen(true); }}>Contact</button>
           </nav>
 
           <form className="cab-search" action="/courses" method="get" role="search">

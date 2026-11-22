@@ -4655,3 +4655,14 @@ body {
 }
 .cab-pricing .cab-plan-card:not(.cab-plan-featured):focus-within { border-color: #78acee; box-shadow: 0 10px 28px #174f8c12; }
 @media(prefers-reduced-motion: reduce) { .cab-pricing .cab-plan-card:not(.cab-plan-featured) { transition: none; }.cab-pricing .cab-plan-card:not(.cab-plan-featured):hover { transform: none; } }
+
+/* Center the main navigation while keeping the mobile menu in its own row. */
+@media (min-width: 901px) {
+ .cab-header .cab-menu { justify-content: center; margin-left: 0; }
+}
+@media (min-width: 901px) and (max-width: 1200px) {
+ .cab-header .cab-menu { flex: 1 1 auto; margin-left: 0; }
+}
+@media (max-width: 900px) {
+ .cab-header .cab-menu-open { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
