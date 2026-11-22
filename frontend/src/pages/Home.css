@@ -4666,3 +4666,13 @@ body {
 @media (max-width: 900px) {
  .cab-header .cab-menu-open { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Align navigation with the centre of the header, independent of side widths. */
+@media (min-width: 901px) {
+ .cab-header .cab-nav { position: relative; }
+ .cab-header .cab-menu { position: absolute; left: 50%; top: 12px; height: 56px; transform: translateX(-50%); flex: none; width: max-content; }
+ .cab-header .cab-auth { margin-left: auto; }
+}
+@media (min-width: 1201px) {
+ .cab-header .cab-auth { margin-left: 0; }
+}

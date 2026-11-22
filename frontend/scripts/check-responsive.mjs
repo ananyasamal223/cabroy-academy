@@ -55,7 +55,7 @@ try{
    if(width<800) {
     const interactions=route==='/' ? [
       ['mobile-menu',"document.querySelector('.cab-mobile-toggle')?.click()",'.cab-menu-open',"document.querySelector('.cab-mobile-toggle')?.click()"],
-      ['counselling',"document.querySelector('.cab-mobile-toggle')?.click();document.querySelector('.cab-menu button')?.click()",'.cab-counselling[open]',"document.querySelector('.cab-counselling-close')?.click()"]
+      ['counselling',"document.querySelector('.orbit-copy .cab-actions button')?.click()",'.cab-counselling[open]',"document.querySelector('.cab-counselling-close')?.click()"]
      ] : route==='/courses' ? [['customizer',"document.querySelector('.pc-customize')?.click()",'.cc-dialog[open]',"document.querySelector('.cc-close')?.click()"]]
      : route==='/dashboard' ? [['student-menu',"document.querySelector('[aria-label=\"Open student navigation\"]')?.click()",'.student-sidebar',"document.querySelector('[aria-label=\"Close student navigation\"]')?.click()"]]
      : route==='/admin' ? [['admin-menu',"document.querySelector('.admin-menu-toggle')?.click()",'.admin-sidebar',"document.querySelector('.admin-menu-toggle')?.click()"]] : [];
