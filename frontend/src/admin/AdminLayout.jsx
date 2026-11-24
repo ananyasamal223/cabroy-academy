@@ -34,7 +34,7 @@ const fullMenu = [
   { label: "Certificates", icon: Award, path: "/admin/certificates", permission: "certificates" },
   { label: "Student Feedback", icon: MessageSquareText, path: "/admin/feedback", permission: "reports" },
 ];
-const crmLink = { label: "CRM", icon: Users, path: "/admin/crm" };
+const crmLink = { label: "CRM", icon: Users, path: "/admin/crm/pipeline" };
 
 const BACKEND_ORIGIN = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
@@ -82,9 +82,9 @@ export default function AdminLayout() {
   return (
     <div className="admin-shell min-h-screen overflow-x-hidden bg-[#f7f9fd] text-slate-900">
       {navOpen && <button type="button" tabIndex={-1} aria-label="Close admin navigation" onClick={() => setNavOpen(false)} className="fixed inset-0 z-30 bg-slate-950/35 lg:hidden" />}
-      <aside id="admin-navigation" className={`${navOpen ? "admin-sidebar-open" : ""} admin-sidebar overflow-y-auto fixed inset-y-0 left-0 z-40 hidden w-[220px] border-r lg:flex lg:flex-col ${inCrm ? "bg-[#0d1c3b] border-[#0d1c3b]" : "bg-white border-[#edf0f6]"}`}>
+      <aside id="admin-navigation" className={`${navOpen ? "admin-sidebar-open" : ""} admin-sidebar overflow-y-auto fixed inset-y-0 left-0 z-40 hidden border-r lg:flex lg:flex-col ${inCrm ? "crm-side" : "w-[220px] bg-white border-[#edf0f6]"}`}>
         <div className="flex h-[82px] items-center px-7">
-          <button onClick={() => navigate(menu[0]?.path || "/admin")} className={inCrm ? "text-lg font-bold text-white" : "text-[22px] font-black tracking-[-0.8px] text-[#07357d]"}>
+          <button onClick={() => navigate(menu[0]?.path || "/admin")} className={inCrm ? "crm-wordmark" : "text-[22px] font-black tracking-[-0.8px] text-[#07357d]"}>
             {inCrm ? "Cabroy CRM" : "CABROY"}
           </button>
         </div>
@@ -96,18 +96,18 @@ export default function AdminLayout() {
               to={path}
               end={end}
               className={({ isActive }) => `relative flex h-[50px] items-center gap-3 rounded-xl px-5 text-[14px] font-medium transition ${inCrm
-                ? isActive ? "bg-[#204bd2] text-white" : "text-[#bdcce8] hover:bg-[#17294d]"
+                ? isActive ? "crm-side-active" : "crm-side-link"
                 : isActive ? "bg-[#eef3ff] text-[#2563eb]" : "text-[#667085] hover:bg-slate-50"}`}
             >
               {({ isActive }) => <>{!inCrm && isActive && <span className="absolute -left-3 top-0 h-full w-[4px] rounded-r-full bg-[#2563eb]" />}{Icon && <Icon size={19} />}{label}</>}
             </NavLink>
           ))}
-          {inCrm && <NavLink to={baseMenu[0]?.path || "/admin"} onClick={() => setNavOpen(false)} className="mt-4 rounded-xl text-[#bdcce8] hover:bg-[#17294d]">Back to admin</NavLink>}
+          {inCrm && <NavLink to={baseMenu[0]?.path || "/admin"} onClick={() => setNavOpen(false)} className="crm-side-back">Back to admin</NavLink>}
         </nav>
       </aside>
 
-      <div className="min-w-0 lg:pl-[220px]">
-        <header className="sticky top-0 z-30 border-b border-[#edf0f6] bg-white/95 backdrop-blur">
+      <div className={`min-w-0 ${inCrm ? "crm-admin-content" : "lg:pl-[220px]"}`}>
+        <header className={`sticky top-0 z-30 border-b border-[#edf0f6] bg-white/95 backdrop-blur ${inCrm ? "crm-admin-header" : ""}`}>
           <div className="flex h-[82px] min-w-0 items-center gap-2 px-4 sm:gap-4 xl:px-7"><button className="admin-menu-toggle" type="button" aria-label={navOpen ? "Close navigation" : "Open navigation"} aria-controls="admin-navigation" aria-expanded={navOpen} onClick={() => setNavOpen(!navOpen)}>{navOpen ? <X size={21} /> : <Menu size={21} />}</button>
             <div className="relative hidden min-w-0 max-w-[390px] flex-1 md:block">
               <Search size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />

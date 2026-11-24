@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, NavLink, Route, Routes } from "react-router-dom";
 import api from "../api/client";
 import { LeadDetail, NewLead } from "./crm/LeadDetail";
 import { Dashboard, FollowUps, LeadsPage, Pipeline, Reports, Settings, Students, Team } from "./crm/CrmPages";
-import { crmEndpoint, errorMessage } from "./crm/crmUtils";
+import { crmEndpoint, crmNavigation, errorMessage } from "./crm/crmUtils";
 import "./AdminCrm.css";
 
 export default function AdminCrm() {
@@ -38,6 +38,11 @@ export default function AdminCrm() {
   }
 
   return <main className="crm-page">
+    <nav aria-label="CRM views" className="crm-view-tabs">
+      {crmNavigation.slice(0, 4).map(({ label, icon: Icon, path, end }) => (
+        <NavLink key={path} to={path} end={end}><Icon size={15} aria-hidden="true" />{label}</NavLink>
+      ))}
+    </nav>
     {error && <p role="alert">{error} <button className="crm-button" onClick={() => { setError(""); setRetry((value) => value + 1); }}>Retry</button></p>}
     {!data && !error && <p role="status">Loading CRM…</p>}
     {data && <Routes>

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { CalendarClock, Plus, Search, SlidersHorizontal } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { counselorName, downloadCrmCsv, errorMessage, followUpDate, followUpValue, formatDate,
@@ -66,9 +67,9 @@ function useFilters(data) {
   return { controls, matches, params, update };
 }
 
-function Filters({ state }) {
+function Filters({ state, showSearch = true }) {
   return <div className="crm-filters">
-    <input type="search" aria-label="Search leads" placeholder="Search by name, phone or email" value={state.params.get("q") || ""} onChange={(event) => state.update("q", event.target.value)} />
+    {showSearch && <input type="search" aria-label="Search leads" placeholder="Search by name, phone or email" value={state.params.get("q") || ""} onChange={(event) => state.update("q", event.target.value)} />}
     {state.controls.map(([key, label, options]) => (
       <select key={key} aria-label={label} value={state.params.get(key) || ""} onChange={(event) => state.update(key, event.target.value)}>
         <option value="">{label}</option>
@@ -160,22 +161,38 @@ export function Pipeline({ data, save }) {
     finally { setPending(false); }
   }
   return <>
-    <Heading title="Pipeline" text="Drag a card to change its stage, or open it to update the lead.">
-      <button className="crm-button" aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>Filters</button>{addLead}
-    </Heading>
-    {showFilters && <Filters state={state} />}
+    <Heading title="Pipeline" text="Drag a card to change its stage, or open it to update the lead." />
+    <div className="crm-board-tools">
+      <label className="crm-board-search">
+        <Search size={16} aria-hidden="true" />
+        <input type="search" aria-label="Search pipeline" placeholder="Search leads" value={state.params.get("q") || ""} onChange={(event) => state.update("q", event.target.value)} />
+      </label>
+      <button className="crm-button" aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}><SlidersHorizontal size={15} aria-hidden="true" />Filters</button>
+      <Link className="crm-primary crm-board-add" to={`${root}/leads/new`}><Plus size={16} aria-hidden="true" />Add lead</Link>
+    </div>
+    {showFilters && <Filters state={state} showSearch={false} />}
     {error && <p role="alert">{error}</p>}
     <div className="crm-board" aria-label="Lead pipeline">{data.stages.map((stage) => {
       const leads = state.matches.filter((lead) => lead.crmStage === stage);
-      return <section className="crm-column" key={stage} data-over={hover === stage} onDrop={(event) => drop(event, stage)}
+      return <section className="crm-column" key={stage} data-stage={stage} data-over={hover === stage} onDrop={(event) => drop(event, stage)}
         onDragOver={(event) => { event.preventDefault(); setHover(stage); }}>
-        <h2><Stage name={stage} /> <span>{leads.length}</span></h2>
-        {leads.map((lead) => <Link to={leadPath(lead)} className="crm-pipeline-card" key={lead._id} draggable={!pending}
-          onDragStart={(event) => { event.dataTransfer.setData("text/plain", lead._id); event.dataTransfer.effectAllowed = "move"; }}
-          onDragEnd={() => setHover("")}>
-          <strong>{lead.name}</strong><span>{lead.course || lead.source}</span>
-          <small>{counselorName(data, lead)}{followUpValue(lead) && ` · ${formatDate(followUpValue(lead))}`}</small>
-        </Link>)}
+        <h2><span className="crm-lane-dot" aria-hidden="true" />{stage}<span className="crm-lane-count">{leads.length}</span></h2>
+        {leads.length === 0 && <p className="crm-lane-empty">No leads</p>}
+        {leads.map((lead) => {
+          const counselor = counselorName(data, lead);
+          const next = followUpValue(lead);
+          return <Link to={leadPath(lead)} className="crm-pipeline-card" key={lead._id} draggable={!pending}
+            onDragStart={(event) => { event.dataTransfer.setData("text/plain", lead._id); event.dataTransfer.effectAllowed = "move"; }}
+            onDragEnd={() => setHover("")}>
+            <span className="crm-card-source">{lead.source}</span>
+            <strong>{lead.name}</strong>
+            {lead.course && <span>{lead.course}</span>}
+            <div className="crm-pipeline-meta">
+              <small><span className="crm-owner-mark" aria-hidden="true">{lead.assignedTo ? counselor.charAt(0) : "–"}</span>{counselor}</small>
+              {next && <small className="crm-card-date"><CalendarClock size={13} aria-hidden="true" />{formatDate(next)}</small>}
+            </div>
+          </Link>;
+        })}
       </section>;
     })}</div>
   </>;

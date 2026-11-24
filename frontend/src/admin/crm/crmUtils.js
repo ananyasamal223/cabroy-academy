@@ -1,13 +1,15 @@
+import { CalendarClock, ChartNoAxesCombined, Columns3, GraduationCap, LayoutDashboard, List, Settings, Users } from "lucide-react";
+
 const root = "/admin/crm";
 export const crmNavigation = [
-  { label: "Dashboard", path: root, end: true },
-  { label: "Leads", path: `${root}/leads` },
-  { label: "Pipeline", path: `${root}/pipeline` },
-  { label: "Follow-ups", path: `${root}/follow-ups` },
-  { label: "Students", path: `${root}/students` },
-  { label: "Reports", path: `${root}/reports` },
-  { label: "Team", path: `${root}/team` },
-  { label: "Settings", path: `${root}/settings` },
+  { label: "Dashboard", icon: LayoutDashboard, path: root, end: true },
+  { label: "Leads", icon: List, path: `${root}/leads` },
+  { label: "Pipeline", icon: Columns3, path: `${root}/pipeline` },
+  { label: "Follow-ups", icon: CalendarClock, path: `${root}/follow-ups` },
+  { label: "Students", icon: GraduationCap, path: `${root}/students` },
+  { label: "Reports", icon: ChartNoAxesCombined, path: `${root}/reports` },
+  { label: "Team", icon: Users, path: `${root}/team` },
+  { label: "Settings", icon: Settings, path: `${root}/settings` },
 ];
 
 export const crmEndpoint = "/admin/crm/leads";
