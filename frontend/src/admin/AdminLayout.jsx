@@ -1,6 +1,6 @@
 import AdminNotifications from "./AdminNotifications";
 import { useEffect, useRef, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -21,6 +21,7 @@ import {
 import "./Dashboard.css";
 import "./AdminFocus.css";
 import { useAuth } from "../context/AuthContext";
+import { crmNavigation } from "./crm/crmUtils";
 
 const fullMenu = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin", end: true, permission: "dashboard" },
@@ -33,6 +34,7 @@ const fullMenu = [
   { label: "Certificates", icon: Award, path: "/admin/certificates", permission: "certificates" },
   { label: "Student Feedback", icon: MessageSquareText, path: "/admin/feedback", permission: "reports" },
 ];
+const crmLink = { label: "CRM", icon: Users, path: "/admin/crm" };
 
 const BACKEND_ORIGIN = (import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace(/\/api\/?$/, "");
 
@@ -44,6 +46,7 @@ function resolveAvatar(avatar) {
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
@@ -53,11 +56,13 @@ export default function AdminLayout() {
   const isMainAdmin = user?.role === "admin";
   const has = (permission) => isMainAdmin || permissions.includes(permission);
 
-  const menu = !isMainAdmin && has("sales") && !has("sales_manage")
+  const baseMenu = !isMainAdmin && has("sales") && !has("sales_manage")
     ? [{ label: "My Sales Dashboard", icon: BarChart3, path: "/admin/sales", end: true }]
     : !isMainAdmin && has("instructor_portal") && permissions.length === 1
       ? [{ label: "My Instructor Dashboard", icon: UserRound, path: "/admin/instructor-dashboard", end: true }]
       : fullMenu.filter((item) => has(item.permission));
+  const inCrm = /^\/admin\/crm(?:\/|$)/.test(pathname);
+  const menu = inCrm ? crmNavigation : has("sales") || has("sales_manage") ? [...baseMenu, crmLink] : baseMenu;
 
   useEffect(() => {
     const closeDropdown = (event) => {
@@ -77,10 +82,10 @@ export default function AdminLayout() {
   return (
     <div className="admin-shell min-h-screen overflow-x-hidden bg-[#f7f9fd] text-slate-900">
       {navOpen && <button type="button" tabIndex={-1} aria-label="Close admin navigation" onClick={() => setNavOpen(false)} className="fixed inset-0 z-30 bg-slate-950/35 lg:hidden" />}
-      <aside id="admin-navigation" className={`${navOpen ? "admin-sidebar-open" : ""} admin-sidebar overflow-y-auto fixed inset-y-0 left-0 z-40 hidden w-[220px] border-r border-[#edf0f6] bg-white lg:flex lg:flex-col`}>
+      <aside id="admin-navigation" className={`${navOpen ? "admin-sidebar-open" : ""} admin-sidebar overflow-y-auto fixed inset-y-0 left-0 z-40 hidden w-[220px] border-r lg:flex lg:flex-col ${inCrm ? "bg-[#0d1c3b] border-[#0d1c3b]" : "bg-white border-[#edf0f6]"}`}>
         <div className="flex h-[82px] items-center px-7">
-          <button onClick={() => navigate(menu[0]?.path || "/admin")} className="text-[22px] font-black tracking-[-0.8px] text-[#172554]">
-            rathi<span className="text-[#2563eb]">academy</span>
+          <button onClick={() => navigate(menu[0]?.path || "/admin")} className={inCrm ? "text-lg font-bold text-white" : "text-[22px] font-black tracking-[-0.8px] text-[#172554]"}>
+            {inCrm ? "Cabroy CRM" : <>rathi<span className="text-[#2563eb]">academy</span></>}
           </button>
         </div>
 
@@ -90,11 +95,14 @@ export default function AdminLayout() {
               key={label} onClick={() => { setNavOpen(false); setNavSearch(""); }}
               to={path}
               end={end}
-              className={({ isActive }) => `relative flex h-[50px] items-center gap-3 rounded-xl px-5 text-[14px] font-medium transition ${isActive ? "bg-[#eef3ff] text-[#2563eb]" : "text-[#667085] hover:bg-slate-50"}`}
+              className={({ isActive }) => `relative flex h-[50px] items-center gap-3 rounded-xl px-5 text-[14px] font-medium transition ${inCrm
+                ? isActive ? "bg-[#204bd2] text-white" : "text-[#bdcce8] hover:bg-[#17294d]"
+                : isActive ? "bg-[#eef3ff] text-[#2563eb]" : "text-[#667085] hover:bg-slate-50"}`}
             >
-              {({ isActive }) => <>{isActive && <span className="absolute -left-3 top-0 h-full w-[4px] rounded-r-full bg-[#2563eb]" />}<Icon size={19} />{label}</>}
+              {({ isActive }) => <>{!inCrm && isActive && <span className="absolute -left-3 top-0 h-full w-[4px] rounded-r-full bg-[#2563eb]" />}{Icon && <Icon size={19} />}{label}</>}
             </NavLink>
           ))}
+          {inCrm && <NavLink to={baseMenu[0]?.path || "/admin"} onClick={() => setNavOpen(false)} className="mt-4 rounded-xl text-[#bdcce8] hover:bg-[#17294d]">Back to admin</NavLink>}
         </nav>
       </aside>
 

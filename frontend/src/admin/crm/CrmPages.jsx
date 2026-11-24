@@ -1,0 +1,302 @@
+import { useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { counselorName, downloadCrmCsv, errorMessage, followUpDate, followUpValue, formatDate,
+  isOpenLead, localDate, parseLeadCsv } from "./crmUtils";
+
+const root = "/admin/crm";
+const leadPath = (lead) => `${root}/leads/${lead._id}`;
+const addLead = <Link className="crm-primary" to={`${root}/leads/new`}>Add lead</Link>;
+const matchSearch = (lead, query) => [lead.name, lead.email, lead.phone, lead.course]
+  .some((value) => value?.toLowerCase().includes(query.trim().toLowerCase()));
+const due = (lead) => isOpenLead(lead) && followUpDate(lead) && followUpDate(lead) <= localDate();
+
+export function Stage({ name }) {
+  return <span className="crm-stage" data-stage={name}>{name}</span>;
+}
+
+function Heading({ title, text, children }) {
+  return <header className="crm-heading">
+    <div><h1>{title}</h1>{text && <p>{text}</p>}</div>
+    {children && <div className="crm-actions">{children}</div>}
+  </header>;
+}
+
+function Metrics({ data }) {
+  const today = localDate();
+  const monday = new Date();
+  monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const values = [
+    ["New leads today", data.leads.filter((lead) => localDate(lead.createdAt) === today).length, "leads"],
+    ["Follow-ups due", data.leads.filter(due).length, "follow-ups"],
+    ["Demos this week", data.leads.filter((lead) => lead.crmStage === "Demo booked" && lead.demoAt
+      && localDate(lead.demoAt) >= localDate(monday) && localDate(lead.demoAt) <= localDate(sunday)).length, "pipeline"],
+    ["Enrolled this month", data.leads.filter((lead) => lead.crmStage === "Enrolled"
+      && localDate(lead.enrolledAt || lead.updatedAt).slice(0, 7) === today.slice(0, 7)).length, "students"],
+  ];
+  return <div className="crm-metrics">{values.map(([name, value, path]) => (
+    <Link className="crm-panel crm-metric" key={name} to={`${root}/${path}`}><span>{name}</span><strong>{value}</strong></Link>
+  ))}</div>;
+}
+
+function useFilters(data) {
+  const [params, setParams] = useSearchParams();
+  const controls = [
+    ["stage", "Stage", data.stages.map((value) => [value, value])],
+    ["source", "Source", [...new Set(data.leads.map((lead) => lead.source))].sort().map((value) => [value, value])],
+    ["course", "Course", [...new Set(data.leads.map((lead) => lead.course).filter(Boolean))].sort().map((value) => [value, value])],
+  ];
+  if (data.canAssign) {
+    controls.push(["counselor", "Counselor", [["unassigned", "Unassigned"], ...data.assignees.map(({ _id, name }) => [_id, name])]]);
+  }
+  const update = (key, value) => setParams((current) => {
+    const next = new URLSearchParams(current);
+    if (key !== "page") next.delete("page");
+    if (value) next.set(key, value);
+    else next.delete(key);
+    return next;
+  }, { replace: key !== "page" });
+  const matches = data.leads.filter((lead) => matchSearch(lead, params.get("q") || "")
+    && (!params.get("stage") || params.get("stage") === lead.crmStage)
+    && (!params.get("source") || params.get("source") === lead.source)
+    && (!params.get("course") || params.get("course") === lead.course)
+    && (!params.get("counselor") || params.get("counselor") === (lead.assignedTo || "unassigned")));
+  return { controls, matches, params, update };
+}
+
+function Filters({ state }) {
+  return <div className="crm-filters">
+    <input type="search" aria-label="Search leads" placeholder="Search by name, phone or email" value={state.params.get("q") || ""} onChange={(event) => state.update("q", event.target.value)} />
+    {state.controls.map(([key, label, options]) => (
+      <select key={key} aria-label={label} value={state.params.get(key) || ""} onChange={(event) => state.update(key, event.target.value)}>
+        <option value="">{label}</option>
+        {options.map(([value, name]) => <option key={value} value={value}>{name}</option>)}
+      </select>
+    ))}
+  </div>;
+}
+
+function LeadTable({ data, leads, action }) {
+  if (!leads.length) return <p className="crm-panel crm-box">No leads to show.</p>;
+  return <div className="crm-panel crm-table-wrap"><table>
+    <thead><tr><th>Name</th><th>Phone</th><th>Course</th><th>Source</th><th>Stage</th><th>Counselor</th><th>Next follow-up</th>{action && <th>Action</th>}</tr></thead>
+    <tbody>{leads.map((lead) => <tr key={lead._id}>
+      <td><Link to={leadPath(lead)}>{lead.name}</Link></td><td>{lead.phone || "—"}</td><td>{lead.course || "—"}</td>
+      <td>{lead.source}</td><td><Stage name={lead.crmStage} /></td><td>{counselorName(data, lead)}</td><td>{formatDate(followUpValue(lead))}</td>
+      {action && <td>{action(lead)}</td>}
+    </tr>)}</tbody>
+  </table></div>;
+}
+
+function exportLeads(data, leads, file = "cabroy-leads.csv") {
+  downloadCrmCsv(file, ["Name", "Email", "Phone", "Course", "Source", "Stage", "Counselor", "Next follow-up", "City", "Subject"],
+    leads.map((lead) => [lead.name, lead.email, lead.phone, lead.course, lead.source, lead.crmStage,
+      counselorName(data, lead), followUpValue(lead), lead.city, lead.subject]));
+}
+
+export function LeadsPage({ data, importLeads }) {
+  const state = useFilters(data);
+  const fileInput = useRef(null);
+  const [feedback, setFeedback] = useState(null);
+  const [pending, setPending] = useState(false);
+  const size = data.preferences.pageSize;
+  const max = Math.max(1, Math.ceil(state.matches.length / size));
+  const page = Math.min(max, Math.max(1, Number.parseInt(state.params.get("page"), 10) || 1));
+  const start = (page - 1) * size;
+  const rows = state.matches.slice(start, start + size);
+
+  async function importFile(event) {
+    const file = event.target.files[0];
+    event.target.value = "";
+    if (!file) return;
+    setFeedback(null);
+    setPending(true);
+    try {
+      if (file.size > 500_000) throw new Error("Choose a CSV file smaller than 500 KB.");
+      const count = await importLeads(parseLeadCsv(await file.text()));
+      setFeedback({ message: `Imported ${count} ${count === 1 ? "lead" : "leads"}.` });
+    } catch (err) { setFeedback({ message: errorMessage(err), error: true }); }
+    finally { setPending(false); }
+  }
+
+  return <>
+    <Heading title="Leads" text="Manage inquiries and their next steps.">
+      {data.canAssign && <>
+        <input ref={fileInput} type="file" hidden accept=".csv,text/csv" onChange={importFile} />
+        <button className="crm-button" disabled={pending} onClick={() => fileInput.current.click()}>{pending ? "Importing…" : "Import CSV"}</button>
+      </>}
+      <button className="crm-button" disabled={!state.matches.length} onClick={() => exportLeads(data, state.matches)}>Export</button>
+      {addLead}
+    </Heading>
+    {feedback && <p role={feedback.error ? "alert" : "status"}>{feedback.message}</p>}
+    <Metrics data={data} /><Filters state={state} /><LeadTable data={data} leads={rows} />
+    <div className="crm-pagination">
+      <p>{rows.length ? `Showing ${start + 1} to ${start + rows.length} of ${state.matches.length} leads` : "Showing 0 leads"}</p>
+      {max > 1 && <div className="crm-actions">
+        <button className="crm-button" disabled={page <= 1} onClick={() => state.update("page", page - 1)}>Previous</button>
+        <button className="crm-button" disabled={page >= max} onClick={() => state.update("page", page + 1)}>Next</button>
+      </div>}
+    </div>
+  </>;
+}
+
+export function Pipeline({ data, save }) {
+  const state = useFilters(data);
+  const [showFilters, setShowFilters] = useState(false);
+  const [hover, setHover] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+  async function drop(event, stage) {
+    event.preventDefault();
+    setHover("");
+    const lead = data.leads.find((item) => item._id === event.dataTransfer.getData("text/plain"));
+    if (!lead || lead.crmStage === stage || pending) return;
+    setError("");
+    setPending(true);
+    try { await save({ crmStage: stage }, lead._id); }
+    catch (err) { setError(errorMessage(err)); }
+    finally { setPending(false); }
+  }
+  return <>
+    <Heading title="Pipeline" text="Drag a card to change its stage, or open it to update the lead.">
+      <button className="crm-button" aria-expanded={showFilters} onClick={() => setShowFilters(!showFilters)}>Filters</button>{addLead}
+    </Heading>
+    {showFilters && <Filters state={state} />}
+    {error && <p role="alert">{error}</p>}
+    <div className="crm-board" aria-label="Lead pipeline">{data.stages.map((stage) => {
+      const leads = state.matches.filter((lead) => lead.crmStage === stage);
+      return <section className="crm-column" key={stage} data-over={hover === stage} onDrop={(event) => drop(event, stage)}
+        onDragOver={(event) => { event.preventDefault(); setHover(stage); }}>
+        <h2><Stage name={stage} /> <span>{leads.length}</span></h2>
+        {leads.map((lead) => <Link to={leadPath(lead)} className="crm-pipeline-card" key={lead._id} draggable={!pending}
+          onDragStart={(event) => { event.dataTransfer.setData("text/plain", lead._id); event.dataTransfer.effectAllowed = "move"; }}
+          onDragEnd={() => setHover("")}>
+          <strong>{lead.name}</strong><span>{lead.course || lead.source}</span>
+          <small>{counselorName(data, lead)}{followUpValue(lead) && ` · ${formatDate(followUpValue(lead))}`}</small>
+        </Link>)}
+      </section>;
+    })}</div>
+  </>;
+}
+
+export function Dashboard({ data }) {
+  return <>
+    <Heading title="Dashboard" text="Your lead activity at a glance.">{addLead}</Heading><Metrics data={data} />
+    <section className="crm-stack"><div className="crm-heading"><h2>Recent leads</h2><Link className="crm-button" to={`${root}/leads`}>View all leads</Link></div>
+      <LeadTable data={data} leads={data.leads.slice(0, 6)} /></section>
+  </>;
+}
+
+export function FollowUps({ data, save }) {
+  const [range, setRange] = useState("due");
+  const [pending, setPending] = useState("");
+  const [error, setError] = useState("");
+  const rows = data.leads.filter((lead) => isOpenLead(lead) && followUpValue(lead) && (range === "all" || due(lead)))
+    .sort((a, b) => followUpValue(a).localeCompare(followUpValue(b)));
+  async function complete(lead) {
+    setPending(lead._id);
+    setError("");
+    try { await save({ followUpAt: null, completeFollowUp: true, expectedFollowUp: followUpValue(lead) }, lead._id); }
+    catch (err) { setError(errorMessage(err)); }
+    finally { setPending(""); }
+  }
+  return <>
+    <Heading title="Follow-ups" text="Work through due and upcoming follow-ups.">
+      <select aria-label="Follow-up range" value={range} onChange={(event) => setRange(event.target.value)}>
+        <option value="due">Due today or overdue</option><option value="all">All scheduled</option>
+      </select>
+    </Heading>
+    {error && <p role="alert">{error}</p>}
+    <LeadTable data={data} leads={rows} action={(lead) => <button className="crm-button" disabled={Boolean(pending)} onClick={() => complete(lead)}>{pending === lead._id ? "Saving…" : "Mark as done"}</button>} />
+  </>;
+}
+
+export function Students({ data }) {
+  const [query, setQuery] = useState("");
+  const enrolled = data.leads.filter((lead) => lead.crmStage === "Enrolled" && matchSearch(lead, query));
+  return <>
+    <Heading title="Students" text="Leads marked as enrolled in the CRM.">
+      <button className="crm-button" disabled={!enrolled.length} onClick={() => exportLeads(data, enrolled, "cabroy-enrolled-leads.csv")}>Export</button>
+    </Heading>
+    <div className="crm-filters"><input type="search" aria-label="Search students" placeholder="Search students" value={query} onChange={(event) => setQuery(event.target.value)} /></div>
+    <LeadTable data={data} leads={enrolled} />
+  </>;
+}
+
+export function Reports({ data }) {
+  const [range, setRange] = useState("30");
+  const start = new Date();
+  if (range !== "all") start.setDate(start.getDate() - Number(range) + 1);
+  const leads = data.leads.filter((lead) => range === "all" || localDate(lead.createdAt) >= localDate(start));
+  const stages = data.stages.map((stage) => [stage, leads.filter((lead) => lead.crmStage === stage).length]);
+  const sourceCounts = new Map();
+  for (const { source } of leads) sourceCounts.set(source, (sourceCounts.get(source) || 0) + 1);
+  const sources = [...sourceCounts].sort((a, b) => b[1] - a[1]);
+  const enrolled = stages.find(([stage]) => stage === "Enrolled")[1];
+  const conversion = leads.length ? Math.round(enrolled / leads.length * 100) : 0;
+  return <>
+    <Heading title="Reports" text="Pipeline and source breakdown for leads created in the selected period.">
+      <select aria-label="Reporting period" value={range} onChange={(event) => setRange(event.target.value)}>
+        <option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="all">All time</option>
+      </select>
+      <button className="crm-button" disabled={!leads.length} onClick={() => downloadCrmCsv("cabroy-crm-report.csv", ["Breakdown", "Value", "Leads"], [
+        ...stages.map(([name, value]) => ["Stage", name, value]), ...sources.map(([name, value]) => ["Source", name, value]),
+      ])}>Export report</button>
+    </Heading>
+    <div className="crm-metrics">{[["Leads", leads.length], ["Enrolled", enrolled], ["Conversion rate", `${conversion}%`]].map(([label, value]) =>
+      <div className="crm-panel crm-metric" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
+    <div className="crm-two-columns">{[["By stage", stages], ["By source", sources]].map(([title, items]) =>
+      <section className="crm-panel crm-box crm-stack" key={title}><h2>{title}</h2>
+        {items.length ? items.map(([label, value]) => <div className="crm-report-row" key={label}>
+          <span>{label}</span><progress aria-label={label} value={value} max={leads.length || 1} /><strong>{value}</strong>
+        </div>) : <p>No data for this period.</p>}
+      </section>)}</div>
+  </>;
+}
+
+export function Team({ data }) {
+  const { user } = useAuth();
+  const people = data.canAssign ? data.assignees : [{ _id: user._id || user.id, name: user.name }];
+  const canManageEmployees = user.role === "admin" || user.adminPermissions?.includes("employees");
+  return <>
+    <Heading title="Team" text={data.canAssign ? "Review counselor workloads and open their assigned leads." : "Review your assigned workload."}>
+      {canManageEmployees && <Link className="crm-button" to="/admin/employees">Manage employees</Link>}
+    </Heading>
+    <div className="crm-panel crm-table-wrap"><table><thead><tr><th>Counselor</th><th>Assigned leads</th><th>Open leads</th><th>Follow-ups due</th></tr></thead>
+      <tbody>{people.map((person) => {
+        const leads = data.canAssign ? data.leads.filter((lead) => lead.assignedTo === person._id) : data.leads;
+        return <tr key={person._id}><td><Link to={data.canAssign ? `${root}/leads?counselor=${person._id}` : `${root}/leads`}>{person.name}</Link></td>
+          <td>{leads.length}</td><td>{leads.filter(isOpenLead).length}</td><td>{leads.filter(due).length}</td></tr>;
+      })}</tbody>
+    </table></div>
+    {data.canAssign && <div><Link className="crm-button" to={`${root}/leads?counselor=unassigned`}>View unassigned leads</Link></div>}
+  </>;
+}
+
+export function Settings({ data, savePreferences }) {
+  const [pending, setPending] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  async function submit(event) {
+    event.preventDefault();
+    setPending(true);
+    setFeedback(null);
+    const values = Object.fromEntries(new FormData(event.currentTarget));
+    try {
+      await savePreferences({ ...values, pageSize: Number(values.pageSize) });
+      setFeedback({ message: "Preferences saved." });
+    } catch (err) { setFeedback({ message: errorMessage(err), error: true }); }
+    finally { setPending(false); }
+  }
+  return <>
+    <Heading title="Settings" text="Customize your CRM defaults." />
+    <form className="crm-panel crm-box crm-form crm-create" onSubmit={submit}>
+      <label>Leads per page<select name="pageSize" defaultValue={data.preferences.pageSize}><option>10</option><option>25</option><option>50</option></select></label>
+      <label>Default follow-up time<input name="followUpTime" type="time" required defaultValue={data.preferences.followUpTime} /></label>
+      <label>Default lead source<input name="leadSource" required maxLength={80} defaultValue={data.preferences.leadSource} /></label>
+      <button className="crm-primary" disabled={pending}>{pending ? "Saving…" : "Save preferences"}</button>
+      {feedback && <p role={feedback.error ? "alert" : "status"}>{feedback.message}</p>}
+    </form>
+  </>;
+}

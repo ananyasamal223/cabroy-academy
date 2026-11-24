@@ -1,6 +1,7 @@
 import Contact from "../models/Contact.js";
 export async function createContact(req,res){
-  const contact=await Contact.create(req.body);
+  const { name, email, phone, subject, message } = req.body;
+  const contact=await Contact.create({ name, email, phone, subject, message, source: "Website" });
   res.status(201).json({message:"Message received",contact});
 }
 export async function listContacts(req,res){

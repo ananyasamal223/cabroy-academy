@@ -57,6 +57,7 @@ import Instructors from "./admin/InstructorManagement";
 import InstructorOverview from "./admin/InstructorOverview";
 import AdminCertificates from "./admin/Certificates";
 import SalesDashboard from "./admin/SalesDashboard";
+import AdminCrm from "./admin/AdminCrm";
 import AdminProfile from "./admin/AdminProfile";
 import CourseInsights from "./admin/CourseInsights";
 import EmployeeManagement from "./admin/EmployeeManagement";
@@ -280,6 +281,7 @@ export default function App() {
             path="sales"
             element={<SalesDashboard />}
           />
+          <Route path="crm/*" element={<AdminCrm />} />
 
         </Route>
         </Route>

@@ -1,6 +1,7 @@
 import { notificationAccess, listAdminNotifications, readAdminNotifications } from "../controllers/adminNotification.controller.js";
 import { adminCertificates } from "../controllers/certificate.controller.js";
 import { Router } from "express";
+import { crmAccess, listCrmLeads, getCrmLead, getCrmPayments, createCrmLead, importCrmLeads, updateCrmLead, updateCrmPreferences } from "../controllers/crm.controller.js";
 import { getSubscriptionPlans, updateSubscriptionPlan } from "../controllers/subscriptionPlans.controller.js";
 import { listSubscriptions, createSubscriber, editSubscriber, saveSubscriptionSettings } from "../controllers/subscriptionManagement.controller.js";
 import { protect, authorizeAdminPermission } from "../middleware/auth.js";
@@ -37,6 +38,13 @@ import {
 } from "../controllers/admin.controller.js";
 
 const router = Router();
+router.get("/crm/leads", protect, crmAccess, listCrmLeads);
+router.post("/crm/leads", protect, crmAccess, createCrmLead);
+router.post("/crm/leads/import", protect, crmAccess, importCrmLeads);
+router.get("/crm/leads/:id", protect, crmAccess, getCrmLead);
+router.get("/crm/leads/:id/payments", protect, crmAccess, getCrmPayments);
+router.patch("/crm/leads/:id", protect, crmAccess, updateCrmLead);
+router.put("/crm/preferences", protect, crmAccess, updateCrmPreferences);
 router.get("/notifications", protect, notificationAccess, listAdminNotifications);
 router.patch("/notifications/read", protect, notificationAccess, readAdminNotifications);
 router.get("/certificates", protect, authorizeAdminPermission("certificates"), adminCertificates);

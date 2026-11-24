@@ -33,7 +33,9 @@ function canOpenAdminPath(user, pathname) {
   if (!user?.adminAccess) return false;
   if (pathname === "/admin/profile") return true;
   const perms = user.adminPermissions || [];
-  if (pathname === "/admin/sales") return perms.includes("sales") || perms.includes("sales_manage");
+  if (pathname === "/admin/sales" || /^\/admin\/crm(?:\/|$)/.test(pathname)) {
+    return perms.includes("sales") || perms.includes("sales_manage");
+  }
   if (pathname === "/admin" || pathname === "/admin/") return perms.includes("dashboard");
   const hit = adminPathPermission.find(([prefix]) => pathname.startsWith(prefix));
   return hit ? perms.includes(hit[1]) : false;
