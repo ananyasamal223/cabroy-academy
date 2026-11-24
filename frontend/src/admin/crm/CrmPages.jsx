@@ -100,6 +100,7 @@ function exportLeads(data, leads, file = "cabroy-leads.csv") {
 export function LeadsPage({ data, importLeads }) {
   const state = useFilters(data);
   const fileInput = useRef(null);
+  const [showMetaDemo, setShowMetaDemo] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [pending, setPending] = useState(false);
   const size = data.preferences.pageSize;
@@ -125,12 +126,35 @@ export function LeadsPage({ data, importLeads }) {
   return <>
     <Heading title="Leads" text="Manage inquiries and their next steps.">
       {data.canAssign && <>
+        <button type="button" className="crm-button" aria-expanded={showMetaDemo} onClick={() => setShowMetaDemo(!showMetaDemo)}>
+          {showMetaDemo ? "Hide Meta lead demo" : "Meta lead demo"}
+        </button>
         <input ref={fileInput} type="file" hidden accept=".csv,text/csv" onChange={importFile} />
         <button className="crm-button" disabled={pending} onClick={() => fileInput.current.click()}>{pending ? "Importing…" : "Import CSV"}</button>
       </>}
       <button className="crm-button" disabled={!state.matches.length} onClick={() => exportLeads(data, state.matches)}>Export</button>
       {addLead}
     </Heading>
+    {showMetaDemo && <section className="crm-panel crm-box crm-stack" aria-labelledby="crm-meta-demo-title">
+      <div className="crm-heading">
+        <div><h2 id="crm-meta-demo-title">Facebook Instant Form demo</h2><p>Sample lead for preview</p></div>
+        <Stage name="New" />
+      </div>
+      <dl className="crm-definition">
+        <div><dt>Name</dt><dd>Aditi Sharma (Demo)</dd></div>
+        <div><dt>Course</dt><dd>Digital Marketing</dd></div>
+        <div><dt>Source</dt><dd>Meta Ads</dd></div>
+        <div><dt>Platform</dt><dd>Facebook</dd></div>
+      </dl>
+      <details>
+        <summary>Meta ad attribution</summary>
+        <dl className="crm-definition">
+          <div><dt>Form ID</dt><dd>100000000001</dd></div>
+          <div><dt>Ad ID</dt><dd>100000000002</dd></div>
+          <div><dt>Campaign ID</dt><dd>100000000003</dd></div>
+        </dl>
+      </details>
+    </section>}
     {feedback && <p role={feedback.error ? "alert" : "status"}>{feedback.message}</p>}
     <Metrics data={data} /><Filters state={state} /><LeadTable data={data} leads={rows} />
     <div className="crm-pagination">

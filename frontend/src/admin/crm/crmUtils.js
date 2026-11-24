@@ -74,7 +74,9 @@ export function parseLeadCsv(text) {
     }
   }
   const headers = rows.shift()?.map((key) => key.trim().toLowerCase()) || [];
-  if (!headers.includes("name") || !headers.includes("email")) throw new Error("The CSV needs name and email columns.");
+  if (!headers.includes("name") || (!headers.includes("email") && !headers.includes("phone"))) {
+    throw new Error("The CSV needs a name column and an email or phone column.");
+  }
   if (new Set(headers).size !== headers.length) throw new Error("CSV column names must be unique.");
   if (!rows.length || rows.length > 200) throw new Error("Import between 1 and 200 leads at a time.");
   const fields = ["name", "email", "phone", "course", "source", "city", "subject", "message"];

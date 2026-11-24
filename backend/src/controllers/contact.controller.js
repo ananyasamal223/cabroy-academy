@@ -1,6 +1,7 @@
 import Contact from "../models/Contact.js";
 export async function createContact(req,res){
   const { name, email, phone, subject, message } = req.body;
+  if (typeof email !== "string" || !email.trim()) return res.status(400).json({ message: "Email is required." });
   const contact=await Contact.create({ name, email, phone, subject, message, source: "Website" });
   res.status(201).json({message:"Message received",contact});
 }

@@ -55,7 +55,7 @@ function prepareLead(input, req) {
     if (typeof value !== "string" || value.trim().length > max) return null;
     values[key] = value.trim();
   }
-  if (!values.name || !validEmail(values.email)) return null;
+  if (!values.name || (values.email ? !validEmail(values.email) : !values.phone)) return null;
   return {
     ...values,
     email: values.email.toLowerCase(),
@@ -104,7 +104,8 @@ export async function getCrmPayments(req, res) {
   if (!isObjectIdOrHexString(id)) return res.status(404).json({ message: "Lead not found." });
   const contact = await Contact.findOne({ ...leadScope(req), _id: id }).select("email").lean();
   if (!contact) return res.status(404).json({ message: "Lead not found." });
-  const student = await User.findOne({ email: contact.email.trim().toLowerCase(), role: "student" }).select("_id").lean();
+  const email = contact.email?.trim().toLowerCase();
+  const student = email ? await User.findOne({ email, role: "student" }).select("_id").lean() : null;
   const payments = student ? await Payment.find({ user: student._id, status: "paid" })
     .select("amount currency paidAt createdAt planName courses")
     .populate("courses", "title").sort({ paidAt: -1 }).lean() : [];
@@ -113,7 +114,7 @@ export async function getCrmPayments(req, res) {
 
 export async function createCrmLead(req, res) {
   const record = prepareLead(req.body, req);
-  if (!record) return res.status(400).json({ message: "Enter a name and valid email, and keep lead details within the form limits." });
+  if (!record) return res.status(400).json({ message: "Enter a name and an email or phone number, within the form limits." });
   const contact = await Contact.create(record);
   res.status(201).json({ lead: leadData(contact.toObject()) });
 }
@@ -126,7 +127,7 @@ export async function importCrmLeads(req, res) {
   }
   const records = rows.map((row) => prepareLead(row, req));
   const invalid = records.indexOf(null);
-  if (invalid !== -1) return res.status(400).json({ message: `CSV row ${invalid + 2} needs a valid name, email, and field lengths.` });
+  if (invalid !== -1) return res.status(400).json({ message: `CSV row ${invalid + 2} needs a name and an email or phone number, within the field limits.` });
   const contacts = await Contact.insertMany(records);
   res.status(201).json({ leads: contacts.map((contact) => leadData(contact.toObject())) });
 }

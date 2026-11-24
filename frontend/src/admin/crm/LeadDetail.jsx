@@ -17,7 +17,7 @@ function LeadFields({ lead, courses }) {
     {fieldDefinitions.map(([name, label, type, maxLength]) => (
       <label key={name}>{label}
         <input name={name} type={type} maxLength={maxLength} defaultValue={lead[name] || ""}
-          required={name === "name" || name === "email"} list={name === "course" ? listId : undefined} />
+          required={name === "name"} list={name === "course" ? listId : undefined} />
       </label>
     ))}
     <datalist id={listId}>{courses.map((name) => <option key={name} value={name} />)}</datalist>
@@ -150,7 +150,7 @@ function LeadWorkspace({ initialLead, data, save }) {
       <div className="crm-actions">
         {digits && <><a className="crm-button" href={`tel:${phone}`}>Call</a>
           <a className="crm-button" href={`https://wa.me/${whatsappDigits}`} target="_blank" rel="noreferrer">WhatsApp</a></>}
-        <a className="crm-button" href={`mailto:${encodeURIComponent(lead.email)}`}>Email</a>
+        {lead.email && <a className="crm-button" href={`mailto:${encodeURIComponent(lead.email)}`}>Email</a>}
         <button className="crm-primary" disabled={saving} onClick={() => setEditor(editor === "stage" ? "" : "stage")}>Change stage</button>
       </div>
     </div>
@@ -187,6 +187,16 @@ function LeadWorkspace({ initialLead, data, save }) {
               ["Source", lead.source], ["Counselor", counselorName(data, lead)],
             ].map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{value || "—"}</dd></div>)}</dl>
             {lead.message && <p className="crm-message">{lead.message}</p>}
+            {lead.meta && <details>
+              <summary>Meta ad attribution</summary>
+              <dl className="crm-definition">{[
+                ["Form ID", lead.meta.formId], ["Ad ID", lead.meta.adId], ["Campaign ID", lead.meta.campaignId],
+                ["Platform", { fb: "Facebook", ig: "Instagram", facebook: "Facebook", instagram: "Instagram" }[lead.meta.platform]],
+                ["Submitted", lead.meta.submittedAt && formatDate(lead.meta.submittedAt)],
+              ].filter(([, value]) => value).map(([name, value]) => (
+                <div key={name}><dt>{name}</dt><dd>{value}</dd></div>
+              ))}</dl>
+            </details>}
             {data.canAssign && <label className="crm-form">Assign counselor
               <select value={lead.assignedTo || ""} disabled={saving} onChange={(event) => update({ assignedTo: event.target.value || null }, "Counselor updated.")}>
                 <option value="">Unassigned</option>

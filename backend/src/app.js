@@ -21,6 +21,7 @@ import uploadRoutes from "./routes/upload.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import mentorSessionRoutes from "./routes/mentorSession.routes.js";
 import feedbackRoutes from "./routes/feedback.routes.js";
+import metaLeadRoutes from "./routes/metaLead.routes.js";
 
 import {notFound,errorHandler} from "./middleware/error.js";
 
@@ -37,6 +38,8 @@ app.use(cors({
   origin:(process.env.CLIENT_URL||"http://localhost:5173").split(",").map(origin => origin.trim()).filter(Boolean),
   credentials:true
 }));
+// Meta signs the raw body and sends the verification token in the query string.
+app.use("/api/integrations/meta/leads", metaLeadRoutes);
 app.use(express.json({limit:"2mb"}));
 app.use(express.urlencoded({extended:true}));
 app.use(morgan(process.env.NODE_ENV==="production"?"combined":"dev"));
