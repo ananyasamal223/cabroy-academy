@@ -143,6 +143,55 @@ export function LeadsPage({ data, importLeads }) {
   </>;
 }
 
+function PipelineCard({ lead, data, save, canDrag, onDragEnd }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const counselor = counselorName(data, lead);
+  const next = followUpValue(lead);
+
+  async function addNote(event) {
+    event.preventDefault();
+    const note = new FormData(event.currentTarget).get("note").trim();
+    if (!note) { setError("Enter a discussion note."); return; }
+    setSaving(true);
+    setError("");
+    try {
+      await save({ note }, lead._id);
+      setEditing(false);
+    } catch (err) { setError(errorMessage(err)); }
+    finally { setSaving(false); }
+  }
+
+  return <article className="crm-pipeline-card" draggable={canDrag && !editing}
+    onDragStart={(event) => {
+      if (!canDrag || editing) { event.preventDefault(); return; }
+      event.dataTransfer.setData("text/plain", lead._id);
+      event.dataTransfer.effectAllowed = "move";
+    }}
+    onDragEnd={onDragEnd}>
+    <span className="crm-card-source">{lead.source}</span>
+    <Link className="crm-card-name" to={leadPath(lead)}>{lead.name}</Link>
+    {lead.course && <span>{lead.course}</span>}
+    <div className="crm-pipeline-meta">
+      <small><span className="crm-owner-mark" aria-hidden="true">{lead.assignedTo ? counselor.charAt(0) : "–"}</span>{counselor}</small>
+      {next && <small className="crm-card-date"><CalendarClock size={13} aria-hidden="true" />{formatDate(next)}</small>}
+    </div>
+    <div className="crm-card-discussion" aria-live="polite">
+      <strong>Discussion notes</strong>
+      <p>{lead.latestDiscussion?.text || "No discussion notes yet."}</p>
+    </div>
+    {editing ? <form className="crm-form crm-card-note-form" onSubmit={addNote}>
+      <textarea name="note" aria-label={`Discussion note for ${lead.name}`} placeholder="What did you discuss?" rows={3} maxLength={2000} required />
+      <div className="crm-actions">
+        <button className="crm-primary" disabled={saving}>{saving ? "Saving…" : "Save note"}</button>
+        <button type="button" className="crm-button" disabled={saving} onClick={() => { setEditing(false); setError(""); }}>Cancel</button>
+      </div>
+      {error && <p role="alert">{error}</p>}
+    </form> : <button type="button" className="crm-button crm-card-note-button" onClick={() => setEditing(true)}>Add note</button>}
+  </article>;
+}
+
 export function Pipeline({ data, save }) {
   const state = useFilters(data);
   const [showFilters, setShowFilters] = useState(false);
@@ -178,21 +227,8 @@ export function Pipeline({ data, save }) {
         onDragOver={(event) => { event.preventDefault(); setHover(stage); }}>
         <h2><span className="crm-lane-dot" aria-hidden="true" />{stage}<span className="crm-lane-count">{leads.length}</span></h2>
         {leads.length === 0 && <p className="crm-lane-empty">No leads</p>}
-        {leads.map((lead) => {
-          const counselor = counselorName(data, lead);
-          const next = followUpValue(lead);
-          return <Link to={leadPath(lead)} className="crm-pipeline-card" key={lead._id} draggable={!pending}
-            onDragStart={(event) => { event.dataTransfer.setData("text/plain", lead._id); event.dataTransfer.effectAllowed = "move"; }}
-            onDragEnd={() => setHover("")}>
-            <span className="crm-card-source">{lead.source}</span>
-            <strong>{lead.name}</strong>
-            {lead.course && <span>{lead.course}</span>}
-            <div className="crm-pipeline-meta">
-              <small><span className="crm-owner-mark" aria-hidden="true">{lead.assignedTo ? counselor.charAt(0) : "–"}</span>{counselor}</small>
-              {next && <small className="crm-card-date"><CalendarClock size={13} aria-hidden="true" />{formatDate(next)}</small>}
-            </div>
-          </Link>;
-        })}
+        {leads.map((lead) => <PipelineCard key={lead._id} lead={lead} data={data} save={save}
+          canDrag={!pending} onDragEnd={() => setHover("")} />)}
       </section>;
     })}</div>
   </>;

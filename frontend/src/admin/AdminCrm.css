@@ -131,7 +131,13 @@ a.crm-metric:hover { border-color: #8eace7; }
 .crm-pipeline-card:hover { border-color: var(--lane-ink); }
 .crm-pipeline-card[draggable="true"] { cursor: grab; }
 .crm-pipeline-card span, .crm-pipeline-card small { color: #526580; font-size: 12px; overflow-wrap: anywhere; }
-.crm-pipeline-card strong { font-size: 15px; overflow-wrap: anywhere; }
+.crm-card-name { font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+.crm-card-name:hover { text-decoration: underline; }
+.crm-card-discussion { display: grid; gap: 3px; margin-top: 5px; padding: 8px; border-radius: 8px; background: #f4f7fc; }
+.crm-card-discussion strong { font-size: 12px; }
+.crm-card-discussion p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; overflow-wrap: anywhere; white-space: pre-wrap; font-size: 12px; }
+.crm-card-note-form { margin-top: 4px; gap: 6px; }
+.crm-card-note-button { margin-top: 4px; }
 .crm-pipeline-card .crm-card-source { justify-self: start; padding: 2px 7px; border-radius: 20px; background: var(--lane-color); color: var(--lane-ink); font-size: 11px; }
 .crm-pipeline-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; border-top: 1px solid #edf1f7; margin-top: 5px; padding-top: 8px; }
 .crm-pipeline-meta small { display: inline-flex; align-items: center; gap: 4px; }

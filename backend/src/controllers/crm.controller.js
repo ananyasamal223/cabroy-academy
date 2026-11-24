@@ -31,6 +31,10 @@ function leadData(contact) {
     course: contact.course || counsellingCourse || "",
     city: contact.city || /^City:\s*(.+)$/m.exec(contact.message || "")?.[1] || "",
     source: contact.source || "Website",
+    latestDiscussion: contact.latestDiscussion
+      || contact.crmActivity?.findLast(({ kind }) => kind === "note" || kind === "call")
+      || contact.crmNotes?.at(-1)
+      || null,
     crmStage: legacyStage || contact.crmStage || ({ closed: "Lost", read: "Contacted" }[contact.status] || "New"),
   };
 }
@@ -64,7 +68,19 @@ function prepareLead(input, req) {
 
 export async function listCrmLeads(req, res) {
   const [contacts, assignees, courses] = await Promise.all([
-    Contact.find(leadScope(req)).select(listingFields).sort({ createdAt: -1 }).lean(),
+    Contact.aggregate([
+      { $match: leadScope(req) },
+      { $sort: { createdAt: -1 } },
+      { $set: { latestDiscussion: { $ifNull: [
+        { $arrayElemAt: [{ $filter: {
+          input: { $ifNull: ["$crmActivity", []] },
+          as: "entry",
+          cond: { $in: ["$$entry.kind", ["note", "call"]] },
+        } }, -1] },
+        { $arrayElemAt: [{ $ifNull: ["$crmNotes", []] }, -1] },
+      ] } } },
+      { $project: Object.fromEntries(listingFields.split(" ").map((field) => [field.slice(1), 0])) },
+    ]),
     req.crmManager ? User.find(activeSalesUsers).select("name").sort({ name: 1 }).lean() : [],
     Course.find().distinct("title"),
   ]);
