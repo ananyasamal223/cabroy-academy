@@ -47,7 +47,7 @@ export default function AdminCrm() {
     {!data && !error && <p role="status">Loading CRM…</p>}
     {data && <Routes>
       <Route index element={<Dashboard data={data} />} />
-      <Route path="leads" element={<LeadsPage data={data} importLeads={importLeads} />} />
+      <Route path="leads" element={<LeadsPage data={data} importLeads={importLeads} save={save} />} />
       <Route path="leads/new" element={<NewLead data={data} save={save} />} />
       <Route path="leads/:id" element={<LeadDetail data={data} save={save} />} />
       <Route path="pipeline" element={<Pipeline data={data} save={save} />} />

@@ -143,6 +143,9 @@ a.crm-metric:hover { border-color: #8eace7; }
 .crm-pipeline-meta small { display: inline-flex; align-items: center; gap: 4px; }
 .crm-pipeline-meta .crm-owner-mark { display: inline-grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: #e9f1ff; color: #07357d; font-size: 11px; font-weight: 700; }
 .crm-pipeline-meta .crm-card-date { margin-left: auto; }
+.crm-lead-assignee { display: grid; gap: 4px; min-width: 0; }
+.crm-lead-assignee select { width: 100%; }
+.crm-pipeline-meta .crm-lead-assignee { flex: 1 0 100%; }
 
 .crm-detail-layout, .crm-two-columns { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 @media (min-width: 870px) {

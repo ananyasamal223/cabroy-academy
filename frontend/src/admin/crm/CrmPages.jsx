@@ -79,13 +79,39 @@ function Filters({ state, showSearch = true }) {
   </div>;
 }
 
-function LeadTable({ data, leads, action }) {
+function LeadAssignee({ data, lead, save }) {
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function assign(event) {
+    const assignedTo = event.target.value || null;
+    setSaving(true);
+    setError("");
+    try { await save({ assignedTo }, lead._id); }
+    catch (err) { setError(errorMessage(err)); }
+    finally { setSaving(false); }
+  }
+
+  return <div className="crm-lead-assignee">
+    <select aria-label={`Assign counselor for ${lead.name}`} value={lead.assignedTo || ""} disabled={saving} onChange={assign}>
+      <option value="">Unassigned</option>
+      {lead.assignedTo && !data.assignees.some(({ _id }) => _id === lead.assignedTo) && <option value={lead.assignedTo}>Inactive counselor</option>}
+      {data.assignees.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
+    </select>
+    {saving && <small role="status">Assigning…</small>}
+    {error && <p role="alert">{error}</p>}
+  </div>;
+}
+
+function LeadTable({ data, leads, action, save }) {
   if (!leads.length) return <p className="crm-panel crm-box">No leads to show.</p>;
   return <div className="crm-panel crm-table-wrap"><table>
     <thead><tr><th>Name</th><th>Phone</th><th>Course</th><th>Source</th><th>Stage</th><th>Counselor</th><th>Next follow-up</th>{action && <th>Action</th>}</tr></thead>
     <tbody>{leads.map((lead) => <tr key={lead._id}>
       <td><Link to={leadPath(lead)}>{lead.name}</Link></td><td>{lead.phone || "—"}</td><td>{lead.course || "—"}</td>
-      <td>{lead.source}</td><td><Stage name={lead.crmStage} /></td><td>{counselorName(data, lead)}</td><td>{formatDate(followUpValue(lead))}</td>
+      <td>{lead.source}</td><td><Stage name={lead.crmStage} /></td>
+      <td>{data.canAssign && save ? <LeadAssignee data={data} lead={lead} save={save} /> : counselorName(data, lead)}</td>
+      <td>{formatDate(followUpValue(lead))}</td>
       {action && <td>{action(lead)}</td>}
     </tr>)}</tbody>
   </table></div>;
@@ -97,7 +123,7 @@ function exportLeads(data, leads, file = "cabroy-leads.csv") {
       counselorName(data, lead), followUpValue(lead), lead.city, lead.subject]));
 }
 
-export function LeadsPage({ data, importLeads }) {
+export function LeadsPage({ data, importLeads, save }) {
   const state = useFilters(data);
   const fileInput = useRef(null);
   const [showMetaDemo, setShowMetaDemo] = useState(false);
@@ -156,7 +182,7 @@ export function LeadsPage({ data, importLeads }) {
       </details>
     </section>}
     {feedback && <p role={feedback.error ? "alert" : "status"}>{feedback.message}</p>}
-    <Metrics data={data} /><Filters state={state} /><LeadTable data={data} leads={rows} />
+    <Metrics data={data} /><Filters state={state} /><LeadTable data={data} leads={rows} save={save} />
     <div className="crm-pagination">
       <p>{rows.length ? `Showing ${start + 1} to ${start + rows.length} of ${state.matches.length} leads` : "Showing 0 leads"}</p>
       {max > 1 && <div className="crm-actions">
@@ -198,7 +224,8 @@ function PipelineCard({ lead, data, save, canDrag, onDragEnd }) {
     <Link className="crm-card-name" to={leadPath(lead)}>{lead.name}</Link>
     {lead.course && <span>{lead.course}</span>}
     <div className="crm-pipeline-meta">
-      <small><span className="crm-owner-mark" aria-hidden="true">{lead.assignedTo ? counselor.charAt(0) : "–"}</span>{counselor}</small>
+      {data.canAssign ? <LeadAssignee data={data} lead={lead} save={save} />
+        : <small><span className="crm-owner-mark" aria-hidden="true">{lead.assignedTo ? counselor.charAt(0) : "–"}</span>{counselor}</small>}
       {next && <small className="crm-card-date"><CalendarClock size={13} aria-hidden="true" />{formatDate(next)}</small>}
     </div>
     <div className="crm-card-discussion" aria-live="polite">
