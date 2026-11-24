@@ -186,8 +186,10 @@
 .cab-home .cab-feature-strip .cab-feature b { color: #fff; }
 .cab-home .cab-feature-strip .cab-feature small { color: #e0ecff; }
 .cab-home .cab-hero-studio { padding-bottom: 0; }
-.cab-home .cab-connected { padding-top: 32px; }
-.cab-home .cab-connected-panel { padding-top: 0; }
+.cab-home .cab-connected { padding-top: 32px; padding-bottom: 12px; }
+.cab-home .cab-connected-panel { padding-block: 0; }
+.cab-home .cab-connected + .cab-project-lab { padding-top: 12px; }
+.cab-home .cab-connected + .cab-project-lab .cab-project-lab-copy { align-self: start; }
 @media (max-width: 767px) {
  .cab-home .cab-connected { padding-top: 28px; }
 }

@@ -4429,7 +4429,15 @@ body {
 .cab-connected-project b { color: #2c486b; font-size: 12px; font-weight: 600; }
 .cab-connected-project small { color: #526986; font-size: 10px; line-height: 1.6; }
 .cab-connected-footer > span { color: #526a89; font-size: 10px; }
-.cab-connected-footer b { color: #3e5776; font-weight: 500; }
+.cab-connected-footer > div { gap: clamp(4px, 2vw, 20px); }
+.cab-connected-footer b {
+  padding: 7px clamp(7px, 1.7vw, 16px);
+  border-radius: 999px;
+  background: #eaf4ff;
+  color: #075ab6;
+  font-weight: 600;
+}
+.cab-connected-footer svg { flex-shrink: 0; color: #075ab6; }
 @media(max-width: 900px) {
  .cab-connected-node b { font-size: 11px; }
 }
