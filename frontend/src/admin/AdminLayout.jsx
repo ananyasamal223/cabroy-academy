@@ -85,7 +85,7 @@ export default function AdminLayout() {
       <aside id="admin-navigation" className={`${navOpen ? "admin-sidebar-open" : ""} admin-sidebar overflow-y-auto fixed inset-y-0 left-0 z-40 hidden w-[220px] border-r lg:flex lg:flex-col ${inCrm ? "bg-[#0d1c3b] border-[#0d1c3b]" : "bg-white border-[#edf0f6]"}`}>
         <div className="flex h-[82px] items-center px-7">
           <button onClick={() => navigate(menu[0]?.path || "/admin")} className={inCrm ? "text-lg font-bold text-white" : "text-[22px] font-black tracking-[-0.8px] text-[#07357d]"}>
-            {inCrm ? "Cabroy CRM" : "Cabroy"}
+            {inCrm ? "Cabroy CRM" : "CABROY"}
           </button>
         </div>
 
