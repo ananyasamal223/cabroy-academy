@@ -98,7 +98,7 @@ export async function listCrmLeads(req, res) {
     ]),
     canAssign(req) ? User.find(counselorScope(req)).select("name crmTeamId adminPermissions role").sort({ name: 1 }).lean() : [],
     Course.find().distinct("title"),
-    CrmTeam.find(req.crmAdmin ? {} : { _id: req.user.crmTeamId || null }).select("name courses active").sort({ name: 1 }).lean(),
+    CrmTeam.find(req.crmAdmin ? {} : { _id: req.user.crmTeamId || null }).select("name courses active routingWeight").sort({ name: 1 }).lean(),
   ]);
   res.json({
     leads: contacts.map(leadData), assignees, courses, teams, stages: crmStages, canAssign: canAssign(req),
@@ -162,12 +162,16 @@ export async function updateCrmPreferences(req, res) {
 
 export async function saveCrmTeam(req, res) {
   const { id } = req.params;
-  const { name, courses, active } = req.body;
+  const { name, courses, active, routingWeight } = req.body;
+  if (routingWeight !== undefined && (!Number.isInteger(routingWeight) || routingWeight < 1 || routingWeight > 100)) {
+    return res.status(400).json({ message: "Routing weight must be a whole number from 1 to 100." });
+  }
   if (typeof name !== "string" || !name.trim() || name.trim().length > 80
     || !Array.isArray(courses) || courses.length > 100
     || courses.some((course) => typeof course !== "string" || !course.trim() || course.trim().length > 160)
     || typeof active !== "boolean") return res.status(400).json({ message: "Enter a valid team name and courses." });
   const values = { name: name.trim(), courses: [...new Set(courses.map((course) => course.trim()))], active };
+  if (routingWeight !== undefined) values.routingWeight = routingWeight;
   if (id && !isObjectIdOrHexString(id)) return res.status(404).json({ message: "Team not found." });
   const team = id ? await CrmTeam.findByIdAndUpdate(id, values, { new: true, runValidators: true }) : await CrmTeam.create(values);
   if (!team) return res.status(404).json({ message: "Team not found." });

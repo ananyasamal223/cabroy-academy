@@ -376,6 +376,7 @@ function TeamEditor({ team, onSave }) {
       name: values.get("name"),
       courses: values.get("courses").split("\n").map((course) => course.trim()).filter(Boolean),
       active: values.has("active"),
+      routingWeight: Number(values.get("routingWeight")),
     };
     setPending(true);
     setError("");
@@ -392,6 +393,10 @@ function TeamEditor({ team, onSave }) {
     <h2>{team?.name || "Create team"}</h2>
     <label>Team name<input name="name" maxLength={80} defaultValue={team?.name || ""} required /></label>
     <label>Courses, one per line<textarea name="courses" rows={3} defaultValue={team?.courses.join("\n") || ""} placeholder="Leave blank to handle all courses" /></label>
+    <label>Lead routing weight
+      <input name="routingWeight" type="number" min={1} max={100} step={1} defaultValue={team?.routingWeight ?? 1} required />
+      <small>A weight of 2 targets twice the lead share of a team with weight 1 when both are eligible.</small>
+    </label>
     <label><span><input type="checkbox" name="active" defaultChecked={team?.active ?? true} /> Route new leads to this team</span></label>
     <button className="crm-primary" disabled={pending}>{team ? "Save team" : "Create team"}</button>
     {saved && <p role="status">Team saved.</p>}
@@ -423,7 +428,7 @@ export function Team({ data, refresh }) {
     {data.teams?.length > 0 && <div className="crm-metrics">{data.teams.map((team) => {
       const leads = data.leads.filter((lead) => lead.teamId === team._id);
       return <Link className="crm-panel crm-metric" key={team._id} to={`${root}/leads?team=${team._id}`}>
-        <span>{team.name}</span><strong>{leads.length}</strong>
+        <span>{team.name} · {team.active ? `Weight ${team.routingWeight ?? 1}` : "Routing paused"}</span><strong>{leads.length}</strong>
         <small>{leads.filter((lead) => lead.source === "Google Ads").length} Google Ads · {leads.filter((lead) => lead.source === "Meta Ads").length} Meta Ads</small>
       </Link>;
     })}</div>}

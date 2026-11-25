@@ -53,7 +53,12 @@ export async function createRoutedLeads(records) {
       eligible.sort((left, right) => {
         const a = byTeam(left);
         const b = byTeam(right);
-        return sourceCount(a) - sourceCount(b) || a.total - b.total || a.last - b.last;
+        const leftWeight = left.routingWeight ?? 1;
+        const rightWeight = right.routingWeight ?? 1;
+        // Compare projected leads per unit of weight, first by source and then overall.
+        return (sourceCount(a) + 1) * rightWeight - (sourceCount(b) + 1) * leftWeight
+          || (a.total + 1) * rightWeight - (b.total + 1) * leftWeight
+          || a.last - b.last;
       });
       const team = eligible[0];
       if (!team) return record;
