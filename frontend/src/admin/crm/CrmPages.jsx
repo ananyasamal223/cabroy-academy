@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import { CalendarClock, Plus, Search, SlidersHorizontal } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../api/client";
 import { counselorName, downloadCrmCsv, errorMessage, followUpDate, followUpValue, formatDate,
-  isOpenLead, localDate, parseLeadCsv } from "./crmUtils";
+  isOpenLead, leadCounselors, localDate, parseLeadCsv } from "./crmUtils";
 
 const root = "/admin/crm";
 const leadPath = (lead) => `${root}/leads/${lead._id}`;
@@ -52,6 +53,7 @@ function useFilters(data) {
   if (data.canAssign) {
     controls.push(["counselor", "Counselor", [["unassigned", "Unassigned"], ...data.assignees.map(({ _id, name }) => [_id, name])]]);
   }
+  if (data.canManageTeams) controls.push(["team", "Team", [["unassigned", "Unassigned team"], ...data.teams.map(({ _id, name }) => [_id, name])]]);
   const update = (key, value) => setParams((current) => {
     const next = new URLSearchParams(current);
     if (key !== "page") next.delete("page");
@@ -63,7 +65,8 @@ function useFilters(data) {
     && (!params.get("stage") || params.get("stage") === lead.crmStage)
     && (!params.get("source") || params.get("source") === lead.source)
     && (!params.get("course") || params.get("course") === lead.course)
-    && (!params.get("counselor") || params.get("counselor") === (lead.assignedTo || "unassigned")));
+    && (!params.get("counselor") || params.get("counselor") === (lead.assignedTo || "unassigned"))
+    && (!params.get("team") || params.get("team") === (lead.teamId || "unassigned")));
   return { controls, matches, params, update };
 }
 
@@ -82,6 +85,7 @@ function Filters({ state, showSearch = true }) {
 function LeadAssignee({ data, lead, save }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const counselors = leadCounselors(data, lead);
 
   async function assign(event) {
     const assignedTo = event.target.value || null;
@@ -95,8 +99,8 @@ function LeadAssignee({ data, lead, save }) {
   return <div className="crm-lead-assignee">
     <select aria-label={`Assign counselor for ${lead.name}`} value={lead.assignedTo || ""} disabled={saving} onChange={assign}>
       <option value="">Unassigned</option>
-      {lead.assignedTo && !data.assignees.some(({ _id }) => _id === lead.assignedTo) && <option value={lead.assignedTo}>Inactive counselor</option>}
-      {data.assignees.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
+      {lead.assignedTo && !counselors.some(({ _id }) => _id === lead.assignedTo) && <option value={lead.assignedTo}>Counselor unavailable</option>}
+      {counselors.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
     </select>
     {saving && <small role="status">Assigning…</small>}
     {error && <p role="alert">{error}</p>}
@@ -360,22 +364,89 @@ export function Reports({ data }) {
   </>;
 }
 
-export function Team({ data }) {
+function TeamEditor({ team, onSave }) {
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
+  async function submit(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const values = new FormData(form);
+    const teamData = {
+      name: values.get("name"),
+      courses: values.get("courses").split("\n").map((course) => course.trim()).filter(Boolean),
+      active: values.has("active"),
+    };
+    setPending(true);
+    setError("");
+    setSaved(false);
+    try {
+      if (team) await api.put(`/admin/crm/teams/${team._id}`, teamData);
+      else { await api.post("/admin/crm/teams", teamData); form.reset(); }
+      setSaved(true);
+      onSave();
+    } catch (err) { setError(errorMessage(err)); }
+    finally { setPending(false); }
+  }
+  return <form className="crm-panel crm-box crm-form" onSubmit={submit}>
+    <h2>{team?.name || "Create team"}</h2>
+    <label>Team name<input name="name" maxLength={80} defaultValue={team?.name || ""} required /></label>
+    <label>Courses, one per line<textarea name="courses" rows={3} defaultValue={team?.courses.join("\n") || ""} placeholder="Leave blank to handle all courses" /></label>
+    <label><span><input type="checkbox" name="active" defaultChecked={team?.active ?? true} /> Route new leads to this team</span></label>
+    <button className="crm-primary" disabled={pending}>{team ? "Save team" : "Create team"}</button>
+    {saved && <p role="status">Team saved.</p>}
+    {error && <p role="alert">{error}</p>}
+  </form>;
+}
+
+export function Team({ data, refresh }) {
   const { user } = useAuth();
-  const people = data.canAssign ? data.assignees : [{ _id: user._id || user.id, name: user.name }];
+  const people = data.canAssign ? data.assignees.filter((person) => person.role !== "admin") : [{ _id: user._id || user.id, name: user.name }];
   const canManageEmployees = user.role === "admin" || user.adminPermissions?.includes("employees");
+  const [pending, setPending] = useState("");
+  const [memberships, setMemberships] = useState({});
+  const [error, setError] = useState("");
+  async function setMembership(person, teamId) {
+    setPending(person._id);
+    setError("");
+    try {
+      await api.put(`/admin/crm/team-members/${person._id}`, { teamId: teamId || null });
+      setMemberships((current) => ({ ...current, [person._id]: teamId }));
+      refresh();
+    } catch (err) { setError(errorMessage(err)); }
+    finally { setPending(""); }
+  }
   return <>
     <Heading title="Team" text={data.canAssign ? "Review counselor workloads and open their assigned leads." : "Review your assigned workload."}>
       {canManageEmployees && <Link className="crm-button" to="/admin/employees">Manage employees</Link>}
     </Heading>
-    <div className="crm-panel crm-table-wrap"><table><thead><tr><th>Counselor</th><th>Assigned leads</th><th>Open leads</th><th>Follow-ups due</th></tr></thead>
+    {data.teams?.length > 0 && <div className="crm-metrics">{data.teams.map((team) => {
+      const leads = data.leads.filter((lead) => lead.teamId === team._id);
+      return <Link className="crm-panel crm-metric" key={team._id} to={`${root}/leads?team=${team._id}`}>
+        <span>{team.name}</span><strong>{leads.length}</strong>
+        <small>{leads.filter((lead) => lead.source === "Google Ads").length} Google Ads · {leads.filter((lead) => lead.source === "Meta Ads").length} Meta Ads</small>
+      </Link>;
+    })}</div>}
+    {data.canManageTeams && <div className="crm-two-columns">
+      <TeamEditor onSave={refresh} />
+      {data.teams.map((team) => <TeamEditor key={team._id} team={team} onSave={refresh} />)}
+    </div>}
+    {error && <p role="alert">{error}</p>}
+    <div className="crm-panel crm-table-wrap"><table><thead><tr><th>Counselor</th><th>Assigned leads</th><th>Open leads</th><th>Follow-ups due</th>{data.canManageTeams && <th>Team</th>}</tr></thead>
       <tbody>{people.map((person) => {
         const leads = data.canAssign ? data.leads.filter((lead) => lead.assignedTo === person._id) : data.leads;
         return <tr key={person._id}><td><Link to={data.canAssign ? `${root}/leads?counselor=${person._id}` : `${root}/leads`}>{person.name}</Link></td>
-          <td>{leads.length}</td><td>{leads.filter(isOpenLead).length}</td><td>{leads.filter(due).length}</td></tr>;
+          <td>{leads.length}</td><td>{leads.filter(isOpenLead).length}</td><td>{leads.filter(due).length}</td>
+          {data.canManageTeams && <td><select aria-label={`Team for ${person.name}`} disabled={Boolean(pending)}
+            value={memberships[person._id] ?? person.crmTeamId ?? ""} onChange={(event) => setMembership(person, event.target.value)}>
+            <option value="">No team</option>
+            {data.teams.map((team) => <option key={team._id} value={team._id}>{team.name}</option>)}
+          </select>{person.adminPermissions?.includes("sales_manage") && <small> Manager</small>}</td>}
+        </tr>;
       })}</tbody>
     </table></div>
-    {data.canAssign && <div><Link className="crm-button" to={`${root}/leads?counselor=unassigned`}>View unassigned leads</Link></div>}
+    {data.canAssign && <div className="crm-actions"><Link className="crm-button" to={`${root}/leads?counselor=unassigned`}>View leads without a counselor</Link>
+      {data.canManageTeams && <Link className="crm-button" to={`${root}/leads?team=unassigned`}>View leads without a team</Link>}</div>}
   </>;
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import api from "../api/client";
 import { X } from "lucide-react";
+import { leadCampaignSource } from "../utils/leadCampaign";
 
 export default function CounsellingModal({ onClose, inline = false }) {
   const dialog = useRef(null);
@@ -26,6 +27,7 @@ export default function CounsellingModal({ onClose, inline = false }) {
     setStatus("sending");
     try {
       await api.post("/contact", {
+        campaignSource: leadCampaignSource(),
         name: data.name.trim(), email: data.email.trim(), phone: data.phone.trim(),
         subject: `Counselling enquiry: ${data.course}`,
         message: `Course of interest: ${data.course}\nCity: ${data.city.trim()}\nPreferred call time: ${data.time}\nLearning goals: ${data.message.trim() || "Not specified"}`,

@@ -25,6 +25,7 @@ const schema = new mongoose.Schema({
     default: undefined,
   },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, index: true },
+  teamId: { type: mongoose.Schema.Types.ObjectId, ref: "CrmTeam", default: null, index: true },
   followUpOn: { type: String, default: "" },
   followUpAt: { type: Date, default: null },
   demoAt: { type: Date, default: null },

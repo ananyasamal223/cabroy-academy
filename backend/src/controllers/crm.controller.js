@@ -1,8 +1,10 @@
 import { isObjectIdOrHexString } from "mongoose";
 import Contact, { crmStages } from "../models/Contact.js";
 import Course from "../models/Course.js";
+import CrmTeam from "../models/CrmTeam.js";
 import Payment from "../models/Payment.js";
 import User from "../models/User.js";
+import { createRoutedLeads } from "../utils/crmRouting.js";
 
 const activeSalesUsers = {
   isActive: true,
@@ -18,7 +20,8 @@ const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export function crmAccess(req, res, next) {
   const { role, adminAccess, adminPermissions = [] } = req.user;
-  req.crmManager = role === "admin" || (adminAccess && adminPermissions.includes("sales_manage"));
+  req.crmAdmin = role === "admin";
+  req.crmManager = req.crmAdmin || (adminAccess && adminPermissions.includes("sales_manage"));
   if (req.crmManager || (adminAccess && adminPermissions.includes("sales"))) return next();
   return res.status(403).json({ message: "CRM access is restricted to sales staff." });
 }
@@ -40,7 +43,18 @@ function leadData(contact) {
 }
 
 function leadScope(req) {
-  return req.crmManager ? {} : { assignedTo: req.user._id };
+  if (req.crmAdmin) return {};
+  const teamId = req.user.crmTeamId || null;
+  if (req.crmManager && teamId) return { teamId };
+  return { teamId, assignedTo: req.user._id };
+}
+
+function counselorScope(req) {
+  return req.crmAdmin ? activeSalesUsers : { ...activeSalesUsers, crmTeamId: req.user.crmTeamId };
+}
+
+function canAssign(req) {
+  return req.crmAdmin || Boolean(req.crmManager && req.user.crmTeamId);
 }
 
 function preferencesFor(user) {
@@ -61,13 +75,14 @@ function prepareLead(input, req) {
     email: values.email.toLowerCase(),
     source: values.source || preferencesFor(req.user).leadSource,
     message: values.message || "Added in CRM",
-    assignedTo: req.crmManager ? null : req.user._id,
+    assignedTo: canAssign(req) ? null : req.user._id,
+    teamId: req.crmAdmin ? null : req.user.crmTeamId || null,
     crmStage: "New",
   };
 }
 
 export async function listCrmLeads(req, res) {
-  const [contacts, assignees, courses] = await Promise.all([
+  const [contacts, assignees, courses, teams] = await Promise.all([
     Contact.aggregate([
       { $match: leadScope(req) },
       { $sort: { createdAt: -1 } },
@@ -81,11 +96,13 @@ export async function listCrmLeads(req, res) {
       ] } } },
       { $project: Object.fromEntries(listingFields.split(" ").map((field) => [field.slice(1), 0])) },
     ]),
-    req.crmManager ? User.find(activeSalesUsers).select("name").sort({ name: 1 }).lean() : [],
+    canAssign(req) ? User.find(counselorScope(req)).select("name crmTeamId adminPermissions role").sort({ name: 1 }).lean() : [],
     Course.find().distinct("title"),
+    CrmTeam.find(req.crmAdmin ? {} : { _id: req.user.crmTeamId || null }).select("name courses active").sort({ name: 1 }).lean(),
   ]);
   res.json({
-    leads: contacts.map(leadData), assignees, courses, stages: crmStages, canAssign: req.crmManager,
+    leads: contacts.map(leadData), assignees, courses, teams, stages: crmStages, canAssign: canAssign(req),
+    canManageTeams: req.crmAdmin, canViewPayments: req.crmAdmin,
     preferences: preferencesFor(req.user),
   });
 }
@@ -99,7 +116,7 @@ export async function getCrmLead(req, res) {
 }
 
 export async function getCrmPayments(req, res) {
-  if (!req.crmManager) return res.status(403).json({ message: "Only sales managers can view payments." });
+  if (!req.crmAdmin) return res.status(403).json({ message: "Only admins can view account payment history." });
   const { id } = req.params;
   if (!isObjectIdOrHexString(id)) return res.status(404).json({ message: "Lead not found." });
   const contact = await Contact.findOne({ ...leadScope(req), _id: id }).select("email").lean();
@@ -115,12 +132,12 @@ export async function getCrmPayments(req, res) {
 export async function createCrmLead(req, res) {
   const record = prepareLead(req.body, req);
   if (!record) return res.status(400).json({ message: "Enter a name and an email or phone number, within the form limits." });
-  const contact = await Contact.create(record);
+  const [contact] = await createRoutedLeads([record]);
   res.status(201).json({ lead: leadData(contact.toObject()) });
 }
 
 export async function importCrmLeads(req, res) {
-  if (!req.crmManager) return res.status(403).json({ message: "Only sales managers can import leads." });
+  if (!canAssign(req)) return res.status(403).json({ message: "Only admins and managers assigned to a team can import leads." });
   const { rows } = req.body;
   if (!Array.isArray(rows) || !rows.length || rows.length > 200) {
     return res.status(400).json({ message: "Import between 1 and 200 leads at a time." });
@@ -128,7 +145,7 @@ export async function importCrmLeads(req, res) {
   const records = rows.map((row) => prepareLead(row, req));
   const invalid = records.indexOf(null);
   if (invalid !== -1) return res.status(400).json({ message: `CSV row ${invalid + 2} needs a name and an email or phone number, within the field limits.` });
-  const contacts = await Contact.insertMany(records);
+  const contacts = await createRoutedLeads(records);
   res.status(201).json({ leads: contacts.map((contact) => leadData(contact.toObject())) });
 }
 
@@ -143,6 +160,32 @@ export async function updateCrmPreferences(req, res) {
   res.json({ preferences });
 }
 
+export async function saveCrmTeam(req, res) {
+  const { id } = req.params;
+  const { name, courses, active } = req.body;
+  if (typeof name !== "string" || !name.trim() || name.trim().length > 80
+    || !Array.isArray(courses) || courses.length > 100
+    || courses.some((course) => typeof course !== "string" || !course.trim() || course.trim().length > 160)
+    || typeof active !== "boolean") return res.status(400).json({ message: "Enter a valid team name and courses." });
+  const values = { name: name.trim(), courses: [...new Set(courses.map((course) => course.trim()))], active };
+  if (id && !isObjectIdOrHexString(id)) return res.status(404).json({ message: "Team not found." });
+  const team = id ? await CrmTeam.findByIdAndUpdate(id, values, { new: true, runValidators: true }) : await CrmTeam.create(values);
+  if (!team) return res.status(404).json({ message: "Team not found." });
+  res.status(id ? 200 : 201).json({ team });
+}
+
+export async function setCrmTeamMember(req, res) {
+  const { teamId } = req.body;
+  if (!isObjectIdOrHexString(req.params.userId)
+    || (teamId !== null && (!isObjectIdOrHexString(teamId) || !await CrmTeam.exists({ _id: teamId })))) {
+    return res.status(400).json({ message: "Choose a valid counselor and team." });
+  }
+  const member = await User.findOneAndUpdate({ ...activeSalesUsers, _id: req.params.userId, role: { $ne: "admin" } },
+    { $set: { crmTeamId: teamId } }, { new: true }).select("name crmTeamId adminPermissions role").lean();
+  if (!member) return res.status(404).json({ message: "Active sales team member not found." });
+  res.json({ member });
+}
+
 function parseScheduledTime(value) {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) return null;
   const time = new Date(value);
@@ -152,7 +195,7 @@ function parseScheduledTime(value) {
 export async function updateCrmLead(req, res) {
   const { id } = req.params;
   if (!isObjectIdOrHexString(id)) return res.status(404).json({ message: "Lead not found." });
-  const { crmStage, assignedTo, followUpAt, demoAt, note, call, details } = req.body;
+  const { crmStage, assignedTo, teamId, followUpAt, demoAt, note, call, details } = req.body;
   const scope = { ...leadScope(req), _id: id };
   const fields = {};
   const activity = [];
@@ -163,11 +206,30 @@ export async function updateCrmLead(req, res) {
     if (crmStage === "Enrolled") fields.enrolledAt = new Date();
     log("stage", `Stage set to ${crmStage}`);
   }
+  if (teamId !== undefined) {
+    if (!req.crmAdmin) return res.status(403).json({ message: "Only admins can move leads between teams." });
+    if (teamId !== null && !isObjectIdOrHexString(teamId)) return res.status(400).json({ message: "Choose a valid team." });
+    const team = teamId && await CrmTeam.findById(teamId).select("name").lean();
+    if (teamId && !team) return res.status(400).json({ message: "Choose a valid team." });
+    fields.teamId = teamId;
+    fields.assignedTo = null;
+    log("assignment", team ? `Moved to team ${team.name}; counselor cleared` : "Moved to unassigned inbox; counselor cleared");
+  }
   if (assignedTo !== undefined) {
-    if (!req.crmManager) return res.status(403).json({ message: "Only sales managers can assign leads." });
+    if (!canAssign(req)) return res.status(403).json({ message: "Only admins and team managers can assign leads." });
     if (assignedTo !== null && !isObjectIdOrHexString(assignedTo)) return res.status(400).json({ message: "Choose an active counselor." });
-    const assignee = assignedTo === null ? null : await User.findOne({ ...activeSalesUsers, _id: assignedTo }).select("name").lean();
+    const assignee = assignedTo === null ? null : await User.findOne({ ...counselorScope(req), _id: assignedTo }).select("name crmTeamId").lean();
     if (assignedTo !== null && !assignee) return res.status(400).json({ message: "Choose an active counselor." });
+    if (assignee && req.crmAdmin) {
+      const contact = await Contact.findById(id).select("teamId").lean();
+      if (!contact) return res.status(404).json({ message: "Lead not found." });
+      scope.teamId = contact.teamId || null;
+      const targetTeam = teamId === undefined ? contact.teamId : teamId;
+      if ((targetTeam || teamId === null) && String(targetTeam || "") !== String(assignee.crmTeamId || "")) {
+        return res.status(400).json({ message: "Choose a counselor on the lead’s team, or move the lead to another team first." });
+      }
+      if (!targetTeam && assignee.crmTeamId) fields.teamId = assignee.crmTeamId;
+    }
     fields.assignedTo = assignedTo;
     log("assignment", assignee ? `Assigned to ${assignee.name}` : "Counselor unassigned");
   }

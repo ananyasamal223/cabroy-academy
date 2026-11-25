@@ -54,7 +54,7 @@ export default function AdminCrm() {
       <Route path="follow-ups" element={<FollowUps data={data} save={save} />} />
       <Route path="students" element={<Students data={data} />} />
       <Route path="reports" element={<Reports data={data} />} />
-      <Route path="team" element={<Team data={data} />} />
+      <Route path="team" element={<Team data={data} refresh={() => setRetry((value) => value + 1)} />} />
       <Route path="settings" element={<Settings data={data} savePreferences={savePreferences} />} />
       <Route path="*" element={<Navigate to="/admin/crm" replace />} />
     </Routes>}

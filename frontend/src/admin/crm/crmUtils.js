@@ -25,6 +25,7 @@ export const formatDate = (value) => value
 export const followUpDate = (lead) => lead.followUpAt ? localDate(lead.followUpAt) : lead.followUpOn;
 export const followUpValue = (lead) => lead.followUpAt || lead.followUpOn || "";
 export const isOpenLead = (lead) => !["Enrolled", "Lost"].includes(lead.crmStage);
+export const leadCounselors = (data, lead) => data.assignees.filter((person) => !lead.teamId || person.crmTeamId === lead.teamId);
 export const counselorName = (data, lead) => data.assignees.find(({ _id }) => _id === lead.assignedTo)?.name
   || (lead.assignedTo ? data.canAssign ? "Inactive counselor" : "You" : "Unassigned");
 

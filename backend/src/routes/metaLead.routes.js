@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { Router, raw } from "express";
 import Contact from "../models/Contact.js";
+import { createRoutedLeads } from "../utils/crmRouting.js";
 
 const router = Router();
 const isId = (value) => typeof value === "string" && /^\d{1,30}$/.test(value);
@@ -83,12 +84,8 @@ async function ingestLead(event, config, signal) {
   if (!result.ok) throw new Error("Meta lead fetch failed.");
   const lead = await result.json();
   if (lead.id !== event.leadgen_id || (lead.form_id && lead.form_id !== event.form_id)) throw new Error("Unexpected Meta lead identifiers.");
-  const now = new Date();
   try {
-    // Repeated deliveries must preserve any CRM changes made since intake.
-    await Contact.updateOne(match, { $setOnInsert: {
-      ...leadRecord(lead, event, config.courseField), createdAt: now, updatedAt: now,
-    } }, { upsert: true, runValidators: true, timestamps: false });
+    await createRoutedLeads([leadRecord(lead, event, config.courseField)]);
   } catch (error) {
     if (error.code !== 11000 || !await Contact.exists(match)) throw error;
   }

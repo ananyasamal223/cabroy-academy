@@ -4,6 +4,9 @@ import "./index.css";
 import App from "./App.jsx";
 import "./responsive.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { captureLeadCampaign } from "./utils/leadCampaign";
+
+captureLeadCampaign(window.location.search);
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

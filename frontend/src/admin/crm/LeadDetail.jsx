@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../api/client";
 import { Stage } from "./CrmPages";
-import { counselorName, crmEndpoint, errorMessage, followUpValue, formatDate, localDate } from "./crmUtils";
+import { counselorName, crmEndpoint, errorMessage, followUpValue, formatDate, leadCounselors, localDate } from "./crmUtils";
 
 const leadsPath = "/admin/crm/leads";
 const fieldDefinitions = [
@@ -109,7 +109,8 @@ function LeadWorkspace({ initialLead, data, save }) {
   const phone = (lead.phone || "").trim().replace(/[^0-9+]/g, "");
   const digits = phone.replace(/\D/g, "");
   const whatsappDigits = !phone.startsWith("+") && digits.length === 10 ? `91${digits}` : digits;
-  const tabs = data.canAssign ? ["Activity", "Notes", "Payments"] : ["Activity", "Notes"];
+  const tabs = data.canViewPayments ? ["Activity", "Notes", "Payments"] : ["Activity", "Notes"];
+  const counselors = leadCounselors(data, lead);
 
   async function update(changes, confirmation = "Changes saved.") {
     setSaving(true);
@@ -184,7 +185,7 @@ function LeadWorkspace({ initialLead, data, save }) {
           </form> : <>
             <dl className="crm-definition">{[
               ["Phone", lead.phone], ["Email", lead.email], ["City", lead.city], ["Course", lead.course],
-              ["Source", lead.source], ["Counselor", counselorName(data, lead)],
+              ["Source", lead.source], ["Team", data.teams?.find((team) => team._id === lead.teamId)?.name], ["Counselor", counselorName(data, lead)],
             ].map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{value || "—"}</dd></div>)}</dl>
             {lead.message && <p className="crm-message">{lead.message}</p>}
             {lead.meta && <details>
@@ -197,11 +198,17 @@ function LeadWorkspace({ initialLead, data, save }) {
                 <div key={name}><dt>{name}</dt><dd>{value}</dd></div>
               ))}</dl>
             </details>}
+            {data.canManageTeams && <label className="crm-form">Assign team
+              <select value={lead.teamId || ""} disabled={saving} onChange={(event) => update({ teamId: event.target.value || null }, "Team updated.")}>
+                <option value="">Unassigned team</option>
+                {data.teams.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
+              </select>
+            </label>}
             {data.canAssign && <label className="crm-form">Assign counselor
               <select value={lead.assignedTo || ""} disabled={saving} onChange={(event) => update({ assignedTo: event.target.value || null }, "Counselor updated.")}>
                 <option value="">Unassigned</option>
-                {lead.assignedTo && !data.assignees.some(({ _id }) => _id === lead.assignedTo) && <option value={lead.assignedTo}>Inactive counselor</option>}
-                {data.assignees.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
+                {lead.assignedTo && !counselors.some(({ _id }) => _id === lead.assignedTo) && <option value={lead.assignedTo}>Counselor unavailable</option>}
+                {counselors.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
               </select>
             </label>}
           </>}

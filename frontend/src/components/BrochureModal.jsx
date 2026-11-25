@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Download, X } from "lucide-react";
 import api from "../api/client";
 import { createCourseBrochure, brochureFilename } from "../utils/courseBrochure";
+import { leadCampaignSource } from "../utils/leadCampaign";
 
 export default function BrochureModal({ courses, loading, onClose }) {
   const dialog = useRef(null);
@@ -30,7 +31,7 @@ export default function BrochureModal({ courses, loading, onClose }) {
     saving.current = true;
     setSaveStatus("saving");
     try {
-      await api.post("/contact", enquiry.current, { timeout: 15000 });
+      await api.post("/contact", { ...enquiry.current, campaignSource: leadCampaignSource() }, { timeout: 15000 });
       if (mounted.current) setSaveStatus("saved");
     } catch {
       if (mounted.current) setSaveStatus("error");

@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema(
     adminAccessNote: { type: String, default: "", trim: true },
     salesPerson: { type: mongoose.Schema.Types.ObjectId, ref: "SalesPerson", default: null },
     assignedCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+    crmTeamId: { type: mongoose.Schema.Types.ObjectId, ref: "CrmTeam", default: null, index: true },
     crmPreferences: {
       pageSize: { type: Number, enum: [10, 25, 50], default: 10 },
       followUpTime: { type: String, default: "16:00" },
