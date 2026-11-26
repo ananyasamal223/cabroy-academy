@@ -433,6 +433,7 @@ export function Team({ data, refresh }) {
   const [memberships, setMemberships] = useState({});
   const [error, setError] = useState("");
   const teams = (data.teams || []).filter((team) => !team.deletedAt);
+  const usedWeight = teams.reduce((total, team) => total + (team.active ? team.routingWeight ?? 1 : 0), 0);
   async function setMembership(person, teamId) {
     setPending(person._id);
     setError("");
@@ -454,6 +455,9 @@ export function Team({ data, refresh }) {
         <small>{leads.filter((lead) => lead.source === "Google Ads").length} Google Ads · {leads.filter((lead) => lead.source === "Meta Ads").length} Meta Ads</small>
       </Link>;
     })}</div>}
+    {data.canManageTeams && <p aria-live="polite">
+      Active routing weight {usedWeight}/100 · {usedWeight > 100 ? `Reduce by ${usedWeight - 100}` : `${100 - usedWeight} remaining`}
+    </p>}
     {data.canManageTeams && <div className="crm-two-columns">
       <TeamEditor onSave={refresh} />
       {teams.map((team) => <TeamEditor key={team._id} team={team} onSave={refresh} />)}

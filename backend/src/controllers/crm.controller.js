@@ -4,7 +4,7 @@ import Course from "../models/Course.js";
 import CrmTeam from "../models/CrmTeam.js";
 import Payment from "../models/Payment.js";
 import User from "../models/User.js";
-import { createRoutedLeads } from "../utils/crmRouting.js";
+import { createRoutedLeads, withCrmRoutingTransaction } from "../utils/crmRouting.js";
 
 const activeSalesUsers = {
   isActive: true,
@@ -179,7 +179,29 @@ export async function saveCrmTeam(req, res) {
   const values = { name: name.trim(), courses: [...new Set(courses.map((course) => course.trim()))], active };
   if (routingWeight !== undefined) values.routingWeight = routingWeight;
   if (id && !isObjectIdOrHexString(id)) return res.status(404).json({ message: "Team not found." });
-  const team = id ? await CrmTeam.findOneAndUpdate({ _id: id, deletedAt: null }, values, { new: true, runValidators: true }) : await CrmTeam.create(values);
+  const { team, maximum } = await withCrmRoutingTransaction(async (session) => {
+    const existing = id ? await CrmTeam.findOne({ _id: id, deletedAt: null }).session(session) : null;
+    if (id && !existing) return {};
+    if (active) {
+      const query = { active: true, deletedAt: null };
+      if (id) query._id = { $ne: id };
+      const others = await CrmTeam.find(query).select("routingWeight").session(session).lean();
+      const used = others.reduce((total, item) => total + (item.routingWeight ?? 1), 0);
+      const previousWeight = existing?.active ? existing.routingWeight : 0;
+      const nextWeight = routingWeight ?? existing?.routingWeight ?? 1;
+      // Existing totals above 100 can be corrected without having to pause all teams first.
+      const limit = Math.max(0, 100 - used, previousWeight);
+      if (nextWeight > limit) return { maximum: limit };
+    }
+    const saved = existing || new CrmTeam();
+    saved.set(values);
+    return { team: await saved.save({ session }) };
+  });
+  if (maximum !== undefined) return res.status(400).json({
+    message: maximum
+      ? `Active teams can use at most 100 routing weight in total. This team can use up to ${maximum}.`
+      : "Active teams already use all 100 routing weight. Reduce or pause another team first.",
+  });
   if (!team) return res.status(404).json({ message: "Team not found." });
   res.status(id ? 200 : 201).json({ team });
 }

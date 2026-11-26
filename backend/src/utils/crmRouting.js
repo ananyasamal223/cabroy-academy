@@ -11,12 +11,7 @@ function sourceKey(source) {
   return key || "website";
 }
 
-export async function createRoutedLeads(records) {
-  if (records.every(({ teamId, assignedTo }) => teamId || assignedTo) || !await CrmTeam.exists({ active: true, deletedAt: null })) {
-    return Contact.insertMany(records);
-  }
-
-  // Serializing intake keeps simultaneous webhook and website submissions from choosing the same team.
+export async function withCrmRoutingTransaction(work) {
   const locks = mongoose.connection.collection("crm_routing");
   try {
     await locks.updateOne({ _id: "lead-intake" }, { $setOnInsert: { revision: 0 } }, { upsert: true });
@@ -26,6 +21,17 @@ export async function createRoutedLeads(records) {
 
   return mongoose.connection.transaction(async (session) => {
     await locks.updateOne({ _id: "lead-intake" }, { $inc: { revision: 1 } }, { session });
+    return work(session);
+  });
+}
+
+export async function createRoutedLeads(records) {
+  if (records.every(({ teamId, assignedTo }) => teamId || assignedTo) || !await CrmTeam.exists({ active: true, deletedAt: null })) {
+    return Contact.insertMany(records);
+  }
+
+  // Serialize intake and team settings so assignments use a consistent configuration.
+  return withCrmRoutingTransaction(async (session) => {
     const teams = await CrmTeam.find({ active: true, deletedAt: null }).sort({ _id: 1 }).session(session).lean();
     const groups = await Contact.aggregate([
       { $match: { teamId: { $in: teams.map(({ _id }) => _id) } } },
