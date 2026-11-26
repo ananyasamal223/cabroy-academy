@@ -364,11 +364,12 @@ export function Reports({ data }) {
   </>;
 }
 
-function TeamEditor({ team, onSave }) {
+function TeamEditor({ team, leads = [], onSave }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   async function deleteTeam() {
     setPending(true);
@@ -397,10 +398,33 @@ function TeamEditor({ team, onSave }) {
       if (team) await api.put(`/admin/crm/teams/${team._id}`, teamData);
       else { await api.post("/admin/crm/teams", teamData); form.reset(); }
       setSaved(true);
+      setEditing(false);
       onSave();
     } catch (err) { setError(errorMessage(err)); }
     finally { setPending(false); }
   }
+  if (team && !editing) return <article className="crm-panel crm-box crm-stack">
+    <div className="crm-heading"><h2>{team.name}</h2><span className="crm-stage">{team.active ? "Routing active" : "Routing paused"}</span></div>
+    <dl className="crm-definition">
+      <div><dt>Weight</dt><dd>{team.routingWeight ?? 1}</dd></div>
+      <div><dt>Courses</dt><dd>{team.courses.join(", ") || "All courses"}</dd></div>
+      <div><dt>Leads</dt><dd>{leads.length} · {leads.filter((lead) => lead.source === "Google Ads").length} Google Ads · {leads.filter((lead) => lead.source === "Meta Ads").length} Meta Ads</dd></div>
+    </dl>
+    {confirmDelete ? <div className="crm-stack">
+      <p>This team will stop receiving new leads. Existing leads and memberships will stay available for reassignment.</p>
+      <div className="crm-actions">
+        <button type="button" className="crm-button" disabled={pending} onClick={deleteTeam}>Confirm delete</button>
+        <button type="button" className="crm-button" disabled={pending} onClick={() => setConfirmDelete(false)}>Cancel</button>
+      </div>
+    </div> : <div className="crm-actions">
+      <Link className="crm-button" to={`${root}/leads?team=${team._id}`}>View leads</Link>
+      <button type="button" className="crm-button" onClick={() => { setSaved(false); setError(""); setEditing(true); }}>Edit</button>
+      <button type="button" className="crm-button" onClick={() => { setSaved(false); setError(""); setConfirmDelete(true); }}>Delete team</button>
+    </div>}
+    {saved && <p role="status">Team saved.</p>}
+    {error && <p role="alert">{error}</p>}
+  </article>;
+
   return <form className="crm-panel crm-box crm-form" onSubmit={submit}>
     <h2>{team?.name || "Create team"}</h2>
     <label>Team name<input name="name" maxLength={80} defaultValue={team?.name || ""} required /></label>
@@ -410,16 +434,9 @@ function TeamEditor({ team, onSave }) {
     </label>
     <label><span><input type="checkbox" name="active" defaultChecked={team?.active ?? true} /> Route new leads to this team</span></label>
     <div className="crm-actions">
-      <button className="crm-primary" disabled={pending || confirmDelete}>{team ? "Save team" : "Create team"}</button>
-      {team && !confirmDelete && <button type="button" className="crm-button" disabled={pending} onClick={() => setConfirmDelete(true)}>Delete team</button>}
+      <button className="crm-primary" disabled={pending}>{team ? "Save team" : "Create team"}</button>
+      {team && <button type="button" className="crm-button" disabled={pending} onClick={() => { setError(""); setEditing(false); }}>Cancel</button>}
     </div>
-    {confirmDelete && <div className="crm-stack">
-      <p>This team will stop receiving new leads. Existing leads and memberships will stay available for reassignment.</p>
-      <div className="crm-actions">
-        <button type="button" className="crm-button" disabled={pending} onClick={deleteTeam}>Confirm delete</button>
-        <button type="button" className="crm-button" disabled={pending} onClick={() => setConfirmDelete(false)}>Cancel</button>
-      </div>
-    </div>}
     {saved && <p role="status">Team saved.</p>}
     {error && <p role="alert">{error}</p>}
   </form>;
@@ -448,7 +465,7 @@ export function Team({ data, refresh }) {
     <Heading title="Team" text={data.canAssign ? "Review counselor workloads and open their assigned leads." : "Review your assigned workload."}>
       {canManageEmployees && <Link className="crm-button" to="/admin/employees">Manage employees</Link>}
     </Heading>
-    {teams.length > 0 && <div className="crm-metrics">{teams.map((team) => {
+    {!data.canManageTeams && teams.length > 0 && <div className="crm-metrics">{teams.map((team) => {
       const leads = data.leads.filter((lead) => lead.teamId === team._id);
       return <Link className="crm-panel crm-metric" key={team._id} to={`${root}/leads?team=${team._id}`}>
         <span>{team.name} · {team.active ? `Weight ${team.routingWeight ?? 1}` : "Routing paused"}</span><strong>{leads.length}</strong>
@@ -458,10 +475,15 @@ export function Team({ data, refresh }) {
     {data.canManageTeams && <p aria-live="polite">
       Active routing weight {usedWeight}/100 · {usedWeight > 100 ? `Reduce by ${usedWeight - 100}` : `${100 - usedWeight} remaining`}
     </p>}
-    {data.canManageTeams && <div className="crm-two-columns">
-      <TeamEditor onSave={refresh} />
-      {teams.map((team) => <TeamEditor key={team._id} team={team} onSave={refresh} />)}
-    </div>}
+    {data.canManageTeams && <>
+      {teams.length > 0 && <section className="crm-stack" aria-label="Saved teams">
+        <h2>Saved teams</h2>
+        <div className="crm-two-columns">
+          {teams.map((team) => <TeamEditor key={team._id} team={team} leads={data.leads.filter((lead) => lead.teamId === team._id)} onSave={refresh} />)}
+        </div>
+      </section>}
+      <div className="crm-create"><TeamEditor onSave={refresh} /></div>
+    </>}
     {error && <p role="alert">{error}</p>}
     <div className="crm-panel crm-table-wrap"><table><thead><tr><th>Counselor</th><th>Assigned leads</th><th>Open leads</th><th>Follow-ups due</th>{data.canManageTeams && <th>Team</th>}</tr></thead>
       <tbody>{people.map((person) => {
