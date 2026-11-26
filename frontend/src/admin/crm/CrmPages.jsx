@@ -407,7 +407,6 @@ function TeamEditor({ team, onSave }) {
     <label>Courses, one per line<textarea name="courses" rows={3} defaultValue={team?.courses.join("\n") || ""} placeholder="Leave blank to handle all courses" /></label>
     <label>Lead routing weight
       <input name="routingWeight" type="number" min={1} max={100} step={1} defaultValue={team?.routingWeight ?? 1} required />
-      <small>A 5:3 ratio targets 5 and 3 leads out of every 8 from the same source when only those two teams are eligible. Smaller batches can differ.</small>
     </label>
     <label><span><input type="checkbox" name="active" defaultChecked={team?.active ?? true} /> Route new leads to this team</span></label>
     <div className="crm-actions">
