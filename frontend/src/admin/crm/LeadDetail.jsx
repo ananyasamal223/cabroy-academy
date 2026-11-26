@@ -201,7 +201,8 @@ function LeadWorkspace({ initialLead, data, save }) {
             {data.canManageTeams && <label className="crm-form">Assign team
               <select value={lead.teamId || ""} disabled={saving} onChange={(event) => update({ teamId: event.target.value || null }, "Team updated.")}>
                 <option value="">Unassigned team</option>
-                {data.teams.map(({ _id, name }) => <option key={_id} value={_id}>{name}</option>)}
+                {data.teams.filter((team) => !team.deletedAt || team._id === lead.teamId)
+                  .map(({ _id, name, deletedAt }) => <option key={_id} value={_id}>{name}{deletedAt ? " (deleted)" : ""}</option>)}
               </select>
             </label>}
             {data.canAssign && <label className="crm-form">Assign counselor

@@ -98,7 +98,7 @@ export async function listCrmLeads(req, res) {
     ]),
     canAssign(req) ? User.find(counselorScope(req)).select("name crmTeamId adminPermissions role").sort({ name: 1 }).lean() : [],
     Course.find().distinct("title"),
-    CrmTeam.find(req.crmAdmin ? {} : { _id: req.user.crmTeamId || null }).select("name courses active routingWeight").sort({ name: 1 }).lean(),
+    CrmTeam.find(req.crmAdmin ? {} : { _id: req.user.crmTeamId || null }).select("name courses active routingWeight deletedAt").sort({ name: 1 }).lean(),
   ]);
   res.json({
     leads: contacts.map(leadData), assignees, courses, teams, stages: crmStages, canAssign: canAssign(req),
@@ -132,12 +132,18 @@ export async function getCrmPayments(req, res) {
 export async function createCrmLead(req, res) {
   const record = prepareLead(req.body, req);
   if (!record) return res.status(400).json({ message: "Enter a name and an email or phone number, within the form limits." });
+  if (record.teamId && !await CrmTeam.exists({ _id: record.teamId, deletedAt: null })) {
+    return res.status(409).json({ message: "Your team was deleted. Ask an admin to move you to another team." });
+  }
   const [contact] = await createRoutedLeads([record]);
   res.status(201).json({ lead: leadData(contact.toObject()) });
 }
 
 export async function importCrmLeads(req, res) {
   if (!canAssign(req)) return res.status(403).json({ message: "Only admins and managers assigned to a team can import leads." });
+  if (!req.crmAdmin && !await CrmTeam.exists({ _id: req.user.crmTeamId, deletedAt: null })) {
+    return res.status(409).json({ message: "Your team was deleted. Ask an admin to move you to another team." });
+  }
   const { rows } = req.body;
   if (!Array.isArray(rows) || !rows.length || rows.length > 200) {
     return res.status(400).json({ message: "Import between 1 and 200 leads at a time." });
@@ -173,15 +179,27 @@ export async function saveCrmTeam(req, res) {
   const values = { name: name.trim(), courses: [...new Set(courses.map((course) => course.trim()))], active };
   if (routingWeight !== undefined) values.routingWeight = routingWeight;
   if (id && !isObjectIdOrHexString(id)) return res.status(404).json({ message: "Team not found." });
-  const team = id ? await CrmTeam.findByIdAndUpdate(id, values, { new: true, runValidators: true }) : await CrmTeam.create(values);
+  const team = id ? await CrmTeam.findOneAndUpdate({ _id: id, deletedAt: null }, values, { new: true, runValidators: true }) : await CrmTeam.create(values);
   if (!team) return res.status(404).json({ message: "Team not found." });
   res.status(id ? 200 : 201).json({ team });
+}
+
+export async function deleteCrmTeam(req, res) {
+  const { id } = req.params;
+  if (!isObjectIdOrHexString(id)) return res.status(404).json({ message: "Team not found." });
+  const team = await CrmTeam.findOneAndUpdate(
+    { _id: id, deletedAt: null },
+    { $set: { active: false, deletedAt: new Date() } },
+    { new: true },
+  ).lean();
+  if (!team) return res.status(404).json({ message: "Team not found or already deleted." });
+  res.json({ team });
 }
 
 export async function setCrmTeamMember(req, res) {
   const { teamId } = req.body;
   if (!isObjectIdOrHexString(req.params.userId)
-    || (teamId !== null && (!isObjectIdOrHexString(teamId) || !await CrmTeam.exists({ _id: teamId })))) {
+    || (teamId !== null && (!isObjectIdOrHexString(teamId) || !await CrmTeam.exists({ _id: teamId, deletedAt: null })))) {
     return res.status(400).json({ message: "Choose a valid counselor and team." });
   }
   const member = await User.findOneAndUpdate({ ...activeSalesUsers, _id: req.params.userId, role: { $ne: "admin" } },
@@ -213,7 +231,7 @@ export async function updateCrmLead(req, res) {
   if (teamId !== undefined) {
     if (!req.crmAdmin) return res.status(403).json({ message: "Only admins can move leads between teams." });
     if (teamId !== null && !isObjectIdOrHexString(teamId)) return res.status(400).json({ message: "Choose a valid team." });
-    const team = teamId && await CrmTeam.findById(teamId).select("name").lean();
+    const team = teamId && await CrmTeam.findOne({ _id: teamId, deletedAt: null }).select("name").lean();
     if (teamId && !team) return res.status(400).json({ message: "Choose a valid team." });
     fields.teamId = teamId;
     fields.assignedTo = null;
@@ -232,7 +250,12 @@ export async function updateCrmLead(req, res) {
       if ((targetTeam || teamId === null) && String(targetTeam || "") !== String(assignee.crmTeamId || "")) {
         return res.status(400).json({ message: "Choose a counselor on the lead’s team, or move the lead to another team first." });
       }
-      if (!targetTeam && assignee.crmTeamId) fields.teamId = assignee.crmTeamId;
+      if (!targetTeam && assignee.crmTeamId) {
+        if (!await CrmTeam.exists({ _id: assignee.crmTeamId, deletedAt: null })) {
+          return res.status(400).json({ message: "This counselor belongs to a deleted team." });
+        }
+        fields.teamId = assignee.crmTeamId;
+      }
     }
     fields.assignedTo = assignedTo;
     log("assignment", assignee ? `Assigned to ${assignee.name}` : "Counselor unassigned");

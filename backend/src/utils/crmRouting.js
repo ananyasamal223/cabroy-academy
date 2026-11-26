@@ -12,7 +12,7 @@ function sourceKey(source) {
 }
 
 export async function createRoutedLeads(records) {
-  if (records.every(({ teamId, assignedTo }) => teamId || assignedTo) || !await CrmTeam.exists({ active: true })) {
+  if (records.every(({ teamId, assignedTo }) => teamId || assignedTo) || !await CrmTeam.exists({ active: true, deletedAt: null })) {
     return Contact.insertMany(records);
   }
 
@@ -26,7 +26,7 @@ export async function createRoutedLeads(records) {
 
   return mongoose.connection.transaction(async (session) => {
     await locks.updateOne({ _id: "lead-intake" }, { $inc: { revision: 1 } }, { session });
-    const teams = await CrmTeam.find({ active: true }).sort({ _id: 1 }).session(session).lean();
+    const teams = await CrmTeam.find({ active: true, deletedAt: null }).sort({ _id: 1 }).session(session).lean();
     const groups = await Contact.aggregate([
       { $match: { teamId: { $in: teams.map(({ _id }) => _id) } } },
       { $group: { _id: { team: "$teamId", source: "$source" }, count: { $sum: 1 } } },

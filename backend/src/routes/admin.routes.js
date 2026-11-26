@@ -1,7 +1,7 @@
 import { notificationAccess, listAdminNotifications, readAdminNotifications } from "../controllers/adminNotification.controller.js";
 import { adminCertificates } from "../controllers/certificate.controller.js";
 import { Router } from "express";
-import { crmAccess, listCrmLeads, getCrmLead, getCrmPayments, createCrmLead, importCrmLeads, updateCrmLead, updateCrmPreferences, saveCrmTeam, setCrmTeamMember } from "../controllers/crm.controller.js";
+import { crmAccess, listCrmLeads, getCrmLead, getCrmPayments, createCrmLead, importCrmLeads, updateCrmLead, updateCrmPreferences, saveCrmTeam, deleteCrmTeam, setCrmTeamMember } from "../controllers/crm.controller.js";
 import { getSubscriptionPlans, updateSubscriptionPlan } from "../controllers/subscriptionPlans.controller.js";
 import { listSubscriptions, createSubscriber, editSubscriber, saveSubscriptionSettings } from "../controllers/subscriptionManagement.controller.js";
 import { protect, authorize, authorizeAdminPermission } from "../middleware/auth.js";
@@ -47,6 +47,7 @@ router.patch("/crm/leads/:id", protect, crmAccess, updateCrmLead);
 router.put("/crm/preferences", protect, crmAccess, updateCrmPreferences);
 router.post("/crm/teams", protect, authorize("admin"), saveCrmTeam);
 router.put("/crm/teams/:id", protect, authorize("admin"), saveCrmTeam);
+router.delete("/crm/teams/:id", protect, authorize("admin"), deleteCrmTeam);
 router.put("/crm/team-members/:userId", protect, authorize("admin"), setCrmTeamMember);
 router.get("/notifications", protect, notificationAccess, listAdminNotifications);
 router.patch("/notifications/read", protect, notificationAccess, readAdminNotifications);

@@ -368,6 +368,18 @@ function TeamEditor({ team, onSave }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  async function deleteTeam() {
+    setPending(true);
+    setError("");
+    setSaved(false);
+    try {
+      await api.delete(`/admin/crm/teams/${team._id}`);
+      onSave();
+    } catch (err) { setError(errorMessage(err)); }
+    finally { setPending(false); }
+  }
   async function submit(event) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -395,10 +407,20 @@ function TeamEditor({ team, onSave }) {
     <label>Courses, one per line<textarea name="courses" rows={3} defaultValue={team?.courses.join("\n") || ""} placeholder="Leave blank to handle all courses" /></label>
     <label>Lead routing weight
       <input name="routingWeight" type="number" min={1} max={100} step={1} defaultValue={team?.routingWeight ?? 1} required />
-      <small>A weight of 2 targets twice the lead share of a team with weight 1 when both are eligible.</small>
+      <small>A 5:3 ratio targets 5 and 3 leads out of every 8 from the same source when only those two teams are eligible. Smaller batches can differ.</small>
     </label>
     <label><span><input type="checkbox" name="active" defaultChecked={team?.active ?? true} /> Route new leads to this team</span></label>
-    <button className="crm-primary" disabled={pending}>{team ? "Save team" : "Create team"}</button>
+    <div className="crm-actions">
+      <button className="crm-primary" disabled={pending || confirmDelete}>{team ? "Save team" : "Create team"}</button>
+      {team && !confirmDelete && <button type="button" className="crm-button" disabled={pending} onClick={() => setConfirmDelete(true)}>Delete team</button>}
+    </div>
+    {confirmDelete && <div className="crm-stack">
+      <p>This team will stop receiving new leads. Existing leads and memberships will stay available for reassignment.</p>
+      <div className="crm-actions">
+        <button type="button" className="crm-button" disabled={pending} onClick={deleteTeam}>Confirm delete</button>
+        <button type="button" className="crm-button" disabled={pending} onClick={() => setConfirmDelete(false)}>Cancel</button>
+      </div>
+    </div>}
     {saved && <p role="status">Team saved.</p>}
     {error && <p role="alert">{error}</p>}
   </form>;
@@ -411,6 +433,7 @@ export function Team({ data, refresh }) {
   const [pending, setPending] = useState("");
   const [memberships, setMemberships] = useState({});
   const [error, setError] = useState("");
+  const teams = (data.teams || []).filter((team) => !team.deletedAt);
   async function setMembership(person, teamId) {
     setPending(person._id);
     setError("");
@@ -425,7 +448,7 @@ export function Team({ data, refresh }) {
     <Heading title="Team" text={data.canAssign ? "Review counselor workloads and open their assigned leads." : "Review your assigned workload."}>
       {canManageEmployees && <Link className="crm-button" to="/admin/employees">Manage employees</Link>}
     </Heading>
-    {data.teams?.length > 0 && <div className="crm-metrics">{data.teams.map((team) => {
+    {teams.length > 0 && <div className="crm-metrics">{teams.map((team) => {
       const leads = data.leads.filter((lead) => lead.teamId === team._id);
       return <Link className="crm-panel crm-metric" key={team._id} to={`${root}/leads?team=${team._id}`}>
         <span>{team.name} · {team.active ? `Weight ${team.routingWeight ?? 1}` : "Routing paused"}</span><strong>{leads.length}</strong>
@@ -434,7 +457,7 @@ export function Team({ data, refresh }) {
     })}</div>}
     {data.canManageTeams && <div className="crm-two-columns">
       <TeamEditor onSave={refresh} />
-      {data.teams.map((team) => <TeamEditor key={team._id} team={team} onSave={refresh} />)}
+      {teams.map((team) => <TeamEditor key={team._id} team={team} onSave={refresh} />)}
     </div>}
     {error && <p role="alert">{error}</p>}
     <div className="crm-panel crm-table-wrap"><table><thead><tr><th>Counselor</th><th>Assigned leads</th><th>Open leads</th><th>Follow-ups due</th>{data.canManageTeams && <th>Team</th>}</tr></thead>
@@ -445,7 +468,8 @@ export function Team({ data, refresh }) {
           {data.canManageTeams && <td><select aria-label={`Team for ${person.name}`} disabled={Boolean(pending)}
             value={memberships[person._id] ?? person.crmTeamId ?? ""} onChange={(event) => setMembership(person, event.target.value)}>
             <option value="">No team</option>
-            {data.teams.map((team) => <option key={team._id} value={team._id}>{team.name}</option>)}
+            {data.teams.filter((team) => !team.deletedAt || team._id === (memberships[person._id] ?? person.crmTeamId))
+              .map((team) => <option key={team._id} value={team._id}>{team.name}{team.deletedAt ? " (deleted)" : ""}</option>)}
           </select>{person.adminPermissions?.includes("sales_manage") && <small> Manager</small>}</td>}
         </tr>;
       })}</tbody>
