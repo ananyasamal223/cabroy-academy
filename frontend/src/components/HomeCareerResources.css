@@ -1,18 +1,31 @@
-.cab-career-resources-banner {
-  padding: clamp(24px, 5vw, 64px);
+.cab-career-resources > .cab-shell {
+  padding: clamp(18px, 3vw, 38px);
   border-radius: 26px;
-  background: linear-gradient(120deg, #0b275e, #11468e);
-  color: #fff;
+  background-color: #eaf4ff;
+  background-image: linear-gradient(#c9ddf773 1px, transparent 1px), linear-gradient(90deg, #c9ddf773 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: #102c54;
 }
-.cab-career-resources-banner h2 { max-width: 780px; margin: 0 0 12px; color: #fff; font-size: clamp(29px, 4.2vw, 55px); line-height: 1.08; letter-spacing: -.035em; }
-.cab-career-resources-banner p { max-width: 610px; margin: 0; color: #dbe9ff; line-height: 1.65; }
-.cab-career-resources-banner ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; padding: 0; list-style: none; }
-.cab-career-resources-banner li { padding: 5px 10px; border: 1px solid #ffffff40; border-radius: 99px; font-size: 12px; }
-.cab-career-resources-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
-.cab-career-resources-actions .cab-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #07357d; }
-.cab-career-resources-actions > a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
-.cab-career-resources-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,240px),1fr)); gap: 14px; margin-top: 16px; }
-.cab-career-resources-grid article { display: flex; flex-direction: column; gap: 9px; padding: 21px; border: 1px solid #ddeafb; border-radius: 17px; background: #f4f8ff; color: #153a70; }
+.cab-career-resources-banner { text-align: center; }
+.cab-career-resources-banner h2 { max-width: 780px; margin: 0 auto 12px; color: #102c54; font-size: clamp(29px, 4.2vw, 50px); line-height: 1.08; letter-spacing: -.035em; text-wrap: balance; }
+.cab-career-resources-banner p { max-width: 610px; margin: 0 auto; color: #435e7a; line-height: 1.65; }
+.cab-career-resources-banner ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin: 20px 0; padding: 0; list-style: none; }
+.cab-career-resources-banner li { font-size: 13px; }
+.cab-career-resources-banner li::before { content: "✓"; margin-right: 5px; color: #075ab6; }
+.cab-career-resources-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 18px; }
+.cab-career-resources-actions .cab-btn { display: inline-flex; align-items: center; gap: 8px; }
+.cab-career-resources-actions > a { color: #075ab6; text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
+.cab-career-resources-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; margin-top: 28px; padding-top: 20px; border-top: 2px dashed #6499d9; }
+.cab-career-resources-grid article { position: relative; display: flex; flex-direction: column; gap: 9px; padding: clamp(13px, 1.6vw, 21px); border: 1px solid #b9d4f6; border-radius: 17px; background: #fff; color: #153a70; }
+.cab-career-resources-grid article::before { position: absolute; top: -28px; left: calc(50% - 7px); width: 14px; height: 14px; border: 3px solid #eaf4ff; border-radius: 50%; background: #1764bc; content: ""; }
+@media (max-width: 900px) {
+  .cab-career-resources-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .cab-career-resources-grid article:nth-child(n+3)::before { display: none; }
+}
+@media (max-width: 480px) {
+  .cab-career-resources-grid { grid-template-columns: minmax(0,1fr); padding: 0 0 0 16px; border: 0; border-left: 2px dashed #6499d9; }
+  .cab-career-resources-grid article:nth-child(n)::before { display: block; top: 22px; left: -24px; }
+}
 .cab-career-resources-grid h3, .cab-career-resources-grid p { margin: 0; }
 .cab-career-resources-grid h3 { font-size: 17px; }
 .cab-career-resources-grid p { font-size: 13px; line-height: 1.55; color: #435e7a; }

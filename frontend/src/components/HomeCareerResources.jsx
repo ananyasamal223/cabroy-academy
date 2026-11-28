@@ -3,9 +3,9 @@ import { ArrowRight, ClipboardCheck, FileText, Map, Target, X } from "lucide-rea
 import "./HomeCareerResources.css";
 
 const resources = [
-  { id: "resume", icon: FileText, title: "Free Resume Assessment", text: "Discover how recruiters might evaluate your profile.", cta: "Get My Resume Reviewed" },
   { id: "readiness", icon: ClipboardCheck, title: "Career Readiness Test", text: "Identify your strengths and skill gaps.", cta: "Check My Career Readiness" },
   { id: "challenge", icon: Target, title: "Free Industry Project Challenge", text: "Experience practical learning before enrolling.", cta: "Take the Free Challenge" },
+  { id: "resume", icon: FileText, title: "Free Resume Assessment", text: "Discover how recruiters might evaluate your profile.", cta: "Get My Resume Reviewed" },
   { id: "roadmap", icon: Map, title: "Personalised Career Roadmap", text: "Discover the skills and career paths that fit your goals.", cta: "Get My Career Roadmap" },
 ];
 
