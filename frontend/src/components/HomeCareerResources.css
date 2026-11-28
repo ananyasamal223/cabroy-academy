@@ -15,7 +15,20 @@
 .cab-career-resources-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 18px; }
 .cab-career-resources-actions .cab-btn { display: inline-flex; align-items: center; gap: 8px; }
 .cab-career-resources-actions > a { color: #075ab6; text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
-.cab-career-resources-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; margin-top: 28px; padding-top: 20px; border-top: 2px dashed #6499d9; }
+.cab-career-resources-grid { position: relative; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; margin-top: 28px; padding-top: 20px; border-top: 2px dashed #6499d9; }
+.cab-career-resources-grid::before {
+  position: absolute;
+  inset: -3px 0 auto;
+  height: 4px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(90deg, transparent, #1786fb, #91dcff, transparent) no-repeat -30% 0 / 22% 100%;
+  animation: cab-career-pulse-horizontal 4.5s ease-in-out infinite;
+}
+@keyframes cab-career-pulse-horizontal {
+  from { background-position: -30% 0; }
+  to { background-position: 130% 0; }
+}
 .cab-career-resources-grid article { position: relative; display: flex; flex-direction: column; gap: 9px; padding: clamp(13px, 1.6vw, 21px); border: 1px solid #b9d4f6; border-radius: 17px; background: #fff; color: #153a70; }
 .cab-career-resources-grid article::before { position: absolute; top: -28px; left: calc(50% - 7px); width: 14px; height: 14px; border: 3px solid #eaf4ff; border-radius: 50%; background: #1764bc; content: ""; }
 @media (max-width: 900px) {
@@ -24,7 +37,21 @@
 }
 @media (max-width: 480px) {
   .cab-career-resources-grid { grid-template-columns: minmax(0,1fr); padding: 0 0 0 16px; border: 0; border-left: 2px dashed #6499d9; }
+  .cab-career-resources-grid::before {
+    inset: 0 auto 0 -3px;
+    width: 4px;
+    height: auto;
+    background: linear-gradient(180deg, transparent, #1786fb, #91dcff, transparent) no-repeat 0 -30% / 100% 22%;
+    animation-name: cab-career-pulse-vertical;
+  }
   .cab-career-resources-grid article:nth-child(n)::before { display: block; top: 22px; left: -24px; }
+}
+@keyframes cab-career-pulse-vertical {
+  from { background-position: 0 -30%; }
+  to { background-position: 0 130%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cab-career-resources-grid::before { display: none; }
 }
 .cab-career-resources-grid h3, .cab-career-resources-grid p { margin: 0; }
 .cab-career-resources-grid h3 { font-size: 17px; }
