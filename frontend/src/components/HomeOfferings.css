@@ -94,6 +94,10 @@
 .cab-project-lab-intro .cab-project-lab-copy { align-self: center; margin: 0; text-align: left; }
 .cab-project-lab-intro .cab-project-lab-copy > p { margin-inline: 0; }
 .cab-project-lab-intro .cab-project-lab-points { justify-content: flex-start; }
+.cab-project-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.cab-project-course-link { color: #075ab6; font-size: 12px; font-weight: 700; text-underline-offset: 3px; }
+.cab-project-course-link:hover { text-decoration: underline; }
+#sample-campaign-project { scroll-margin-top: 105px; }
 .cab-project-orbit {
   --orbit-x: 57%;
   --orbit-y: 57%;
@@ -167,6 +171,7 @@
 }
 .cab-project-orbit-badge img, .cab-project-orbit-badge svg { width: 51%; height: 51%; object-fit: contain; }
 @media (max-width: 860px) {
+  .cab-project-actions { justify-content: center; }
   .cab-project-lab-intro { grid-template-columns: 1fr; }
   .cab-project-lab-intro .cab-project-lab-copy { margin-inline: auto; text-align: center; }
   .cab-project-lab-intro .cab-project-lab-copy > p { margin-inline: auto; }

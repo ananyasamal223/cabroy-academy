@@ -78,11 +78,14 @@ export default function HomeOfferings() {
               <span><Check aria-hidden="true" /> Learn from mentor feedback</span>
               <span><Check aria-hidden="true" /> Build work you can showcase</span>
             </div>
-            <Link className="cab-btn" to="/courses">Explore Project-Based Courses <ArrowRight size={17} aria-hidden="true" /></Link>
+            <div className="cab-project-actions">
+              <a className="cab-btn" href="#sample-campaign-project">View a Sample Project <ArrowRight size={17} aria-hidden="true" /></a>
+              <Link className="cab-project-course-link" to="/courses">Explore Project-Based Courses</Link>
+            </div>
           </div>
           <ProjectStages />
         </div>
-        <div className={`cab-project-canvas cab-project-sequence${revealed ? " is-revealed" : ""}`} ref={sceneRef} onPointerMove={moveScene} onPointerLeave={resetScene} aria-label="Example marketing project workflow">
+        <div id="sample-campaign-project" tabIndex={-1} className={`cab-project-canvas cab-project-sequence${revealed ? " is-revealed" : ""}`} ref={sceneRef} onPointerMove={moveScene} onPointerLeave={resetScene} aria-label="Example marketing project workflow">
           <svg className="cab-project-connectors" viewBox="0 0 600 620" preserveAspectRatio="none" fill="none" aria-hidden="true">
             <path d="M280 72V105M280 237V265Q280 285 310 285H460Q480 285 480 310V475M280 237V255Q280 285 220 285H145Q115 285 115 320V360" pathLength="100" stroke="#98c6e5" strokeWidth="1.5" />
             <path d="M145 410V490Q145 515 185 515H330" pathLength="100" stroke="#98c6e5" strokeWidth="1.5" strokeDasharray="4 5" />

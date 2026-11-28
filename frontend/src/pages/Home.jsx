@@ -697,7 +697,7 @@ export default function Home() {
               <span className="cab-eyebrow">THE CABROY CAREER SYSTEM</span>
               <h2 id="connected-title">Everything connects to<br /><span>your next career move.</span></h2>
               <p>Practical learning, expert guidance and a community that helps you turn new skills into work you can show.</p>
-              <Link to="/courses" className="cab-btn">Explore Courses <ArrowRight size={17} aria-hidden="true" /></Link>
+              <button type="button" className="cab-btn" onClick={() => setCounsellingOpen(true)}>Book a Free Career Counselling Call <ArrowRight size={17} aria-hidden="true" /></button>
             </div>
             <div className="cab-connected-flow">
               <svg className="cab-connected-wires" viewBox="0 0 1000 320" preserveAspectRatio="none" fill="none" aria-hidden="true">
