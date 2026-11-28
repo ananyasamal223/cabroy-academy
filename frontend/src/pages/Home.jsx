@@ -10,6 +10,7 @@ import "./Home.css";
 import CounsellingModal from "../components/CounsellingModal";
 import BrochureModal from "../components/BrochureModal";
 import HomeOfferings from "../components/HomeOfferings";
+import HomeCareerResources from "../components/HomeCareerResources";
 import HomeCareerPaths from "../components/HomeCareerPaths";
 import { ArrowRight, Globe2, PencilRuler, ShieldCheck, Send, Quote, Star, Search, Menu, X, Download } from "lucide-react";
 
@@ -732,6 +733,7 @@ export default function Home() {
       </section>
 
       <HomeOfferings />
+      <HomeCareerResources />
 
       <section className="cab-section cab-courses-section">
         <div className="cab-shell">

@@ -1,0 +1,28 @@
+.cab-career-resources-banner {
+  padding: clamp(24px, 5vw, 64px);
+  border-radius: 26px;
+  background: linear-gradient(120deg, #0b275e, #11468e);
+  color: #fff;
+}
+.cab-career-resources-banner h2 { max-width: 780px; margin: 0 0 12px; color: #fff; font-size: clamp(29px, 4.2vw, 55px); line-height: 1.08; letter-spacing: -.035em; }
+.cab-career-resources-banner p { max-width: 610px; margin: 0; color: #dbe9ff; line-height: 1.65; }
+.cab-career-resources-banner ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; padding: 0; list-style: none; }
+.cab-career-resources-banner li { padding: 5px 10px; border: 1px solid #ffffff40; border-radius: 99px; font-size: 12px; }
+.cab-career-resources-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.cab-career-resources-actions .cab-btn { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #07357d; }
+.cab-career-resources-actions > a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
+.cab-career-resources-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,240px),1fr)); gap: 14px; margin-top: 16px; }
+.cab-career-resources-grid article { display: flex; flex-direction: column; gap: 9px; padding: 21px; border: 1px solid #ddeafb; border-radius: 17px; background: #f4f8ff; color: #153a70; }
+.cab-career-resources-grid h3, .cab-career-resources-grid p { margin: 0; }
+.cab-career-resources-grid h3 { font-size: 17px; }
+.cab-career-resources-grid p { font-size: 13px; line-height: 1.55; color: #435e7a; }
+.cab-career-resources-grid button { display: inline-flex; align-items: center; gap: 6px; align-self: start; margin-top: auto; padding: 5px 0; color: #075ab6; text-align: left; font-size: 13px; font-weight: 700; }
+.cab-career-resources-grid button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.cab-career-tool-form, .cab-career-tool-form label, .cab-career-tool-form fieldset { display: grid; gap: 8px; }
+.cab-career-tool-form label:has(input[type="checkbox"]) { display: flex; align-items: start; gap: 7px; }
+.cab-career-tool-form textarea, .cab-career-tool-form select { width: 100%; padding: 8px; border: 1px solid #b9cce5; border-radius: 7px; background: #fff; }
+.cab-career-tool-form button { justify-self: start; }
+.cab-career-tool-result { margin-top: 14px; padding: 12px 15px; border-radius: 10px; background: #edf5ff; }
+.cab-career-tool-result h3 { margin: 0 0 6px; font-size: 16px; }
+.cab-career-tool-result ul { margin: 0; padding-left: 20px; list-style: disc; }
+.cab-career-tool ol { padding-left: 22px; list-style: decimal; }
