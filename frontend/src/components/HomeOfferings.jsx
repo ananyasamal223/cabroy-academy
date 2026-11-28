@@ -10,20 +10,36 @@ const tasks = [
 ];
 
 const projectStages = [
-  { label: "Plan the campaign", icon: Target, steps: [[Search, "Audience research"], [PencilRuler, "Campaign strategy"]] },
-  { label: "Build the case study", icon: FolderCheck, steps: [[MessageSquare, "Mentor feedback"], [BarChart3, "Results and insights"]] },
+  ["Research the audience", "Define who to reach and what they need."],
+  ["Launch the campaign", "Build creative and choose your channels."],
+  ["Create a case study", "Turn results and feedback into portfolio work."],
 ];
 
-function ProjectStages({ side }) {
-  const { label, icon: Icon, steps } = projectStages[side === "left" ? 0 : 1];
-  return <div className={`cab-project-stage-art cab-project-stage-art-${side}`}>
-    <div className="cab-project-stage-core" aria-hidden="true"><Icon size={30} /></div>
-    <div className="cab-project-stage-content">
-      <h3>{label}</h3>
-      <ul>{steps.map(([StepIcon, text]) => (
-        <li key={text}><span><StepIcon size={15} aria-hidden="true" /></span>{text}</li>
-      ))}</ul>
-    </div>
+const projectTools = [
+  { angle: -90, icon: Search, label: "Research" },
+  { angle: -64, file: "google-ads", label: "Google Ads" },
+  { angle: -37, file: "meta-ads", label: "Meta Ads" },
+  { angle: -10, icon: PencilRuler, label: "Creative" },
+  { angle: 17, file: "google-analytics", label: "Google Analytics" },
+  { angle: 44, icon: MessageSquare, label: "Feedback" },
+  { angle: 72, icon: FolderCheck, label: "Portfolio" },
+];
+
+function ProjectStages() {
+  return <div className="cab-project-orbit" aria-label="Campaign project stages and tools">
+    <ol className="cab-project-orbit-bands">{projectStages.map(([label, description]) => (
+      <li key={label}><div><h3>{label}</h3><p>{description}</p></div></li>
+    ))}</ol>
+    <div className="cab-project-orbit-ring" aria-hidden="true" />
+    <div className="cab-project-orbit-hub" aria-hidden="true" />
+    <ul className="cab-project-orbit-tools">{projectTools.map(({ angle, icon: Icon, file, label }) => (
+      <li key={label} style={{ "--tool-angle": `${angle}deg` }}>
+        <span className="cab-project-orbit-spoke" aria-hidden="true" />
+        <span className="cab-project-orbit-badge" title={label}>
+          {file ? <img src={`/course-icons/${file}.svg`} alt={label} /> : <Icon size={19} role="img" aria-label={label} />}
+        </span>
+      </li>
+    ))}</ul>
   </div>;
 }
 
@@ -53,7 +69,6 @@ export default function HomeOfferings() {
     <section className="cab-section cab-project-lab" aria-labelledby="project-lab-title">
       <div className="cab-shell cab-project-lab-grid">
         <div className="cab-project-lab-intro">
-          <ProjectStages side="left" />
           <div className="cab-project-lab-copy">
             <span className="cab-eyebrow">LEARNING, PUT INTO PRACTICE</span>
             <h2 id="project-lab-title">Build real projects.<br /><span>Create your portfolio.</span></h2>
@@ -65,7 +80,7 @@ export default function HomeOfferings() {
             </div>
             <Link className="cab-btn" to="/courses">Explore Project-Based Courses <ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
-          <ProjectStages side="right" />
+          <ProjectStages />
         </div>
         <div className={`cab-project-canvas cab-project-sequence${revealed ? " is-revealed" : ""}`} ref={sceneRef} onPointerMove={moveScene} onPointerLeave={resetScene} aria-label="Example marketing project workflow">
           <svg className="cab-project-connectors" viewBox="0 0 600 620" preserveAspectRatio="none" fill="none" aria-hidden="true">
