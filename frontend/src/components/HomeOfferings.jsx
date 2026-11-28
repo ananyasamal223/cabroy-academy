@@ -9,6 +9,24 @@ const tasks = [
   { icon: BarChart3, title: "Measure what matters", detail: "Analyse results and share your insights", number: "03" },
 ];
 
+const projectStages = [
+  { label: "Plan the campaign", icon: Target, steps: [[Search, "Audience research"], [PencilRuler, "Campaign strategy"]] },
+  { label: "Build the case study", icon: FolderCheck, steps: [[MessageSquare, "Mentor feedback"], [BarChart3, "Results and insights"]] },
+];
+
+function ProjectStages({ side }) {
+  const { label, icon: Icon, steps } = projectStages[side === "left" ? 0 : 1];
+  return <div className={`cab-project-stage-art cab-project-stage-art-${side}`}>
+    <div className="cab-project-stage-core" aria-hidden="true"><Icon size={30} /></div>
+    <div className="cab-project-stage-content">
+      <h3>{label}</h3>
+      <ul>{steps.map(([StepIcon, text]) => (
+        <li key={text}><span><StepIcon size={15} aria-hidden="true" /></span>{text}</li>
+      ))}</ul>
+    </div>
+  </div>;
+}
+
 export default function HomeOfferings() {
   const sceneRef = useRef(null);
   const [revealed, setRevealed] = useState(false);
@@ -34,16 +52,20 @@ export default function HomeOfferings() {
   return (
     <section className="cab-section cab-project-lab" aria-labelledby="project-lab-title">
       <div className="cab-shell cab-project-lab-grid">
-        <div className="cab-project-lab-copy">
-          <span className="cab-eyebrow">LEARNING, PUT INTO PRACTICE</span>
-          <h2 id="project-lab-title">Build real projects.<br /><span>Create your portfolio.</span></h2>
-          <p>Go from understanding a concept to putting it to work. Bring your skills together through practical projects, with guidance along the way.</p>
-          <div className="cab-project-lab-points">
-            <span><Check aria-hidden="true" /> Apply what you learn</span>
-            <span><Check aria-hidden="true" /> Learn from mentor feedback</span>
-            <span><Check aria-hidden="true" /> Build work you can showcase</span>
+        <div className="cab-project-lab-intro">
+          <ProjectStages side="left" />
+          <div className="cab-project-lab-copy">
+            <span className="cab-eyebrow">LEARNING, PUT INTO PRACTICE</span>
+            <h2 id="project-lab-title">Build real projects.<br /><span>Create your portfolio.</span></h2>
+            <p>Go from understanding a concept to putting it to work. Bring your skills together through practical projects, with guidance along the way.</p>
+            <div className="cab-project-lab-points">
+              <span><Check aria-hidden="true" /> Apply what you learn</span>
+              <span><Check aria-hidden="true" /> Learn from mentor feedback</span>
+              <span><Check aria-hidden="true" /> Build work you can showcase</span>
+            </div>
+            <Link className="cab-btn" to="/courses">Explore Project-Based Courses <ArrowRight size={17} aria-hidden="true" /></Link>
           </div>
-          <Link className="cab-btn" to="/courses">Explore Project-Based Courses <ArrowRight size={17} aria-hidden="true" /></Link>
+          <ProjectStages side="right" />
         </div>
         <div className={`cab-project-canvas cab-project-sequence${revealed ? " is-revealed" : ""}`} ref={sceneRef} onPointerMove={moveScene} onPointerLeave={resetScene} aria-label="Example marketing project workflow">
           <svg className="cab-project-connectors" viewBox="0 0 600 620" preserveAspectRatio="none" fill="none" aria-hidden="true">

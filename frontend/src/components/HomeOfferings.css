@@ -82,6 +82,68 @@
 /* Stack the introduction above a wider project tree. */
 .cab-project-lab-grid { grid-template-columns: 1fr; gap: 44px; }
 .cab-project-lab-copy { text-align: center; max-width: 760px; margin: 0 auto; }
+.cab-project-stage-art { display: none; }
+@media (min-width: 1100px) {
+  .cab-project-lab-intro {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(590px, 2.7fr) minmax(180px, 1fr);
+    align-items: center;
+    gap: clamp(12px, 1.5vw, 24px);
+  }
+  .cab-project-stage-art {
+    position: relative;
+    display: grid;
+    align-content: end;
+    min-height: 234px;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 14px;
+    border-radius: 26px;
+    background: linear-gradient(145deg, #edf6ff, #f7fbff);
+  }
+  .cab-project-stage-art::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 215px;
+    aspect-ratio: 1;
+    top: -55px;
+    left: -35px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 48% 50%, #96c3ff 0 35%, #bbd9ff 36% 57%, #d7e9ff 58%);
+  }
+  .cab-project-stage-art-right::before {
+    left: auto;
+    right: -35px;
+    background: radial-gradient(circle at 52% 50%, #9ebdfc 0 35%, #c3d7ff 36% 57%, #dce6ff 58%);
+  }
+  .cab-project-stage-core {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    top: 20px;
+    left: 35px;
+    width: 68px;
+    aspect-ratio: 1;
+    border: 1px solid #ffffff80;
+    border-radius: 50%;
+    background: #07357d;
+    color: white;
+    box-shadow: 0 8px 20px #07357d39;
+  }
+  .cab-project-stage-art-right .cab-project-stage-core { left: auto; right: 35px; }
+  .cab-project-stage-content {
+    padding: 11px;
+    border: 1px solid #fff;
+    border-radius: 16px;
+    background: #fffffff2;
+    box-shadow: 0 8px 20px #214f9510;
+  }
+  .cab-project-stage-content h3 { margin: 0 0 9px; color: #07357d; font-size: 14px; font-weight: 750; }
+  .cab-project-stage-content ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+  .cab-project-stage-content li { display: flex; align-items: center; gap: 6px; color: #314f72; font-size: 11px; font-weight: 600; }
+  .cab-project-stage-content li span { display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: #e7f1ff; color: #1764b7; }
+}
 .cab-project-lab-copy > p { max-width: 620px; margin-left: auto; margin-right: auto; }
 .cab-project-lab-points { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px 26px; width: auto; margin: 25px auto 28px; }
 .cab-project-lab-points > span { text-align: left; }
